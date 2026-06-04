@@ -1,0 +1,47 @@
+{
+  "name": "volcanostrat-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "5.0.1",
+    "web-vitals": "^2.1.4",
+    "three": "^0.159.0",
+    "@react-three/fiber": "^8.15.12",
+    "@react-three/drei": "^9.85.0",
+    "axios": "^1.6.2",
+    "papaparse": "^5.4.1",
+    "file-saver": "^2.0.5",
+    "react-dropzone": "^14.2.3",
+    "react-markdown": "^9.0.1",
+    "@monaco-editor/react": "^4.5.1",
+    "cesium": "^1.108.0",
+    "resium": "^1.15.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "proxy": "http://localhost:8000"
+}

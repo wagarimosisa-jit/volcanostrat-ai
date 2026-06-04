@@ -1,0 +1,60 @@
+{
+  "metadata": {
+    "version": "1.0",
+    "sources": ["Jimma Dissertation (2025)", "Upper Awash Basin (2025)", "Canary Islands (2021)"],
+    "last_updated": "2026-06-04"
+  },
+  "lithology": {
+    "Basalt": {
+      "synonyms": ["basalt", "tholeiitic basalt", "alkali basalt", "mafic lava", "basaltic lava", "flood basalt", "scoriaceous basalt", "vesicular basalt"],
+      "category": "Mafic Lava"
+    },
+    "Ignimbrite": {
+      "synonyms": ["ignimbrite", "welded tuff", "pyroclastic flow", "ash-flow tuff"],
+      "category": "Pyroclastic (Flow)"
+    },
+    "Tuff": {
+      "synonyms": ["tuff", "volcanic tuff", "ash tuff", "pyroclastic tuff"],
+      "category": "Pyroclastic (Fall)"
+    },
+    "Clay": {
+      "synonyms": ["clay", "volcanic clay", "ash clay", "montmorillonite"],
+      "category": "Sedimentary"
+    },
+    "Alluvium": {
+      "synonyms": ["alluvium", "alluvial deposit", "quaternary alluvium", "sand", "gravel"],
+      "category": "Sedimentary"
+    },
+    "Trachyte": {
+      "synonyms": ["trachyte", "trachytic lava", "alkali trachyte"],
+      "category": "Felsic Lava"
+    }
+  },
+  "modifiers": {
+    "Fracturing": {
+      "Highly fractured": ["highly fractured", "intensely fractured", "heavily fractured"],
+      "Moderately fractured": ["moderately fractured", "partially fractured", "some fractures"],
+      "Slightly fractured": ["slightly fractured", "low fracturing", "minimal fractures"],
+      "Massive": ["massive", "unfractured", "non-fractured", "dense"]
+    },
+    "Weathering": {
+      "Highly weathered": ["highly weathered", "intensely weathered", "deeply weathered"],
+      "Moderately weathered": ["moderately weathered", "partially weathered"],
+      "Slightly weathered": ["slightly weathered", "low weathering"],
+      "Fresh": ["fresh", "unweathered"]
+    },
+    "Porosity": {
+      "Vesicular": ["vesicular", "porous", "high porosity"],
+      "Dense": ["dense", "non-vesicular", "low porosity"]
+    },
+    "Consolidation": {
+      "Welded": ["welded", "fused", "sintered"],
+      "Unwelded": ["unwelded", "loose", "unconsolidated"]
+    },
+    "Interbeds": {
+      "Clay": ["clay", "ash clay", "volcanic clay"],
+      "Tuff": ["tuff", "pyroclastic interbeds"],
+      "Volcanic Ash": ["volcanic ash", "ash", "tephra"]
+    }
+  }
+}
