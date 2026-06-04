@@ -8,7 +8,7 @@ shapely==2.0.2
 geopandas==0.14.1
 pyproj==3.6.1
 vtk==9.2.6
-trimesh==4.1.1
+trimesh==4.0.0
 python-dotenv==1.0.0
 pydantic==2.5.3
 aiofiles==23.2.1
