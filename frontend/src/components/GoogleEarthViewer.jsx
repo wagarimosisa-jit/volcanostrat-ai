@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { Viewer, Entity, CameraFlyTo } from 'resium';
-import { Cartesian3, Math as CesiumMath } from 'cesium';
+import { Cartesian3, Math as CesiumMath, Color } from 'cesium';
 
 const GoogleEarthViewer = ({ wells }) => {
   const viewerRef = useRef(null);
@@ -69,9 +69,9 @@ const GoogleEarthViewer = ({ wells }) => {
             point={{
               pixelSize: 10,
               color: well.Layers.some(l => l.Hydro_Property?.includes('Aquifer'))
-                ? Cesium.Color.BLUE
-                : Cesium.Color.GRAY,
-              outlineColor: Cesium.Color.WHITE,
+                ? Color.BLUE
+                : Color.GRAY,
+              outlineColor: Color.WHITE,
               outlineWidth: 2
             }}
             description={
