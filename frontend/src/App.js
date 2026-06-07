@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { FaMountain, FaFileAlt, FaCube, FaRulerCombined, FaGlobe, FaComments } from 'react-icons/fa';
 import WellLogUploader from './components/WellLogUploader';
 import Model3DViewer from './components/Model3DViewer';
 import CrossSectionTool from './components/CrossSectionTool';
@@ -21,6 +22,7 @@ function App() {
     { x: 0, y: 0 },
     { x: 100, y: 100 }
   ]);
+  const [isDashboardExpanded, setIsDashboardExpanded] = useState(true);
 
   const API_BASE = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
@@ -209,11 +211,13 @@ function App() {
         voxelModel={voxelModel}
         onFileUpload={handleFileUpload}
         onExport={handleExport}
+        isExpanded={isDashboardExpanded}
+        onToggleExpand={() => setIsDashboardExpanded(!isDashboardExpanded)}
       />
 
-      <div className="main-content">
+      <div className={`main-content ${!isDashboardExpanded ? 'has-collapsed-dashboard' : ''}`}>
         <header className="app-header">
-          <h1>🌋 VolcanoStrat AI</h1>
+          <h1><FaMountain className="volcano-icon" /> VolcanoStrat AI</h1>
           <p>AI-Powered Volcanic Aquifer Stratigraphy</p>
         </header>
 
@@ -222,34 +226,34 @@ function App() {
             className={activeTab === 'upload' ? 'active' : ''}
             onClick={() => setActiveTab('upload')}
           >
-            📄 Upload Data
+            <FaFileAlt /> Upload Data
           </button>
           <button
             className={activeTab === '3d' ? 'active' : ''}
             onClick={() => setActiveTab('3d')}
             disabled={!voxelModel}
           >
-            🎯 3D Model
+            <FaCube /> 3D Model
           </button>
           <button
             className={activeTab === 'cross-section' ? 'active' : ''}
             onClick={() => setActiveTab('cross-section')}
             disabled={!standardizedData}
           >
-            📏 Cross-Section
+            <FaRulerCombined /> Cross-Section
           </button>
           <button
             className={activeTab === 'google-earth' ? 'active' : ''}
             onClick={() => setActiveTab('google-earth')}
             disabled={!standardizedData}
           >
-            🌍 Google Earth
+            <FaGlobe /> Google Earth
           </button>
           <button
             className={activeTab === 'chat' ? 'active' : ''}
             onClick={() => setActiveTab('chat')}
           >
-            💬 AI Geologist
+            <FaComments /> AI Geologist
           </button>
         </div>
 

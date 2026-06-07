@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { FaMountain, FaWater, FaChartBar, FaLightbulb, FaGlobe, FaUserGraduate, FaFileImport, FaFileExport, FaQuestionCircle, FaCog, FaInfoCircle, FaEnvelope, FaGithub, FaFire, FaLayerGroup, FaTachometerAlt, FaCompass, FaRulerCombined, FaSearch, FaFilter, FaRock, FaGem, FaArrowsAltV, FaDroplet, FaWind, FaCloud, FaSun, FaMoon } from 'react-icons/fa';
+import { FaMountain, FaWater, FaChartBar, FaLightbulb, FaGlobe, FaUserGraduate, FaFileImport, FaFileExport, FaQuestionCircle, FaCog, FaInfoCircle, FaEnvelope, FaGithub, FaFire, FaLayerGroup, FaTachometerAlt, FaCompass, FaRulerCombined, FaSearch, FaFilter, FaGem, FaTint, FaWind, FaCloud, FaSun, FaMoon } from 'react-icons/fa';
 
-const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport }) => {
+const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport, isExpanded = true, onToggleExpand }) => {
   const [activeSection, setActiveSection] = useState('overview');
-  const [isExpanded, setIsExpanded] = useState(true);
 
   // Calculate metrics from data
   const calculateMetrics = () => {
@@ -124,7 +123,7 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
           <div className="header-right">
             <button 
               className="toggle-btn" 
-              onClick={() => setIsExpanded(!isExpanded)}
+              onClick={onToggleExpand}
               title={isExpanded ? 'Collapse Dashboard' : 'Expand Dashboard'}
             >
               {isExpanded ? '←' : '→'}
@@ -249,7 +248,7 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
         {/* Geological Environment Indicator */}
         <div className="geo-environment">
           <div className="env-header">
-            <FaDroplet className="env-icon" />
+            <FaTint className="env-icon" />
             <span className="env-title">Current Geological Environment</span>
           </div>
           <div className="env-content">
@@ -310,7 +309,7 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
         {/* Geological Notations Sidebar */}
         <div className="geo-sidebar">
           <div className="sidebar-header">
-            <FaRock className="sidebar-icon" />
+            <FaMountain className="sidebar-icon" />
             <span className="sidebar-title">Geological Notations</span>
           </div>
           <div className="notations-list">
