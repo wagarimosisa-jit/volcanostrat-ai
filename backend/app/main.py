@@ -25,6 +25,7 @@ from .engines.cross_section import generate_cross_section
 from .engines.exporter import export_to_csv, export_to_vtk, export_to_kml
 from .engines.shapefile_exporter import shapefile_exporter
 from .engines.pdf_exporter import pdf_exporter
+from .engines.pdf_exporter_enhanced import pdf_exporter_enhanced
 
 # Initialize FastAPI
 app = FastAPI(
@@ -1231,6 +1232,31 @@ async def get_api_info():
             "upload_geojson": "/api/upload/geojson",
             "export_pdf": "/api/export/pdf",
             "export_cepr": "/api/export/cepr",
+            "export_enhanced_pdf": "/api/export/enhanced-pdf",
             "upload_all": "/api/upload-all-formats"
         }
     })
+
+
+@app.post("/api/export/enhanced-pdf")
+async def export_enhanced_pdf(well_data: Dict):
+    """
+    Generate comprehensive PDF report with interpretations, evidence, and academic references.
+    
+    This endpoint creates a detailed geological report that includes:
+    - Executive summary with key findings
+    - Well summary tables
+    - Layer-by-layer analysis
+    - Geological interpretation
+    - Complexity reduction analysis
+    - Supporting evidence
+    - Academic references (87+ citations)
+    - Developer information
+    """
+    try:
+        result = pdf_exporter_enhanced.export_comprehensive_report(well_data)
+        if 'error' in result:
+            raise HTTPException(status_code=500, detail=result['error'])
+        return JSONResponse(content=result)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to generate enhanced PDF: {str(e)}")

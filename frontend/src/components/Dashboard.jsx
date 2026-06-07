@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { FaVolcano, FaWater, FaChartBar, FaLightbulb, FaGlobe, FaUserGraduate, FaFileImport, FaFileExport, FaQuestionCircle, FaCog, FaInfoCircle, FaEnvelope, FaGithub } from 'react-icons/fa';
+import { FaMountain, FaWater, FaChartBar, FaLightbulb, FaGlobe, FaUserGraduate, FaFileImport, FaFileExport, FaQuestionCircle, FaCog, FaInfoCircle, FaEnvelope, FaGithub, FaFire, FaLayerGroup, FaTachometerAlt, FaCompass, FaRulerCombined, FaSearch, FaFilter } from 'react-icons/fa';
 
-const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport, metrics }) => {
+const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport }) => {
   const [activeSection, setActiveSection] = useState('overview');
   const [isExpanded, setIsExpanded] = useState(true);
 
@@ -64,7 +64,7 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
     };
   };
 
-  const metrics = calculateMetrics();
+  const calculatedMetrics = calculateMetrics();
 
   // Get top productive layers
   const getTopProductiveLayers = () => {
@@ -104,70 +104,136 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
         {/* Header */}
         <div className="dashboard-header">
           <div className="header-left">
-            <h2>
-              <FaVolcano className="icon" /> 
-              VolcanoStrat AI Dashboard
-            </h2>
-            <span className="subtitle">Global Volcanic Hydrostratigraphy Platform</span>
+            <div className="logo-container">
+              <div className="volcanic-icon">
+                <FaFire className="fire-icon" />
+                <FaMountain className="mountain-icon" />
+              </div>
+              <div className="title-text">
+                <h2>VolcanoStrat AI</h2>
+                <span className="subtitle">Causal Subsurface Intelligence Engine</span>
+              </div>
+            </div>
           </div>
           <div className="header-right">
             <button 
               className="toggle-btn" 
               onClick={() => setIsExpanded(!isExpanded)}
+              title={isExpanded ? 'Collapse Dashboard' : 'Expand Dashboard'}
             >
               {isExpanded ? '←' : '→'}
             </button>
           </div>
         </div>
+        
+        {/* Tagline Banner */}
+        <div className="tagline-banner">
+          <span className="tagline">
+            <FaCompass /> Transforming Heterogeneous Well Logs into 
+            <span className="highlight">Uncertainty-Aware Hydrostratigraphic Knowledge Models</span>
+          </span>
+        </div>
 
         {/* Quick Stats */}
         <div className="quick-stats">
-          <div className="stat-card">
+          <div className="stat-card highlight-card">
             <div className="stat-icon wells"><FaChartBar /></div>
             <div className="stat-info">
-              <span className="stat-value">{metrics.totalWells}</span>
+              <span className="stat-value">{calculatedMetrics.totalWells}</span>
               <span className="stat-label">Total Wells</span>
             </div>
+            <div className="stat-trend">
+              <span className="trend-icon">📈</span>
+              <span className="trend-text">Processed</span>
+            </div>
           </div>
           
           <div className="stat-card">
-            <div className="stat-icon layers"><FaWater /></div>
+            <div className="stat-icon layers"><FaLayerGroup /></div>
             <div className="stat-info">
-              <span className="stat-value">{metrics.totalLayers}</span>
+              <span className="stat-value">{calculatedMetrics.totalLayers}</span>
               <span className="stat-label">Stratigraphic Layers</span>
             </div>
+            <div className="stat-trend">
+              <span className="trend-icon">📊</span>
+              <span className="trend-text">Analyzed</span>
+            </div>
           </div>
           
-          <div className="stat-card">
+          <div className="stat-card success-card">
             <div className="stat-icon aquifers"><FaWater /></div>
             <div className="stat-info">
-              <span className="stat-value">{metrics.aquiferLayers}</span>
+              <span className="stat-value">{calculatedMetrics.aquiferLayers}</span>
               <span className="stat-label">Aquifer Layers</span>
             </div>
+            <div className="stat-trend">
+              <span className="trend-icon">💧</span>
+              <span className="trend-text">Productive</span>
+            </div>
           </div>
           
-          <div className="stat-card">
-            <div className="stat-icon confidence"><FaLightbulb /></div>
+          <div className="stat-card warning-card">
+            <div className="stat-icon confidence"><FaTachometerAlt /></div>
             <div className="stat-info">
-              <span className="stat-value">{metrics.avgConfidence}%</span>
+              <span className="stat-value">{calculatedMetrics.avgConfidence}%</span>
               <span className="stat-label">Avg Confidence</span>
             </div>
-          </div>
-          
-          <div className="stat-card">
-            <div className="stat-icon complexity"><FaCog /></div>
-            <div className="stat-info">
-              <span className="stat-value">{metrics.complexityReduction}%</span>
-              <span className="stat-label">Complexity Reduction</span>
+            <div className="stat-trend">
+              <span className="trend-icon">✓</span>
+              <span className="trend-text">Validated</span>
             </div>
           </div>
           
-          <div className="stat-card">
+          <div className="stat-card info-card">
+            <div className="stat-icon complexity"><FaCog /></div>
+            <div className="stat-info">
+              <span className="stat-value">{calculatedMetrics.complexityReduction}%</span>
+              <span className="stat-label">Complexity Reduction</span>
+            </div>
+            <div className="stat-trend">
+              <span className="trend-icon">⚡</span>
+              <span className="trend-text">Simplified</span>
+            </div>
+          </div>
+          
+          <div className="stat-card primary-card">
             <div className="stat-icon global"><FaGlobe /></div>
             <div className="stat-info">
               <span className="stat-value">Global</span>
-              <span className="stat-label">Coverage</span>
+              <span className="stat-label">Coordinate Systems</span>
             </div>
+            <div className="stat-trend">
+              <span className="trend-icon">🌍</span>
+              <span className="trend-text">Supported</span>
+            </div>
+          </div>
+        </div>
+        
+        {/* Key Features Bar */}
+        <div className="features-bar">
+          <div className="feature-item">
+            <FaFire className="feature-icon" />
+            <span>Causal AI Engine</span>
+          </div>
+          <div className="feature-item">
+            <FaRulerCombined className="feature-icon" />
+            <span>3D Modeling</span>
+          </div>
+          <div className="feature-item">
+            <FaLayerGroup className="feature-icon" />
+            <span>Stratigraphy</span>
+          </div>
+          <div className="feature-item">
+            <FaChartBar className="feature-icon" />
+            <span>Analytics</span>
+          </div>
+          <div className="feature-item">
+            <FaSearch className="feature-icon" />
+            <span>Aquifer Discovery</span>
+          </div>
+          <div className="feature-item">
+            <FaFilter className="feature-icon" />
+            <span>Standardization</span>
           </div>
         </div>
 
@@ -253,12 +319,12 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
               <div className="metrics-summary">
                 <h4>Current Project Metrics</h4>
                 <ul>
-                  <li><strong>Total Wells:</strong> {metrics.totalWells} wells processed</li>
-                  <li><strong>Original Descriptions:</strong> {metrics.totalLayers} layer descriptions</li>
-                  <li><strong>Standardized Units:</strong> {metrics.totalLayers > 0 ? Math.round(metrics.totalLayers * (1 - metrics.complexityReduction/100)) : 0} unique hydrostratigraphic units</li>
-                  <li><strong>Complexity Reduction Index:</strong> {metrics.complexityReduction}% - This represents how much geological complexity has been reduced</li>
-                  <li><strong>Average Confidence:</strong> {metrics.avgConfidence}% confidence in classifications</li>
-                  <li><strong>Aquifer Potential:</strong> {metrics.aquiferLayers} productive layers out of {metrics.totalLayers} total</li>
+                  <li><strong>Total Wells:</strong> {calculatedMetrics.totalWells} wells processed</li>
+                  <li><strong>Original Descriptions:</strong> {calculatedMetrics.totalLayers} layer descriptions</li>
+                  <li><strong>Standardized Units:</strong> {calculatedMetrics.totalLayers > 0 ? Math.round(calculatedMetrics.totalLayers * (1 - calculatedMetrics.complexityReduction/100)) : 0} unique hydrostratigraphic units</li>
+                  <li><strong>Complexity Reduction Index:</strong> {calculatedMetrics.complexityReduction}% - This represents how much geological complexity has been reduced</li>
+                  <li><strong>Average Confidence:</strong> {calculatedMetrics.avgConfidence}% confidence in classifications</li>
+                  <li><strong>Aquifer Potential:</strong> {calculatedMetrics.aquiferLayers} productive layers out of {calculatedMetrics.totalLayers} total</li>
                 </ul>
               </div>
             </div>
@@ -417,13 +483,15 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
               
               <div className="help-section">
                 <h4><FaQuestionCircle /> Quick Start Guide</h4>
+                <p>Get started with VolcanoStrat AI in 5 easy steps:</p>
                 <ol>
-                  <li>Upload your well data (CSV or Shapefile)</li>
-                  <li>Review the standardized results</li>
-                  <li>Explore 3D model and cross-sections</li>
-                  <li>Ask the AI Geologist questions</li>
-                  <li>Export your data in various formats</li>
+                  <li><strong>Upload</strong> your well data (CSV, Excel, LAS, GeoJSON, Shapefile)</li>
+                  <li><strong>Review</strong> the standardized results and AI-classified layers</li>
+                  <li><strong>Explore</strong> 3D voxel models and interactive cross-sections</li>
+                  <li><strong>Analyze</strong> with the AI Geologist - ask about layers, productivity, aquifers</li>
+                  <li><strong>Export</strong> in multiple formats (CSV, JSON, PDF, Shapefile, VTK, KML)</li>
                 </ol>
+                <p className="info-box">💡 <strong>Pro Tip:</strong> Upload your cross-section line as a Shapefile to generate 2D stratigraphic profiles and see layer correlations!</p>
               </div>
 
               <div className="help-section">
@@ -929,6 +997,427 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
         .version {
           font-size: 0.7rem;
           margin-top: 0.25rem;
+        }
+        
+        /* Enhanced Dashboard Styles - Surfer-like appearance */
+        
+        .logo-container {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+        }
+        
+        .volcanic-icon {
+          position: relative;
+          font-size: 1.5rem;
+        }
+        
+        .fire-icon {
+          position: absolute;
+          top: -0.2rem;
+          left: 0;
+          color: #e74c3c;
+          font-size: 1.2rem;
+          animation: flicker 2s infinite alternate;
+        }
+        
+        .mountain-icon {
+          color: #95a5a6;
+          font-size: 1.5rem;
+          margin-left: 0.5rem;
+        }
+        
+        @keyframes flicker {
+          0% { opacity: 0.7; }
+          50% { opacity: 1; }
+          100% { opacity: 0.7; }
+        }
+        
+        .title-text h2 {
+          margin: 0;
+          color: white;
+          font-size: 1.5rem;
+          background: linear-gradient(135deg, #4da6ff, #85c1e9);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+        
+        .title-text .subtitle {
+          color: rgba(255,255,255,0.8);
+          font-size: 0.85rem;
+          display: block;
+          margin-top: 0.25rem;
+        }
+        
+        .tagline-banner {
+          padding: 0.75rem 1rem;
+          background: linear-gradient(90deg, rgba(52, 152, 219, 0.1), rgba(46, 204, 113, 0.1));
+          border-left: 3px solid #4da6ff;
+          margin: 0.5rem 0 1rem 0;
+        }
+        
+        .tagline {
+          color: white;
+          font-size: 0.9rem;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+        
+        .tagline .highlight {
+          color: #4da6ff;
+          font-weight: bold;
+          text-shadow: 0 0 5px rgba(77, 166, 255, 0.5);
+        }
+        
+        /* Enhanced Stat Cards */
+        .quick-stats {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+          gap: 1rem;
+          margin: 1rem 0;
+        }
+        
+        .stat-card {
+          background: rgba(255, 255, 255, 0.05);
+          border-radius: 0.75rem;
+          padding: 1rem;
+          position: relative;
+          overflow: hidden;
+          transition: all 0.3s ease;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .stat-card:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+          border-color: rgba(77, 166, 255, 0.5);
+        }
+        
+        .stat-card.highlight-card {
+          background: linear-gradient(135deg, rgba(52, 152, 219, 0.2), rgba(46, 204, 113, 0.2));
+          border-color: #4da6ff;
+        }
+        
+        .stat-card.success-card {
+          background: linear-gradient(135deg, rgba(46, 204, 113, 0.2), rgba(52, 152, 219, 0.2));
+          border-color: #2ecc71;
+        }
+        
+        .stat-card.warning-card {
+          background: linear-gradient(135deg, rgba(241, 196, 15, 0.2), rgba(231, 76, 60, 0.2));
+          border-color: #f1c40f;
+        }
+        
+        .stat-card.info-card {
+          background: linear-gradient(135deg, rgba(77, 166, 255, 0.2), rgba(133, 193, 233, 0.2));
+          border-color: #4da6ff;
+        }
+        
+        .stat-card.primary-card {
+          background: linear-gradient(135deg, rgba(52, 152, 219, 0.3), rgba(93, 173, 226, 0.3));
+          border-color: #5dade2;
+        }
+        
+        .stat-icon {
+          font-size: 1.5rem;
+          margin-bottom: 0.5rem;
+          color: #4da6ff;
+        }
+        
+        .stat-info {
+          display: flex;
+          flex-direction: column;
+        }
+        
+        .stat-value {
+          font-size: 1.5rem;
+          font-weight: bold;
+          color: white;
+          margin-bottom: 0.25rem;
+        }
+        
+        .stat-label {
+          font-size: 0.75rem;
+          color: rgba(255, 255, 255, 0.7);
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+        
+        .stat-trend {
+          display: flex;
+          align-items: center;
+          gap: 0.25rem;
+          margin-top: 0.5rem;
+          font-size: 0.7rem;
+          color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .trend-icon {
+          font-size: 0.8rem;
+        }
+        
+        /* Features Bar */
+        .features-bar {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.75rem;
+          padding: 0.75rem;
+          background: rgba(0, 0, 0, 0.2);
+          border-radius: 0.5rem;
+          margin: 1rem 0;
+        }
+        
+        .feature-item {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          padding: 0.5rem 0.75rem;
+          background: rgba(255, 255, 255, 0.05);
+          border-radius: 0.5rem;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          color: rgba(255, 255, 255, 0.8);
+          font-size: 0.8rem;
+          transition: all 0.2s;
+        }
+        
+        .feature-item:hover {
+          background: rgba(255, 255, 255, 0.1);
+          color: white;
+          border-color: rgba(77, 166, 255, 0.5);
+        }
+        
+        .feature-item .feature-icon {
+          font-size: 1rem;
+          color: #4da6ff;
+        }
+        
+        /* Dashboard Header Enhancements */
+        .dashboard-header {
+          background: linear-gradient(135deg, rgba(52, 152, 219, 0.1), rgba(46, 204, 113, 0.1));
+          border-bottom: 1px solid rgba(77, 166, 255, 0.3);
+          padding: 1rem;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+        
+        .dashboard-header .header-left {
+          display: flex;
+          align-items: center;
+        }
+        
+        .dashboard-header .header-right {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+        
+        .toggle-btn {
+          background: rgba(255, 255, 255, 0.1);
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          color: white;
+          padding: 0.5rem 0.75rem;
+          border-radius: 0.5rem;
+          cursor: pointer;
+          font-size: 1rem;
+          transition: all 0.2s;
+          min-width: 40px;
+        }
+        
+        .toggle-btn:hover {
+          background: rgba(255, 255, 255, 0.2);
+          border-color: rgba(77, 166, 255, 0.5);
+        }
+        
+        /* Dashboard Container Gradient */
+        .dashboard-container {
+          background: linear-gradient(180deg, rgba(52, 152, 219, 0.05), rgba(25, 25, 25, 0.8));
+          border-radius: 0.5rem;
+          margin: 0.5rem;
+        }
+        
+        .dashboard-container.collapsed {
+          width: 60px;
+        }
+        
+        /* Navigation Enhancements */
+        .dashboard-nav {
+          padding: 0.5rem;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .dashboard-nav button {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          padding: 0.75rem 1rem;
+          background: transparent;
+          border: none;
+          color: rgba(255, 255, 255, 0.8);
+          border-radius: 0.5rem;
+          cursor: pointer;
+          font-size: 0.9rem;
+          transition: all 0.2s;
+          width: 100%;
+          text-align: left;
+          border-left: 3px solid transparent;
+        }
+        
+        .dashboard-nav button:hover {
+          background: rgba(255, 255, 255, 0.1);
+          color: white;
+        }
+        
+        .dashboard-nav button.active {
+          background: rgba(77, 166, 255, 0.2);
+          color: white;
+          border-left-color: #4da6ff;
+        }
+        
+        /* Content Section Enhancements */
+        .content-section {
+          background: rgba(0, 0, 0, 0.2);
+          border-radius: 0.5rem;
+          padding: 1.5rem;
+          margin: 1rem 0;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .content-section h3 {
+          color: #4da6ff;
+          border-bottom: 1px solid rgba(77, 166, 255, 0.3);
+          padding-bottom: 0.5rem;
+          margin-bottom: 1rem;
+        }
+        
+        /* Recommended Section Styles */
+        .recommendation-box {
+          background: linear-gradient(135deg, rgba(76, 175, 222, 0.2), rgba(52, 152, 219, 0.2));
+          border-left: 4px solid #4da6ff;
+          border-radius: 0.5rem;
+          padding: 1rem;
+          margin: 1rem 0;
+          box-shadow: 0 2px 10px rgba(77, 166, 255, 0.2);
+        }
+        
+        .info-box {
+          background: linear-gradient(135deg, rgba(241, 196, 15, 0.2), rgba(243, 156, 18, 0.2));
+          border-left: 4px solid #f1c40f;
+          border-radius: 0.5rem;
+          padding: 1rem;
+          margin: 1rem 0;
+          box-shadow: 0 2px 10px rgba(241, 196, 15, 0.2);
+        }
+        
+        /* Help Section Enhancements */
+        .help-section {
+          background: rgba(0, 0, 0, 0.1);
+          border-radius: 0.5rem;
+          padding: 1rem;
+          margin: 1rem 0;
+        }
+        
+        .help-section h4 {
+          color: #4da6ff;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+        
+        .help-section ol {
+          padding-left: 1.5rem;
+        }
+        
+        .help-section li {
+          margin-bottom: 0.5rem;
+          color: rgba(255, 255, 255, 0.9);
+        }
+        
+        /* Footer Enhancements */
+        .dashboard-footer {
+          background: rgba(0, 0, 0, 0.2);
+          border-top: 1px solid rgba(255, 255, 255, 0.1);
+          padding: 1rem;
+          text-align: center;
+          border-radius: 0 0 0.5rem 0.5rem;
+        }
+        
+        .dashboard-footer p {
+          margin: 0;
+          line-height: 1.5;
+          color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .github-link {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.5rem;
+          padding: 0.5rem 1rem;
+          background: rgba(255, 255, 255, 0.1);
+          border-radius: 0.5rem;
+          color: white;
+          text-decoration: none;
+          transition: all 0.2s;
+          margin: 0.5rem 0;
+        }
+        
+        .github-link:hover {
+          background: rgba(77, 166, 255, 0.2);
+          border-color: #4da6ff;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+          .quick-stats {
+            grid-template-columns: repeat(2, 1fr);
+          }
+          
+          .features-bar {
+            flex-direction: column;
+            align-items: stretch;
+          }
+          
+          .feature-item {
+            justify-content: center;
+          }
+        }
+        
+        /* Scrollbar Styling */
+        .dashboard-container::-webkit-scrollbar {
+          width: 8px;
+        }
+        
+        .dashboard-container::-webkit-scrollbar-track {
+          background: rgba(0, 0, 0, 0.3);
+          border-radius: 4px;
+        }
+        
+        .dashboard-container::-webkit-scrollbar-thumb {
+          background: rgba(77, 166, 255, 0.5);
+          border-radius: 4px;
+        }
+        
+        .dashboard-container::-webkit-scrollbar-thumb:hover {
+          background: rgba(77, 166, 255, 0.8);
+        }
+        
+        /* Collapsed State */
+        .dashboard-container.collapsed .dashboard-header,
+        .dashboard-container.collapsed .quick-stats,
+        .dashboard-container.collapsed .features-bar,
+        .dashboard-container.collapsed .dashboard-nav,
+        .dashboard-container.collapsed .content-section,
+        .dashboard-container.collapsed .recommendation-box,
+        .dashboard-container.collapsed .info-box,
+        .dashboard-container.collapsed .help-section,
+        .dashboard-container.collapsed .dashboard-footer {
+          display: none;
+        }
+        
+        .dashboard-container.collapsed .toggle-btn {
+          transform: rotate(180deg);
         }
       `}</style>
     </div>

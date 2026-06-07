@@ -671,9 +671,9 @@ class CausalEngine:
                     cause_chain.append(f"{cause.value} at {cause_proc.depth_start:.1f}-{cause_proc.depth_end:.1f} m")
             
             if cause_chain:
-                explanation = f"This aquifer exists because of {proc.process_type.value} at {depth}, "
-                explanation += f"which was caused by {' and '.join(cause_chain)}. "
-                explanation += f"This created {'; '.join([e.value for e in proc.hydro_effects])}. "
+                cause_chain_str = ' and '.join(cause_chain)
+                hydro_effects_str = '; '.join([e.value for e in proc.hydro_effects])
+                explanation = f"This aquifer exists because of {proc.process_type.value} at {depth}, which was caused by {cause_chain_str}. This created {hydro_effects_str}. "
                 explanations.append(explanation)
         
         return "\n".join(explanations)

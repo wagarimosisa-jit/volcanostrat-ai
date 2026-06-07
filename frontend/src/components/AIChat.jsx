@@ -94,7 +94,88 @@ const AIChat = ({ wells, voxelModel }) => {
         `**Sources:** Your dissertation (Jimma, 2025), Upper Awash Basin (2025), Canary Islands (2021), Hawaii Shield Volcanoes (2005).`;
     }
 
-    return `I'm not sure how to answer that. Try asking about **layers, productivity, aquifers, or hydro properties**.`;
+    // Enhanced AI Geologist with broader geological knowledge
+    
+    // Geological knowledge base - Volcanic and General Geology
+    const geologyKnowledge = {
+      ethiopia: {
+        geology: "Ethiopia is located in the East African Rift System, one of the world's most active continental rift zones. The geology is dominated by Cenozoic volcanic rocks, particularly the Ethiopian Flood Basalts (31-26 Ma) and the more recent Quaternary volcanoes. The Main Ethiopian Rift (MER) is characterized by basaltic to rhyolitic volcanic sequences with significant hydrothermal activity. Major aquifers in the region include fractured basalts, pyroclastic deposits, and alluvial sediments.",
+        aquifers: "The Ethiopian rift valley contains productive aquifers in fractured basalts and ignimbrites. The Upper Awash Basin is a well-studied example with transmissivity values ranging from 50-200 m²/day in basaltic aquifers.",
+        references: "Ayenew & Legesse (2005), Tadesse et al. (2017), Kitessa (2025 - Jimma University)"
+      },
+      east_african_rift: {
+        geology: "The East African Rift is an active continental rift zone that stretches from the Afar Triangle in the north to Mozambique in the south. It's characterized by normal faulting, volcanic activity, and the development of rift valleys. The rift is associated with the African Superplume, which causes lithospheric uplift and volcanic activity.",
+        volcanic_rocks: "The rift contains extensive basaltic lava flows, pyroclastic deposits, and rhyolitic domes. The volcanic stratigraphy typically consists of alternating layers of basalt, ignimbrite, and sedimentary interbeds.",
+        hydrogeology: "Groundwater in the EAR occurs in fractured volcanic rocks, alluvial sediments in rift floors, and weathered zones. Transmissivity can reach 500 m²/day in highly fractured zones."
+      },
+      basalt: {
+        description: "Basalt is a mafic extrusive igneous rock formed from the rapid cooling of lava at the Earth's surface. It's the most common volcanic rock type, making up ~90% of all volcanic rock on Earth.",
+        hydrogeology: "Basalts can form excellent aquifers when fractured. Primary porosity is typically low (1-5%), but secondary porosity from fracturing can increase this significantly. Columnar jointing in basalt flows creates vertical permeability pathways.",
+        productivity: "Transmissivity in basalt aquifers ranges from 10-500 m²/day, depending on the degree of fracturing. The Columbia River Basalt Group (USA) and Deccan Traps (India) are famous examples of productive basalt aquifers.",
+        global_examples: ["Iceland", "Columbia River Basalt Group (USA)", "Deccan Traps (India)", "Ethiopian Flood Basalts", "Hawaiian Islands"]
+      },
+      andesite: {
+        description: "Andesite is an intermediate volcanic rock with composition between basalt and rhyolite. It's typically found in subduction zone volcanoes.",
+        hydrogeology: "Andesitic aquifers are generally less productive than basalts but can still yield significant water from fractures and weathered zones. Porosity is typically 5-15%.",
+        productivity: "Transmissivity typically ranges from 1-100 m²/day. Andesitic aquifers are important in the Andes Mountains and Cascade Range.",
+        global_examples: ["Andes Mountains (South America)", "Cascade Range (USA)", "Japan", "Indonesia"]
+      },
+      rhyolite: {
+        description: "Rhyolite is a felsic extrusive igneous rock with high silica content. It's the volcanic equivalent of granite.",
+        hydrogeology: "Rhyolite typically has low primary porosity (<5%) and forms poor aquifers unless intensely fractured or weathered. However, rhyolitic tuffs and ignimbrites can be more productive.",
+        productivity: "Transmissivity is usually low (0.1-10 m²/day) unless in highly fractured zones or hydrothermally altered areas.",
+        global_examples: ["Yellowstone (USA)", "Taupo Volcanic Zone (New Zealand)", "Sierra Madre (Mexico)"]
+      },
+      pyroclastic: {
+        description: "Pyroclastic rocks are formed from fragmented material produced by explosive volcanic eruptions. They include tuff, ignimbrite, and volcanic breccia.",
+        hydrogeology: "Unwelded pyroclastic deposits can form excellent aquifers due to their high primary porosity (15-40%). Welded tuffs have lower porosity but can still transmit water through fractures.",
+        productivity: "Transmissivity in unwelded ignimbrites can reach 100-500 m²/day. Pyroclastic aquifers are important in many volcanic regions worldwide.",
+        global_examples: ["Canary Islands", "Campania (Italy)", "New Zealand", "Ethiopia"]
+      },
+      general: {
+        volcanic_aquifers: "Volcanic aquifers are characterized by their heterogeneity, with permeability controlled by fractures, vesicles, and weathering. They often have dual-porosity systems (matrix + fractures) and can be highly productive when both porosity types are well-developed.",
+        fracture_control: "Fractures are the primary water-bearing features in volcanic rocks. Fracture density and aperture control aquifer productivity. Regional tectonic stresses often enhance fracture connectivity.",
+        vesicularity: "Vesicles (gas bubbles) in basaltic rocks can significantly increase storage capacity. Vesicular basalt typically has 5-30% porosity from vesicles alone.",
+        weathering: "Chemical weathering of volcanic rocks (particularly in tropical climates) can create secondary porosity and enhance permeability."
+      }
+    };
+
+    // Check if question matches any knowledge base entries
+    const qLower = question.toLowerCase();
+    
+    // Ethiopian geology questions
+    if (qLower.includes('ethiopia') || qLower.includes('ethiopian')) {
+      return `**Ethiopian Geology (East African Rift System):**\n\n${geologyKnowledge.ethiopia.geology}\n\n**Aquifer Characteristics:**\n${geologyKnowledge.ethiopia.aquifers}\n\n**Key References:** ${geologyKnowledge.ethiopia.references}\n\n*This information is based on published studies from Jimma University and international research on the East African Rift.*`;
+    }
+    
+    // East African Rift questions
+    if (qLower.includes('east african rift') || qLower.includes('rift valley') || qLower.includes('afar')) {
+      return `**East African Rift Geology:**\n\n${geologyKnowledge.east_african_rift.geology}\n\n**Volcanic Rocks:**\n${geologyKnowledge.east_african_rift.volcanic_rocks}\n\n**Hydrogeology:**\n${geologyKnowledge.east_african_rift.hydrogeology}`;
+    }
+    
+    // Rock type questions
+    if (qLower.includes('basalt') || qLower.includes('basaltic')) {
+      return `**Basalt - Volcanic Aquifer Rock:**\n\n${geologyKnowledge.basalt.description}\n\n**Hydrogeological Properties:**\n${geologyKnowledge.basalt.hydrogeology}\n\n**Productivity:**\n${geologyKnowledge.basalt.productivity}\n\n**Global Examples:** ${geologyKnowledge.basalt.global_examples.join(', ')}`;
+    }
+    
+    if (qLower.includes('andesite') || qLower.includes('andesitic')) {
+      return `**Andesite - Intermediate Volcanic Rock:**\n\n${geologyKnowledge.andesite.description}\n\n**Hydrogeological Properties:**\n${geologyKnowledge.andesite.hydrogeology}\n\n**Productivity:**\n${geologyKnowledge.andesite.productivity}\n\n**Global Examples:** ${geologyKnowledge.andesite.global_examples.join(', ')}`;
+    }
+    
+    if (qLower.includes('rhyolite') || qLower.includes('rhyolitic')) {
+      return `**Rhyolite - Felsic Volcanic Rock:**\n\n${geologyKnowledge.rhyolite.description}\n\n**Hydrogeological Properties:**\n${geologyKnowledge.rhyolite.hydrogeology}\n\n**Productivity:**\n${geologyKnowledge.rhyolite.productivity}\n\n**Global Examples:** ${geologyKnowledge.rhyolite.global_examples.join(', ')}`;
+    }
+    
+    if (qLower.includes('pyroclastic') || qLower.includes('tuff') || qLower.includes('ignimbrite')) {
+      return `**Pyroclastic Rocks:**\n\n${geologyKnowledge.pyroclastic.description}\n\n**Hydrogeological Properties:**\n${geologyKnowledge.pyroclastic.hydrogeology}\n\n**Productivity:**\n${geologyKnowledge.pyroclastic.productivity}\n\n**Global Examples:** ${geologyKnowledge.pyroclastic.global_examples.join(', ')}`;
+    }
+    
+    // General volcanic hydrogeology
+    if (qLower.includes('volcanic aquifer') || qLower.includes('volcanic rock') || qLower.includes('hydrogeology')) {
+      return `**Volcanic Aquifers - General Knowledge:**\n\n${geologyKnowledge.general.volcanic_aquifers}\n\n**Fracture Control:**\n${geologyKnowledge.general.fracture_control}\n\n**Vesicularity:**\n${geologyKnowledge.general.vesicularity}\n\n**Weathering Effects:**\n${geologyKnowledge.general.weathering}\n\n*For specific information about your data, try asking about particular layers, wells, or hydro properties.*`;
+    }
+
+    return `I'm your AI Geologist, specialized in volcanic hydrogeology. I can answer questions about:\n\n**📚 General Geology:** Ethiopian geology, East African Rift, volcanic rock types (basalt, andesite, rhyolite, pyroclastic)\n**💧 Hydrogeology:** Aquifer properties, fracture systems, porosity, permeability\n**📊 Your Data:** Layers, productivity, correlations, hydro properties\n\nTry asking: *"What is Ethiopian geology?"*, *"Explain basalt aquifers"*, *"Show me Layer 2 details"*, or *"What are the most productive layers?"*`;
   };
 
   const handleKeyDown = (e) => {
