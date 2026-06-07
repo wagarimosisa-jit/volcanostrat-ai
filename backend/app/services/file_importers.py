@@ -27,6 +27,13 @@ try:
 except ImportError:
     HAS_GEOPANDAS = False
 
+try:
+    from .shapefile_importer import ShapefileImporter
+    SHAPEFILE_IMPORTER_AVAILABLE = True
+except ImportError:
+    SHAPEFILE_IMPORTER_AVAILABLE = False
+    ShapefileImporter = None
+
 
 class ExcelImporter:
     """Service for importing Excel well log files (.xlsx, .xls)"""
@@ -397,12 +404,10 @@ class GeoJSONImporter:
 class FileImporterFactory:
     """Factory for getting the right importer for a file"""
     
-    IMPORTERS = [
-        ShapefileImporter,  # Will be imported separately
-        ExcelImporter,
-        LASImporter,
-        GeoJSONImporter
-    ]
+    # Build importers list dynamically based on availability
+    IMPORTERS = [ExcelImporter, LASImporter, GeoJSONImporter]
+    if SHAPEFILE_IMPORTER_AVAILABLE and ShapefileImporter is not None:
+        IMPORTERS.insert(0, ShapefileImporter)
     
     @classmethod
     def get_importer(cls, filename: str):
@@ -485,15 +490,3 @@ class FileImporterFactory:
         }
 
 
-# Import the ShapefileImporter that we created earlier
-try:
-    from .shapefile_importer import ShapefileImporter
-except ImportError:
-    class ShapefileImporter:
-        @staticmethod
-        def can_handle(filename: str) -> bool:
-            return filename.lower().endswith(('.shp', '.zip'))
-        
-        @staticmethod
-        def import_file(file_content: bytes, filename: str) -> Dict:
-            raise NotImplementedError("ShapefileImporter not available. Install geopandas.")

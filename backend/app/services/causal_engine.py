@@ -50,6 +50,7 @@ class ProcessType(Enum):
     DEPOSITION = "Pyroclastic Deposition"
     COMPACTION = "Compaction"
     CEMENTATION = "Cementation"
+    VESICULATION = "Vesiculation"
 
 
 class HydroEffect(Enum):
@@ -160,7 +161,7 @@ class CausalKnowledgeGraph:
         self._add_relationship(
             CausalRelationship(
                 cause=ProcessType.COOLING,
-                effect=ProcessType.VESICULATION,  # Not a ProcessType, need to add
+                effect=ProcessType.VESICULATION,
                 hydro_effect=HydroEffect.POROSITY_INCREASE,
                 confidence=0.95,
                 evidence=[
@@ -191,21 +192,8 @@ class CausalKnowledgeGraph:
             )
         )
         
-        self._add_relationship(
-            CausalRelationship(
-                cause=ProcessType.FRACTURING,
-                effect=ProcessType.AQUIFER_FORMATION,  # Will map to hydro effect
-                hydro_effect=HydroEffect.AQUIFER_FORMATION,
-                confidence=0.95,
-                evidence=[
-                    "Highly fractured zones form productive aquifers",
-                    "Fracture-controlled aquifers in Ethiopian rifts (Jimma, 2025)",
-                    "Basalt aquifers: 87% have fracture-controlled permeability"
-                ],
-                typical_depth_range=(50, 300),
-                typical_timescale="instantaneous"
-            )
-        )
+        # Note: Removed FRACTURING -> AQUIFER_FORMATION as AQUIFER_FORMATION is a HydroEffect, not a ProcessType
+        # Fracturing's hydro_effect already includes AQUIFER_FORMATION where applicable
         
         # WEATHERING effects
         self._add_relationship(
@@ -224,21 +212,8 @@ class CausalKnowledgeGraph:
             )
         )
         
-        self._add_relationship(
-            CausalRelationship(
-                cause=ProcessType.WEATHERING,
-                effect=ProcessType.AQUITARD_FORMATION,
-                hydro_effect=HydroEffect.AQUITARD_FORMATION,
-                confidence=0.70,
-                evidence=[
-                    "Clay alteration from weathering can seal fractures",
-                    "Deep weathering can create low-permeability zones",
-                    "Lateritic weathering profiles in volcanic terrains"
-                ],
-                typical_depth_range=(0, 50),
-                typical_timescale="millennia"
-            )
-        )
+        # Note: Removed WEATHERING -> AQUITARD_FORMATION as AQUITARD_FORMATION is a HydroEffect, not a ProcessType
+        # Weathering's hydro_effect already includes AQUITARD_FORMATION where applicable
         
         # HYDROTHERMAL effects
         self._add_relationship(
@@ -257,21 +232,8 @@ class CausalKnowledgeGraph:
             )
         )
         
-        self._add_relationship(
-            CausalRelationship(
-                cause=ProcessType.HYDROTHERMAL,
-                effect=ProcessType.AQUITARD_FORMATION,
-                hydro_effect=HydroEffect.AQUITARD_FORMATION,
-                confidence=0.85,
-                evidence=[
-                    "Hydrothermal clay alteration seals fractures",
-                    "Mineral precipitation reduces porosity and permeability",
-                    "Common in geothermal systems worldwide"
-                ],
-                typical_depth_range=(100, 1000),
-                typical_timescale="years to millennia"
-            )
-        )
+        # Note: Removed HYDROTHERMAL -> AQUITARD_FORMATION as AQUITARD_FORMATION is a HydroEffect, not a ProcessType
+        # Hydrothermal's hydro_effect already includes AQUITARD_FORMATION where applicable
         
         # SEDIMENTATION effects
         self._add_relationship(
@@ -290,21 +252,8 @@ class CausalKnowledgeGraph:
             )
         )
         
-        self._add_relationship(
-            CausalRelationship(
-                cause=ProcessType.SEDIMENTATION,
-                effect=ProcessType.AQUIFER_FORMATION,
-                hydro_effect=HydroEffect.AQUIFER_FORMATION,
-                confidence=0.80,
-                evidence=[
-                    "Unconsolidated alluvium forms excellent aquifers",
-                    "Interbedded sediments can create multi-layer aquifer systems",
-                    "Upper Awash Basin: Alluvial aquifers with T=10-100 m²/day"
-                ],
-                typical_depth_range=(0, 100),
-                typical_timescale="instantaneous to years"
-            )
-        )
+        # Note: Removed SEDIMENTATION -> AQUIFER_FORMATION as AQUIFER_FORMATION is a HydroEffect, not a ProcessType
+        # Sedimentation's hydro_effect already includes AQUIFER_FORMATION where applicable
         
         # TECTONIC effects
         self._add_relationship(
@@ -324,21 +273,8 @@ class CausalKnowledgeGraph:
             )
         )
         
-        self._add_relationship(
-            CausalRelationship(
-                cause=ProcessType.TECTONIC,
-                effect=ProcessType.AQUIFER_FORMATION,
-                hydro_effect=HydroEffect.AQUIFER_FORMATION,
-                confidence=0.90,
-                evidence=[
-                    "Fault-controlled aquifers in rift valleys",
-                    "Normal faults create horizontal permeability barriers",
-                    "Jimma study (2025) - Tectonic control on aquifer geometry"
-                ],
-                typical_depth_range=(50, 1000),
-                typical_timescale="millennia"
-            )
-        )
+        # Note: Removed TECTONIC -> AQUIFER_FORMATION as AQUIFER_FORMATION is a HydroEffect, not a ProcessType
+        # Tectonic's hydro_effect already includes AQUIFER_FORMATION where applicable
     
     def _add_relationship(self, relationship: CausalRelationship):
         """Add a causal relationship to the graph"""
@@ -736,7 +672,7 @@ class CausalEngine:
             
             if cause_chain:
                 explanation = f"This aquifer exists because of {proc.process_type.value} at {depth}, "
-                explanation += f"which was caused by {" and ".join(cause_chain)}. "
+                explanation += f"which was caused by {' and '.join(cause_chain)}. "
                 explanation += f"This created {'; '.join([e.value for e in proc.hydro_effects])}. "
                 explanations.append(explanation)
         
