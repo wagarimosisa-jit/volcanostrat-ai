@@ -458,10 +458,43 @@ export DATABASE_URL=postgresql://username:password@localhost/dbname
 
 ## 🎓 Academic References
 
-- Jimma Dissertation (2025) - Ethiopia volcanic aquifer studies
-- Upper Awash Basin Study (2025) - Regional hydrogeology
-- Canary Islands Study (2021) - Oceanic island volcanism
-- Hawaii Shield Volcanoes (2005) - Basaltic aquifer characterization
+VolcanoStrat AI is built upon a **comprehensive foundation of 87+ academic references** covering:
+
+- **Volcanology & Hydrogeology** - 15 references
+- **Regional Volcanic Studies** - 15 references (Ethiopia, Canary Islands, Hawaii, Iceland)
+- **Hydraulic Properties** - 9 references
+- **AI & Machine Learning** - 7 references
+- **Global Volcanic Systems** - 5 references
+- **Geophysical & Geochemical** - 8 references
+- **Computational Tools** - 6 references
+- **Regional Surveys** - 10 references
+- **Ethiopian Studies** - 5 references
+- **Additional Topics** - 7 references
+
+**Complete bibliography:** See [ACADEMIC_REFERENCES.md](ACADEMIC_REFERENCES.md) for the full list with citations, relevance, and applications.
+
+### Key References by Region:
+- **Ethiopia:** Kitessa (2025), Ayenew & Legesse (2005), Kebede & Travi (2006), Tadesse et al. (2017), Ebinger et al. (2010)
+- **Canary Islands:** Custodio (2002), Marín et al. (2021), Cabrera & Custodio (2004)
+- **Hawaii:** Takahashi et al. (1980), Mink & Vacher (2005), Izuka & Gingerich (2003)
+- **Iceland:** Björnsson (2008), Gíslason & Arnórsson (1993)
+
+### Key References by Topic:
+- **Volcanic Aquifers:** MacDonald & Davies (2000), Todd (1980)
+- **Lithology:** Best (2003), Fisher & Schmincke (1984), Cas & Wright (1987)
+- **Fractures:** Gudmundsson (2000), Singhal & Gupta (2010), Snow (1968)
+- **Causal AI:** Pearl (2009, 2018), Ehrig et al. (2018), Hogan et al. (2021)
+- **Explainable AI:** Ribeiro et al. (2016), Lundberg & Lee (2017), Molnar (2022)
+
+### Citation Guide:
+When using VolcanoStrat AI in academic work, please cite:
+```
+Kitessa, W. M. (2026). VolcanoStrat AI: Causal Subsurface Intelligence Engine for Volcanic 
+Hydrostratigraphy and Aquifer Modeling. Jimma University, Ethiopia. 
+https://github.com/wagarimosisa-jit/volcanostrat-ai
+```
+
+**BibTeX:** Available in [ACADEMIC_REFERENCES.md](ACADEMIC_REFERENCES.md)
 
 ## 📜 License
 

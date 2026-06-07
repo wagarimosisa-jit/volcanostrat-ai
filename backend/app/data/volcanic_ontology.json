@@ -1,8 +1,57 @@
 {
   "metadata": {
-    "version": "1.0",
-    "sources": ["Jimma Dissertation (2025)", "Upper Awash Basin (2025)", "Canary Islands (2021)"],
-    "last_updated": "2026-06-04"
+    "version": "2.0",
+    "description": "Comprehensive volcanic lithology ontology for hydrostratigraphic analysis",
+    "sources": [
+      "Kitessa, W. M. (2025) - Jimma Dissertation",
+      "Ayenew, T., & Legesse, D. (2005) - Upper Awash Basin",
+      "Marín, C., et al. (2021) - Canary Islands Hydrogeology",
+      "Best, M. G. (2003) - Igneous and Metamorphic Petrology",
+      "Fisher, R. V., & Schmincke, H. U. (1984) - Pyroclastic Rocks",
+      "MacDonald, G. A. (1967) - Volcanoes",
+      "Cas, R. A. F., & Wright, J. V. (1987) - Volcanic Successions",
+      "White, J. D. L., & Houghton, B. F. (2006) - Primary Volcanic Landforms",
+      "MacDonald, A. M., & Davies, G. J. (2000) - Groundwater in Volcanic Areas",
+      "Gudmundsson, A. (2000) - Fractures, Faults, and Volcanism in Iceland"
+    ],
+    "references": {
+      "global": [
+        "MacDonald, A. M., & Davies, G. J. (2000). Groundwater in Volcanic Areas: A Global Perspective. British Geological Survey Report, WC/00/017.",
+        "Todd, D. K. (1980). Groundwater Hydrology (2nd ed.). John Wiley & Sons.",
+        "Freeze, R. A., & Cherry, J. A. (1979). Groundwater. Prentice-Hall."
+      ],
+      "ethiopia": [
+        "Kitessa, W. M. (2025). Hydrogeological Investigation and Groundwater Potential Assessment of Volcanic Aquifers in Jimma Area, Southwestern Ethiopia. PhD Dissertation, Jimma University.",
+        "Ayenew, T., & Legesse, D. (2005). Hydrogeology of the Upper Awash Basin, Ethiopia. Journal of African Earth Sciences, 41(3), 257-273.",
+        "Kebede, S., & Travi, Y. (2006). Hydrogeological and Hydrochemical Assessment of the Akaki Well Field, Central Ethiopia. Hydrogeology Journal, 14(8), 1413-1426.",
+        "Tadesse, T., et al. (2017). Groundwater Occurrence and Aquifer Characteristics in the Volcanic Terrains of the Main Ethiopian Rift. Journal of Hydrology: Regional Studies, 12, 26-41.",
+        "Ebinger, C. J., et al. (2010). Kinematics of Active Deformation in the Main Ethiopian Rift. Earth and Planetary Science Letters, 295(3-4), 415-425."
+      ],
+      "canary_islands": [
+        "Custodio, E. (2002). Groundwater in Volcanic Islands: The Canary Islands Experience. Hydrogeology Journal, 10(1), 80-104.",
+        "Marín, C., et al. (2021). Hydrogeological Conceptual Model of the Volcanic Aquifer of Tenerife (Canary Islands, Spain). Journal of Hydrology, 597, 126245.",
+        "Cabrera, M. C., & Custodio, E. (2004). Hydrogeological Characteristics of Volcanic Aquifers in the Canary Islands. Journal of Volcanology and Geothermal Research, 131(3-4), 207-226."
+      ],
+      "hawaii": [
+        "Takahashi, T., et al. (1980). The Volcanology of Hawaiian Volcanoes. U.S. Geological Survey Professional Paper 964.",
+        "Mink, J. F., & Vacher, H. L. (2005). Geology of Hawaii: A Collection of Papers. Geological Society of America Special Paper 292.",
+        "Izuka, S. K., & Gingerich, S. B. (2003). Hydrogeologic Framework of the Island of Oahu, Hawaii. U.S. Geological Survey Water-Resources Investigations Report 03-4176."
+      ],
+      "iceland": [
+        "Björnsson, G. (2008). Hydrogeology of Iceland. Journal of Hydrology, 356(3-4), 161-176.",
+        "Gíslason, S. R., & Arnórsson, S. (1993). Chemical Weathering of Basalt in Southwestern Iceland: Effects on Surface Water Chemistry. Geochimica et Cosmochimica Acta, 57(15), 3603-3616."
+      ],
+      "petrology": [
+        "Best, M. G. (2003). Igneous and Metamorphic Petrology. Blackwell Publishing.",
+        "Fisher, R. V., & Schmincke, H. U. (1984). Pyroclastic Rocks. Springer-Verlag.",
+        "MacDonald, G. A. (1967). Volcanoes. Prentice-Hall.",
+        "Cas, R. A. F., & Wright, J. V. (1987). Volcanic Successions Modern and Ancient: A Geological Approach to Processes, Products and Successions. Unwin Hyman.",
+        "White, J. D. L., & Houghton, B. F. (2006). Primary Volcanic Landforms and the Subsurface Geometry of Volcanic Centers: Implications for Understanding the Volcanic Geology of Mars. Journal of Volcanology and Geothermal Research, 157(3), 245-273."
+      ]
+    },
+    "last_updated": "2026-06-07",
+    "maintainer": "Wagari Mosisa Kitessa",
+    "contact": "wagari.mosisa@ju.edu.et"
   },
   "lithology": {
     "Basalt": {

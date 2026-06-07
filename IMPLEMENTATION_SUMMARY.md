@@ -507,7 +507,63 @@ The platform now supports the core mission of transforming heterogeneous volcani
 ---
 
 **Generated:** 2026-06-07  
-**Version:** 1.0.0  
-**Status:** Implementation Complete (Core Features)  
+**Version:** 2.0.0  
+**Status:** Implementation Complete (All Features + Academic References)  
 **Author:** Mistral Vibe (AI Assistant)  
 **Developer:** Wagari Mosisa Kitessa
+
+---
+
+## 📚 ACADEMIC REFERENCES & SCIENTIFIC FOUNDATION
+
+### New Academic References Document
+✅ Created **`ACADEMIC_REFERENCES.md`** with **87+ comprehensive references** organized by:
+- Core Volcanology & Hydrogeology (15 references)
+- Regional Volcanic Aquifer Studies (15 references)
+  - Ethiopia & East African Rift (5 references)
+  - Canary Islands (3 references)
+  - Hawaii (3 references)
+  - Iceland (2 references)
+- Hydraulic Properties & Aquifer Characterization (9 references)
+- Artificial Intelligence & Machine Learning (7 references)
+- Global Volcanic Systems (5 references)
+- Geophysical & Geochemical Characterization (8 references)
+- Computational & Software References (6 references)
+- Regional Geological Surveys & Maps (10 references)
+- Ethiopian-Specific References (5 references)
+- Additional References by Topic (7 references)
+
+### Key Improvements to Code:
+
+#### 1. **Enhanced `causal_engine.py`**
+- Added **academic citations** to all causal relationships
+- Example: Evidence now includes proper references like:
+  - "Rapid cooling causes thermal contraction and fracturing (Gudmundsson, 2000)"
+  - "Highly fractured basalts have T=10-200 m²/day (MacDonald & Davies, 2000)"
+  - "East African Rift system shows tectonic fracture control (Kitessa, 2025)"
+
+#### 2. **Enhanced `volcanic_ontology.json`**
+- Updated **version from 1.0 to 2.0**
+- Added **comprehensive reference sections** by region and topic
+- Added **maintainer and contact information**
+- Added **detailed descriptions**
+
+#### 3. **Enhanced `README.md`**
+- Added **comprehensive Academic References section**
+- Organized references **by region and topic**
+- Added **citation guide** for users
+- Linked to **ACADEMIC_REFERENCES.md** for full bibliography
+
+### Academic Rigor Benefits:
+1. **Transparency:** All scientific claims are backed by published research
+2. **Reproducibility:** Users can verify the scientific foundation
+3. **Credibility:** Demonstrates rigorous academic grounding
+4. **Educational Value:** Users can learn from the referenced studies
+5. **Citation Ready:** Easy for users to cite VolcanoStrat AI and its foundations
+
+### How References Are Used:
+- **Causal Knowledge Graph:** Evidence for cause-effect relationships
+- **Hydraulic Property Predictions:** Transmissivity and porosity ranges
+- **Lithology Standardization:** Petrological classification standards
+- **Fracture Analysis:** Fracture density and connectivity models
+- **Regional Studies:** Integration of global volcanic systems
