@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { FaGlobe, FaWater, FaChartBar, FaTachometerAlt, FaLayerGroup, FaCog, FaInfoCircle, FaFileImport, FaFileExport, FaQuestionCircle, FaUserGraduate, FaEnvelope, FaGithub, FaFire, FaCompass, FaRulerCombined, FaSearch, FaFilter, FaGem, FaTint } from 'react-icons/fa';
+import { FaGlobe, FaWater, FaChartBar, FaTachometerAlt, FaLayerGroup, FaCog, FaInfoCircle, FaFileImport, FaFileExport, FaQuestionCircle, FaUserGraduate, FaEnvelope, FaGithub, FaFire, FaCompass, FaRulerCombined, FaSearch, FaFilter, FaGem, FaTint, FaBars, FaChevronDown, FaChevronUp } from 'react-icons/fa';
 
 const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport, isExpanded = false, onToggleExpand }) => {
   const [activeSection, setActiveSection] = useState('overview');
+  const [activeMenu, setActiveMenu] = useState(null);
+  const [activeSubMenu, setActiveSubMenu] = useState(null);
 
   const calculateMetrics = () => {
     if (!standardizedData?.wells) return { totalWells: 0, totalLayers: 0, aquiferLayers: 0, avgConfidence: 0, complexityReduction: 0 };
@@ -38,6 +40,86 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
   };
   const topProductive = getTopProductiveLayers();
 
+  // Menu structure with submenus
+  const menuItems = [
+    {
+      id: 'home',
+      title: 'Home',
+      icon: <FaGlobe />,
+      submenu: [
+        { id: 'welcome', title: 'Welcome', component: <S.Welcome /> },
+        { id: 'overview', title: 'Platform Overview', component: <S.PlatformOverview /> },
+        { id: 'status', title: 'Current Status', component: <S.CurrentStatus metrics={calculatedMetrics} /> }
+      ]
+    },
+    {
+      id: 'geology',
+      title: 'Geology',
+      icon: <FaLayerGroup />,
+      submenu: [
+        { id: 'geo-info', title: 'Geological Information', component: <S.GeologicalInfo /> },
+        { id: 'environment', title: 'Environment', component: <S.Environment /> },
+        { id: 'properties', title: 'Properties', component: <S.Properties /> },
+        { id: 'classification', title: 'Classification', component: <S.Classification /> },
+        { id: 'symbols', title: 'Symbols', component: <S.Symbols /> }
+      ]
+    },
+    {
+      id: 'features',
+      title: 'Features',
+      icon: <FaFire />,
+      submenu: [
+        { id: 'features-list', title: 'Platform Features', component: <S.Features /> }
+      ]
+    },
+    {
+      id: 'statistics',
+      title: 'Statistics',
+      icon: <FaChartBar />,
+      submenu: [
+        { id: 'stats', title: 'Project Stats', component: <S.Stats metrics={calculatedMetrics} /> },
+        { id: 'metrics', title: 'Metrics Summary', component: <S.MetricsSummary metrics={calculatedMetrics} /> }
+      ]
+    },
+    {
+      id: 'tools',
+      title: 'Tools',
+      icon: <FaCog />,
+      submenu: [
+        { id: 'upload', title: 'Quick Upload', component: <S.Content activeSection="upload" topProductive={topProductive} onFileUpload={onFileUpload} onExport={onExport} /> },
+        { id: 'export', title: 'Export Options', component: <S.Content activeSection="export" topProductive={topProductive} onFileUpload={onFileUpload} onExport={onExport} /> },
+        { id: 'aquifers', title: 'Top Aquifers', component: <S.Content activeSection="productive" topProductive={topProductive} onFileUpload={onFileUpload} onExport={onExport} /> }
+      ]
+    },
+    {
+      id: 'help',
+      title: 'Help',
+      icon: <FaQuestionCircle />,
+      submenu: [
+        { id: 'help-main', title: 'Help Center', component: <S.Content activeSection="help" topProductive={topProductive} onFileUpload={onFileUpload} onExport={onExport} /> }
+      ]
+    }
+  ];
+
+  const toggleMenu = (menuId) => {
+    setActiveMenu(activeMenu === menuId ? null : menuId);
+  };
+
+  const selectSubMenu = (menuId, subMenuId) => {
+    setActiveMenu(menuId);
+    setActiveSubMenu(subMenuId);
+    setActiveSection(subMenuId);
+  };
+
+  // Find active submenu component
+  const getActiveContent = () => {
+    for (const menu of menuItems) {
+      const activeSub = menu.submenu.find(sub => sub.id === activeSubMenu);
+      if (activeSub) return activeSub.component;
+    }
+    return <S.Welcome />; // Default
+  };
+
   return (
     <div className="gvas-dashboard">
       <div className={`bottom-panel ${isExpanded ? 'expanded' : 'collapsed'}`}>
@@ -46,36 +128,53 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
             {isExpanded ? '▲' : '▼'}
           </button>
           <div className="logo-area">
-            <div className="volcanic-icon">
-              <div className="lava-layer l1"></div><div className="lava-layer l2"></div>
-              <div className="lava-layer l3"></div><div className="lava-layer l4"></div>
-              <div className="core"></div><div className="fractures"></div>
+            <div className="nasa-logo">
+              <span className="nasa-circle">NASA</span>
             </div>
             <div className="branding">
-              <h2>GVAS - Global Volcanic Aquifer Solutions</h2>
-              {isExpanded && <span className="tagline">Advanced Causal Subsurface Intelligence Platform for Volcanic Hydrostratigraphy Analysis and Interpretation Worldwide</span>}
-            </div>
-            <div className="header-nav">
-              <S.Nav activeSection={activeSection} setActiveSection={setActiveSection} />
+              <h2>GVAS</h2>
+              <span className="full-name">Global Volcanic Aquifer Solutions</span>
+              {isExpanded && <span className="tagline">Advanced AI-Powered Hydrostratigraphy Platform</span>}
             </div>
           </div>
+          
+          {isExpanded && (
+            <div className="main-nav">
+              {menuItems.map(menu => (
+                <div key={menu.id} className="nav-item">
+                  <button 
+                    className={`nav-button ${activeMenu === menu.id ? 'active' : ''}`}
+                    onClick={() => toggleMenu(menu.id)}
+                  >
+                    {menu.icon}
+                    <span>{menu.title}</span>
+                    <FaChevronDown className={`chevron ${activeMenu === menu.id ? 'rotated' : ''}`} />
+                  </button>
+                  
+                  {activeMenu === menu.id && (
+                    <div className="submenu-dropdown">
+                      {menu.submenu.map(sub => (
+                        <button 
+                          key={sub.id}
+                          className={`submenu-item ${activeSubMenu === sub.id ? 'active' : ''}`}
+                          onClick={() => selectSubMenu(menu.id, sub.id)}
+                        >
+                          <span className="submenu-dot"></span>
+                          {sub.title}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {isExpanded && (
           <div className="main-horizontal">
             <div className="scroll-content">
-              <S.Welcome />
-              <S.PlatformOverview />
-              <S.CurrentStatus metrics={calculatedMetrics} />
-              <S.GeologicalInfo />
-              <S.Environment />
-              <S.Features />
-              <S.Symbols />
-              <S.Properties />
-              <S.Classification />
-              <S.Stats metrics={calculatedMetrics} />
-              <S.MetricsSummary metrics={calculatedMetrics} />
-              <S.Content activeSection={activeSection} topProductive={topProductive} onFileUpload={onFileUpload} onExport={onExport} />
+              {getActiveContent()}
               <S.Footer />
             </div>
           </div>
@@ -85,173 +184,435 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
       <style jsx>{`
         .gvas-dashboard { width: 100%; position: relative; }
         
-        /* NASA Style: Black background, white text */
-        .bottom-panel { width: 100%; background: #000; color: #fff; display: flex; flex-direction: column;
-          border-top: 2px solid #fff;
-          box-shadow: 0 -4px 20px rgba(0,0,0,0.8); }
-        .bottom-panel.collapsed { min-height: 60px; }
-        .bottom-panel.expanded { min-height: 350px; max-height: 60vh; }
+        /* Professional NASA-inspired Style */
+        .bottom-panel { 
+          width: 100%; 
+          background: linear-gradient(135deg, #0a1628 0%, #1a1a2e 100%); 
+          color: #fff; 
+          display: flex; 
+          flex-direction: column;
+          border-top: 2px solid #0066cc;
+          box-shadow: 0 -4px 20px rgba(0,0,0,0.6); 
+        }
+        .bottom-panel.collapsed { min-height: 70px; }
+        .bottom-panel.expanded { min-height: 400px; max-height: 70vh; }
         
-        .panel-header { display: flex; align-items: center; padding: 0.75rem 1rem; background: #000; border-bottom: 1px solid #fff; width: 100%; box-sizing: border-box; }
-        .toggle-side { background: #fff; border: none; color: #000; padding: 0.5rem 1rem;
-          border-radius: 0.25rem; cursor: pointer; font-size: 1.2rem; transition: all 0.2s; min-width: 50px; text-align: center; font-weight: bold; }
-        .toggle-side:hover { background: #ccc; }
-        
-        .logo-area { display: flex; align-items: center; gap: 1rem; flex: 1; min-width: 0; }
-        .header-nav { display: flex; align-items: center; margin-left: auto; }
-        .header-nav .nav-sec { padding: 0; margin: 0; background: transparent; border: none; box-shadow: none; }
-        .header-nav .nav-buttons { flex-direction: row; gap: 0.5rem; }
-        .header-nav .nav-buttons button { padding: 0.5rem 1rem; font-size: 0.85rem; border-left: none; background: transparent; color: #fff; border: 1px solid #fff; }
-        .header-nav .nav-buttons button:hover { background: #fff; color: #000; transform: none; }
-        .header-nav .nav-buttons button.active { background: #fff; color: #000; border-left-color: transparent; box-shadow: none; }
-        
-        /* NASA Meatball Logo Style */
-        .volcanic-icon { 
-          width: 50px; 
-          height: 50px; 
-          border-radius: 50%;
-          background: #0B3D91;  /* NASA blue */
+        .panel-header { 
+          display: flex; 
+          align-items: center; 
+          padding: 1rem; 
+          background: #0a1628; 
+          border-bottom: 1px solid rgba(255,255,255,0.1); 
+          width: 100%; 
+          box-sizing: border-box; 
           position: relative;
+        }
+        
+        .toggle-side { 
+          background: #0066cc; 
+          border: none; 
+          color: #fff; 
+          padding: 0.5rem 1rem;
+          border-radius: 0.35rem; 
+          cursor: pointer; 
+          font-size: 1.2rem; 
+          transition: all 0.2s; 
+          min-width: 50px; 
+          text-align: center; 
+          font-weight: bold;
+        }
+        .toggle-side:hover { background: #0052a3; transform: scale(1.05); }
+        
+        /* NASA Logo */
+        .nasa-logo { display: flex; align-items: center; }
+        .nasa-circle {
+          width: 50px;
+          height: 50px;
+          background: #fff;
+          border-radius: 50%;
           display: flex;
           align-items: center;
           justify-content: center;
-          color: #fff;
-          font-weight: bold;
-          font-size: 1.2rem;
+          color: #003875;
+          font-weight: 900;
+          font-size: 0.9rem;
+          letter-spacing: -0.5px;
+          margin-right: 1rem;
         }
         
-        /* Remove old volcanic icon layers */
-        .lava-layer, .core, .fractures { display: none; }
+        .logo-area { display: flex; align-items: center; gap: 1rem; flex: 1; min-width: 0; }
         
         .branding { flex: 1; min-width: 400px; }
-        .branding h2 { margin: 0; font-size: 1.6rem; font-weight: 700; letter-spacing: 0; color: #fff; font-family: 'Arial', sans-serif; }
-        .full-name { color: #fff; font-size: 0.9rem; display: block; margin-top: 0.2rem; font-weight: 400; opacity: 0.9; }
-        .tagline { color: #ccc; font-size: 0.75rem; display: block; margin-top: 0.2rem; font-style: normal; line-height: 1.4; }
+        .branding h2 { 
+          margin: 0; 
+          font-size: 1.8rem; 
+          font-weight: 800; 
+          color: #fff; 
+          font-family: 'Arial', sans-serif;
+          letter-spacing: -0.5px;
+        }
+        .full-name { 
+          color: #ccc; 
+          font-size: 0.9rem; 
+          display: block; 
+          margin-top: 0.2rem; 
+          font-weight: 400;
+          opacity: 0.9;
+        }
+        .tagline { 
+          color: #888; 
+          font-size: 0.75rem; 
+          display: block; 
+          margin-top: 0.2rem; 
+          font-style: normal; 
+          line-height: 1.4;
+        }
+        
+        /* Main Navigation */
+        .main-nav { 
+          display: flex; 
+          gap: 0.25rem; 
+          margin-left: auto;
+          padding-left: 1rem;
+        }
+        
+        .nav-item { position: relative; }
+        
+        .nav-button {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          padding: 0.6rem 1rem;
+          background: transparent;
+          border: 1px solid rgba(255,255,255,0.2);
+          border-radius: 0.35rem;
+          color: #ccc;
+          cursor: pointer;
+          font-size: 0.9rem;
+          transition: all 0.2s;
+          font-weight: 500;
+        }
+        .nav-button:hover {
+          background: rgba(255,255,255,0.1);
+          color: #fff;
+          border-color: rgba(255,255,255,0.4);
+        }
+        .nav-button.active {
+          background: #0066cc;
+          color: #fff;
+          border-color: #0066cc;
+        }
+        
+        .chevron {
+          transition: transform 0.3s ease;
+          font-size: 0.75rem;
+        }
+        .chevron.rotated {
+          transform: rotate(180deg);
+        }
+        
+        /* Submenu Dropdown */
+        .submenu-dropdown {
+          position: absolute;
+          top: 100%;
+          left: 0;
+          min-width: 200px;
+          background: #0a1628;
+          border: 1px solid #0066cc;
+          border-radius: 0.35rem;
+          box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+          z-index: 1000;
+          margin-top: 0.25rem;
+          padding: 0.5rem 0;
+        }
+        
+        .submenu-item {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          width: 100%;
+          padding: 0.6rem 1rem;
+          background: transparent;
+          border: none;
+          color: #ccc;
+          cursor: pointer;
+          font-size: 0.85rem;
+          transition: all 0.2s;
+          text-align: left;
+          border-radius: 0.25rem;
+        }
+        .submenu-item:hover {
+          background: rgba(255,255,255,0.05);
+          color: #fff;
+        }
+        .submenu-item.active {
+          background: #0066cc;
+          color: #fff;
+        }
+        .nsubmenu-dot {
+          width: 8px;
+          height: 8px;
+          background: #0066cc;
+          border-radius: 50%;
+          flex-shrink: 0;
+        }
         
         .main-horizontal { flex: 1; display: flex; flex-direction: column; width: 100%; }
-        .scroll-content { flex: 1; overflow-y: auto; padding: 0.5rem; }
+        .scroll-content { 
+          flex: 1; 
+          overflow-y: auto; 
+          padding: 1rem;
+          background: linear-gradient(to bottom, rgba(10,22,40,0.9), rgba(26,26,46,0.95));
+        }
         
-        /* All content in single column - NASA style */
-        .sec { padding: 1.25rem 1rem; margin: 0 1rem 1rem 1rem; background: #000; border-radius: 0.5rem;
-          border: 1px solid #0B3D91; box-shadow: 0 2px 10px rgba(0,0,0,0.5); }
-        .sec h3 { color: #fff; margin: 0 0 0.75rem 0; font-size: 1.1rem; display: flex; align-items: center; gap: 0.75rem;
-          border-bottom: 1px solid #0B3D91; padding-bottom: 0.5rem; }
-        .sec-icon { color: #fff; font-size: 1.2rem; opacity: 0.8; }
-        .sec p, .sec li, .sec a { color: #ccc; line-height: 1.6; font-size: 0.9rem; text-align: justify; }
-        .sec a { color: #0069b4; text-decoration: none; }
-        .sec a:hover { text-decoration: underline; color: #fff; }
+        /* Content Sections */
+        .sec { 
+          padding: 1.5rem; 
+          margin: 0 0 1.5rem 0; 
+          background: rgba(255,255,255,0.03); 
+          border-radius: 0.5rem;
+          border-left: 4px solid #0066cc;
+          box-shadow: 0 2px 15px rgba(0,0,0,0.3);
+        }
+        .sec h3 { 
+          color: #fff; 
+          margin: 0 0 1rem 0; 
+          font-size: 1.2rem; 
+          display: flex; 
+          align-items: center; 
+          gap: 0.75rem;
+          border-bottom: 1px solid rgba(0,102,204,0.3); 
+          padding-bottom: 0.75rem;
+        }
+        .sec-icon { color: #0066cc; font-size: 1.3rem; }
+        .sec p, .sec li, .sec a { color: #ccc; line-height: 1.7; font-size: 0.95rem; }
+        .sec a { color: #0088ff; text-decoration: none; }
+        .sec a:hover { text-decoration: underline; color: #00aaff; }
         
-        /* Grid items in single column */
-        .grid1 { display: grid; grid-template-columns: 1fr; gap: 1rem; }
-        .card1 { padding: 0.75rem; background: #111; border-radius: 0.5rem; border-left: 3px solid #0B3D91; }
-        .card1 strong { display: block; color: #fff; margin-bottom: 0.25rem; font-size: 0.9rem; }
-        .card1 p { margin: 0; color: #ccc; font-size: 0.85rem; line-height: 1.5; }
+        /* Grid Layout */
+        .grid1 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
+        .card1 { 
+          padding: 1rem; 
+          background: rgba(255,255,255,0.02); 
+          border-radius: 0.5rem; 
+          border-left: 3px solid #0066cc;
+          transition: all 0.3s;
+        }
+        .card1:hover { background: rgba(255,255,255,0.05); }
+        .card1 strong { 
+          display: block; 
+          color: #fff; 
+          margin-bottom: 0.5rem; 
+          font-size: 0.95rem;
+        }
+        .card1 p { margin: 0; color: #bbb; font-size: 0.85rem; line-height: 1.6; }
         
         /* Symbols */
-        .sym-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
-        .sym-card { display: flex; gap: 1rem; padding: 0.75rem; background: #111; border-radius: 0.5rem; border: 1px solid #0B3D91; }
-        .sym-box { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; border-radius: 0.25rem; flex-shrink: 0; }
-        .sym-box.bas { background: #003875; color: #fff; }
-        .sym-box.and { background: #0B3D91; color: #fff; }
-        .sym-box.rhy { background: #0069b4; color: #fff; }
-        .sym-box.pyr { background: #003875; color: #fff; }
-        .sym-box.flow { background: #0069b4; color: #fff; }
-        .sym-box.rech { background: #0B3D91; color: #fff; }
-        .sym-text strong { display: block; color: #fff; margin-bottom: 0.25rem; font-size: 0.9rem; }
-        .sym-text p { margin: 0; color: #ccc; font-size: 0.85rem; line-height: 1.5; }
+        .sym-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; }
+        .sym-card { 
+          display: flex; 
+          gap: 1rem; 
+          padding: 1rem; 
+          background: rgba(255,255,255,0.02); 
+          border-radius: 0.5rem; 
+          border: 1px solid rgba(0,102,204,0.2);
+        }
+        .sym-box { 
+          width: 40px; 
+          height: 40px; 
+          display: flex; 
+          align-items: center; 
+          justify-content: center; 
+          font-size: 1.5rem; 
+          border-radius: 0.35rem; 
+          flex-shrink: 0;
+        }
+        .sym-box.bas { background: #004d00; color: #fff; }
+        .sym-box.and { background: #1a3d2e; color: #fff; }
+        .sym-box.rhy { background: #8b2e48; color: #fff; }
+        .sym-box.pyr { background: #663300; color: #fff; }
+        .sym-box.flow { background: #0066cc; color: #fff; }
+        .sym-box.rech { background: #006400; color: #fff; }
+        .sym-text strong { display: block; color: #fff; margin-bottom: 0.5rem; font-size: 0.9rem; }
+        .sym-text p { margin: 0; color: #bbb; font-size: 0.85rem; line-height: 1.6; }
         
         /* Stats */
-        .stats-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
-        .stat-card { background: #000; border-radius: 0.5rem; padding: 1.25rem; display: flex; align-items: center; gap: 1rem;
-          border: 1px solid #0B3D91; transition: all 0.3s; }
-        .stat-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(11,61,145,0.5); border-color: #fff; }
-        .stat-card.hl { background: #0B3D91; border-color: #fff; }
-        .stat-card.sc { background: #111; border-color: #0B3D91; }
-        .stat-card.wr { background: #000; border-color: #0B3D91; }
-        .stat-card.in { background: #111; border-color: #0B3D91; }
-        .stat-card.pr { background: #0B3D91; border-color: #fff; }
-        .stat-icon { font-size: 1.75rem; color: #0069b4; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+        .stat-card { 
+          background: rgba(255,255,255,0.05); 
+          border-radius: 0.5rem; 
+          padding: 1.25rem; 
+          display: flex; 
+          align-items: center; 
+          gap: 1rem;
+          border: 1px solid rgba(0,102,204,0.2);
+          transition: all 0.3s;
+        }
+        .stat-card:hover { 
+          transform: translateY(-5px); 
+          box-shadow: 0 10px 30px rgba(0,102,204,0.2); 
+          border-color: #0066cc;
+        }
+        .stat-card.hl { background: rgba(0,102,204,0.1); border-color: #0066cc; }
+        .stat-icon { font-size: 1.75rem; color: #0088ff; }
         .stat-value { font-size: 1.75rem; font-weight: bold; color: #fff; }
-        .stat-label { font-size: 0.8rem; color: #ccc; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500; }
+        .stat-label { 
+          font-size: 0.75rem; 
+          color: #888; 
+          text-transform: uppercase; 
+          letter-spacing: 0.5px; 
+          font-weight: 500;
+        }
         
-        /* Nav */
-        .nav-sec { padding: 1rem 1rem; margin: 0 1rem 1rem 1rem; background: #000; border-radius: 0.5rem; border: 1px solid #0B3D91; }
-        .nav-buttons { display: flex; flex-direction: column; gap: 0.5rem; }
-        .nav-buttons button { display: flex; align-items: center; gap: 0.75rem; padding: 0.85rem 1rem; background: transparent; border: none;
-          color: #ccc; border-radius: 0.5rem; cursor: pointer; font-size: 0.9rem; transition: all 0.2s;
-          text-align: left; border-left: 3px solid transparent; font-weight: 500; }
-        .nav-buttons button:hover { background: #111; color: #fff; transform: translateX(5px); }
-        .nav-buttons button.active { background: #0B3D91; color: #fff; border-left-color: #fff; box-shadow: inset 0 0 10px rgba(11,61,145,0.3); }
+        /* Content Panel */
+        .content-panel { 
+          padding: 1.5rem; 
+          margin: 0 0 1rem 0; 
+          background: rgba(255,255,255,0.03); 
+          border-radius: 0.5rem;
+          border-left: 4px solid #0066cc;
+          box-shadow: 0 2px 15px rgba(0,0,0,0.3);
+        }
+        .content-panel h3 { 
+          color: #fff; 
+          margin: 0 0 1rem 0; 
+          font-size: 1.2rem; 
+          border-bottom: 2px solid #0066cc; 
+          padding-bottom: 0.75rem;
+        }
+        .content-panel p { color: #ccc; margin: 0 0 1rem 0; line-height: 1.7; font-size: 0.95rem; }
         
-        /* Content */
-        .content-panel { padding: 1.5rem 1rem; margin: 0 1rem 1rem 1rem; background: #000; border-radius: 0.5rem;
-          border: 1px solid #0B3D91; box-shadow: 0 2px 15px rgba(0,0,0,0.5); }
-        .content-panel h3 { color: #fff; margin: 0 0 1rem 0; font-size: 1.1rem; border-bottom: 2px solid #0B3D91; padding-bottom: 0.5rem; }
-        .content-panel p { color: #ccc; margin: 0 0 1rem 0; line-height: 1.6; font-size: 0.9rem; text-align: justify; }
+        /* Table */
         .table-container { margin: 1rem 0; overflow-x: auto; }
         .data-table { width: 100%; border-collapse: collapse; color: #fff; }
-        .data-table th, .data-table td { padding: 0.75rem; text-align: left; border-bottom: 1px solid #0B3D91; }
-        .data-table th { background: #0B3D91; color: #fff; font-weight: 600; font-size: 0.85rem; }
+        .data-table th, .data-table td { padding: 0.75rem; text-align: left; border-bottom: 1px solid rgba(0,102,204,0.2); }
+        .data-table th { background: rgba(0,102,204,0.2); color: #0088ff; font-weight: 600; font-size: 0.85rem; }
         .data-table td { color: #ccc; font-size: 0.85rem; }
-        .data-table tr:hover { background: #111; }
-        .no-data { color: #888; font-style: italic; text-align: center; padding: 1rem; }
-        .rec-box { margin-top: 1.5rem; padding: 1rem; background: #0B3D91;
-          border-left: 4px solid #fff; border-radius: 0.5rem; }
-        .rec-box h4 { margin: 0 0 0.75rem 0; color: #fff; font-size: 1rem; }
+        .data-table tr:hover { background: rgba(0,102,204,0.05); }
+        .no-data { color: #666; font-style: italic; text-align: center; padding: 1rem; }
+        
+        /* Info Cards */
+        .rec-box { 
+          margin-top: 1.5rem; 
+          padding: 1rem; 
+          background: rgba(0,102,204,0.1);
+          border-left: 4px solid #0088ff;
+          border-radius: 0.5rem;
+        }
+        .rec-box h4 { margin: 0 0 0.75rem 0; color: #0088ff; font-size: 1rem; }
         .rec-box p { margin: 0; color: #fff; line-height: 1.6; font-size: 0.9rem; }
-        .upload-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; margin: 1rem 0; }
-        .upload-card { padding: 1rem; background: #111; border-radius: 0.5rem; border: 1px dashed #0B3D91; }
-        .upload-card h4 { margin: 0 0 0.5rem 0; display: flex; align-items: center; gap: 0.5rem; color: #fff; font-size: 1rem; }
-        .upload-card p { font-size: 0.85rem; color: #888; margin: 0 0 0.75rem 0; line-height: 1.5; }
-        .export-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; margin: 1rem 0; }
-        .export-card { padding: 1rem; background: #111; border-radius: 0.5rem; border: 1px solid #0B3D91; }
-        .export-card h4 { margin: 0 0 0.75rem 0; color: #fff; font-size: 1rem; }
+        
+        .upload-grid, .export-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; margin: 1rem 0; }
+        .upload-card, .export-card { 
+          padding: 1rem; 
+          background: rgba(255,255,255,0.02); 
+          border-radius: 0.5rem; 
+          border: 1px dashed rgba(0,102,204,0.3);
+        }
+        .upload-card h4, .export-card h4 { 
+          margin: 0 0 0.75rem 0; 
+          display: flex; 
+          align-items: center; 
+          gap: 0.5rem; 
+          color: #fff; 
+          font-size: 1rem;
+        }
+        .upload-card p, .export-card p { 
+          font-size: 0.85rem; 
+          color: #bbb; 
+          margin: 0 0 0.75rem 0; 
+          line-height: 1.5;
+        }
         .fmt-buttons { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-        .fmt-buttons button { padding: 0.5rem 0.75rem; background: #0B3D91; border: none;
-          border-radius: 0.25rem; color: #fff; cursor: pointer; font-size: 0.8rem; transition: all 0.2s; }
-        .fmt-buttons button:hover { background: #0069b4; }
-        .info-card { margin-top: 1rem; padding: 1rem; background: #0B3D91;
-          border-left: 4px solid #fff; border-radius: 0.5rem; }
-        .info-card h4 { margin: 0 0 0.75rem 0; color: #fff; font-size: 1rem; }
+        .fmt-buttons button { 
+          padding: 0.5rem 0.75rem; 
+          background: #0066cc; 
+          border: none;
+          border-radius: 0.35rem; 
+          color: #fff; 
+          cursor: pointer; 
+          font-size: 0.8rem; 
+          transition: all 0.2s;
+        }
+        .fmt-buttons button:hover { background: #0052a3; }
+        
+        /* Info Card */
+        .info-card { 
+          margin-top: 1rem; 
+          padding: 1rem; 
+          background: rgba(0,102,204,0.1);
+          border-left: 4px solid #0088ff;
+          border-radius: 0.5rem;
+        }
+        .info-card h4 { margin: 0 0 0.75rem 0; color: #0088ff; font-size: 1rem; }
         .info-card p { margin: 0 0 0.5rem 0; color: #fff; line-height: 1.6; font-size: 0.9rem; }
         .info-card ul { margin: 0.5rem 0 0 1rem; padding: 0; }
-        .info-card li { margin-bottom: 0.5rem; font-size: 0.85rem; color: #fff; }
-        .help-card { background: #000; border-radius: 0.5rem; padding: 1rem; margin: 1rem 0; border: 1px solid #0B3D91; }
+        .info-card li { margin-bottom: 0.5rem; font-size: 0.85rem; color: #ccc; }
+        
+        /* Help Card */
+        .help-card { 
+          background: rgba(255,255,255,0.03); 
+          border-radius: 0.5rem; 
+          padding: 1rem; 
+          margin: 1rem 0; 
+          border: 1px solid rgba(0,102,204,0.2);
+        }
         .help-card h4 { color: #fff; display: flex; align-items: center; gap: 0.5rem; margin: 0 0 0.75rem 0; font-size: 1rem; }
         .help-card p { color: #ccc; margin: 0 0 0.75rem 0; line-height: 1.6; font-size: 0.9rem; }
         .help-card ol { padding-left: 1.5rem; margin: 0.5rem 0; }
         .help-card li { margin-bottom: 0.5rem; color: #ccc; font-size: 0.85rem; }
-        .help-card a { color: #0069b4; text-decoration: none; }
+        .help-card a { color: #0088ff; text-decoration: none; }
         .help-card a:hover { text-decoration: underline; }
-        .gh-link { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: #0B3D91;
-          border-radius: 0.25rem; color: #fff; text-decoration: none; transition: all 0.2s; margin: 0.5rem 0; }
-        .gh-link:hover { background: #0069b4; }
-        .role { font-size: 0.85rem; opacity: 0.8; color: #888; }
-        .tip { background: #0B3D91; padding: 0.75rem; border-radius: 0.5rem; border-left: 3px solid #fff;
-          margin: 0.75rem 0 0 0; font-size: 0.85rem; color: #fff; }
         
-        .footer { background: #000; border-top: 1px solid #0B3D91; padding: 1.25rem; text-align: center;
-          border-radius: 0 0 0.5rem 0.5rem; margin: 0 1rem 0.5rem 1rem; }
-        .footer p { margin: 0.25rem 0; line-height: 1.6; color: #888; font-size: 0.8rem; }
-        .version { font-size: 0.7rem; margin-top: 0.25rem; opacity: 0.8; color: #888; }
+        .gh-link { 
+          display: inline-flex; 
+          align-items: center; 
+          gap: 0.5rem; 
+          padding: 0.5rem 1rem; 
+          background: #0066cc;
+          border-radius: 0.35rem; 
+          color: #fff; 
+          text-decoration: none; 
+          transition: all 0.2s; 
+          margin: 0.5rem 0;
+        }
+        .gh-link:hover { background: #0052a3; }
+        
+        .role { font-size: 0.85rem; opacity: 0.8; color: #888; }
+        .tip { 
+          background: rgba(0,102,204,0.1); 
+          padding: 0.75rem; 
+          border-radius: 0.35rem; 
+          border-left: 3px solid #0088ff;
+          margin: 0.75rem 0 0 0; 
+          font-size: 0.85rem; 
+          color: #ccc;
+        }
+        
+        .footer { 
+          background: rgba(255,255,255,0.02); 
+          border-top: 1px solid rgba(0,102,204,0.2); 
+          padding: 1rem; 
+          text-align: center;
+          border-radius: 0 0 0.5rem 0.5rem; 
+          margin: 0.5rem 0 0 0;
+        }
+        .footer p { margin: 0.25rem 0; line-height: 1.6; color: #666; font-size: 0.8rem; }
+        .version { font-size: 0.7rem; margin-top: 0.25rem; opacity: 0.7; color: #666; }
         
         /* Scrollbar */
-        ::-webkit-scrollbar { width: 10px; height: 10px; }
-        ::-webkit-scrollbar-track { background: #000; border-radius: 5px; }
-        ::-webkit-scrollbar-thumb { background: #0B3D91; border-radius: 5px; }
-        ::-webkit-scrollbar-thumb:hover { background: #0069b4; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #0a1628; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: #0066cc; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #0088ff; }
         
         /* Responsive */
         @media (max-width: 768px) {
-          .bottom-panel.collapsed { min-height: 60px !important; }
-          .bottom-panel { width: 100% !important; }
-          .bottom-panel.expanded { max-height: 70vh !important; }
+          .main-nav { flex-wrap: wrap; }
+          .submenu-dropdown { min-width: 180px; }
+          .branding { min-width: auto; }
+          .branding h2 { font-size: 1.4rem; }
         }
-        @media (min-width: 768px) {
-          .bottom-panel.expanded { max-height: 50vh !important; }
-        }
-        
-        .sec, .content-panel, .nav-sec, .footer { width: 100%; max-width: 100%; box-sizing: border-box; }
       `}</style>
     </div>
   );
@@ -261,55 +622,49 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
 const S = {
   Welcome: () => (
     <div className="sec">
-      <h3><FaGlobe className="sec-icon" /> Welcome to GVAS Platform</h3>
-      <p>Your Comprehensive Global Volcanic Aquifer Solutions Platform is specifically designed, carefully developed, and meticulously engineered for advanced volcanic hydrostratigraphy analysis, comprehensive interpretation, intelligent groundwater resource evaluation, and sophisticated subsurface investigation across all volcanic regions and geological environments worldwide. This powerful platform transforms complex heterogeneous well log data from multiple sources and diverse formats into standardized consistent scientifically defensible and reproducible hydrostratigraphic models that can be reliably used for detailed analysis interpretation visualization and decision making purposes in hydrogeological investigations and groundwater resource management operations.</p>
+      <h3><FaInfoCircle className="sec-icon" /> Welcome to GVAS Platform</h3>
+      <p>The Global Volcanic Aquifer Solutions (GVAS) platform is your comprehensive solution for advanced volcanic hydrostratigraphy analysis and groundwater resource evaluation. This powerful platform transforms complex heterogeneous well log data from multiple sources and diverse formats into standardized, consistent hydrostratigraphic models that can be reliably used for detailed analysis, interpretation, visualization, and decision-making in hydrogeological investigations.</p>
     </div>
   ),
 
   PlatformOverview: () => (
     <div className="sec">
-      <h3><FaInfoCircle className="sec-icon" /> Platform Overview and Technical Capabilities</h3>
-      <p><strong>GVAS - Global Volcanic Aquifer Solutions</strong> represents a revolutionary breakthrough, significant advancement, and comprehensive development in the specialized field of volcanic hydrostratigraphy, aquifer modeling, and subsurface intelligence, specifically designed and meticulously engineered to effectively address, successfully overcome, and completely resolve the long-standing and significant challenges associated with processing, analyzing, standardizing, and accurately interpreting complex heterogeneous well log data from diverse volcanic regions, varied geological environments, and multiple international data sources and formats worldwide.</p>
-      <p>This advanced, sophisticated, state-of-the-art, and cutting-edge platform automatically, systematically, and intelligently transforms raw and completely unprocessed well-log descriptions from multiple international sources, diverse data formats, and varied quality levels into standardized, consistent, uniform, scientifically explainable, technically defensible, completely reproducible, and professionally acceptable hydrostratigraphic units that can be reliably and confidently used for further comprehensive analysis, detailed interpretation, advanced visualization, professional reporting, and critical decision-making processes in hydrogeological investigations and groundwater resource management operations.</p>
-      <p>The system effectively leverages the most advanced artificial intelligence algorithms, extensive machine learning techniques, comprehensive global geological knowledge bases, sophisticated data processing pipelines, and state-of-the-art computational methods to deliver exceptionally accurate, highly reliable, completely validated, and scientifically sound results that consistently meet and exceed the highest international standards and best practices in hydrogeological investigation, groundwater resource evaluation, and geological interpretation worldwide.</p>
+      <h3><FaGlobe className="sec-icon" /> Platform Overview</h3>
+      <p>GVAS - Global Volcanic Aquifer Solutions represents a revolutionary breakthrough in volcanic hydrostratigraphy, aquifer modeling, and subsurface intelligence. The platform automatically processes and standardizes well log data from diverse international sources using advanced artificial intelligence algorithms and extensive geological knowledge bases.</p>
+      <p>The system effectively leverages AI, machine learning, and state-of-the-art computational methods to deliver accurate, reliable, and scientifically validated results that meet international standards in hydrogeological investigation and groundwater resource evaluation.</p>
     </div>
   ),
 
   CurrentStatus: ({ metrics }) => (
     <div className="sec">
-      <h3><FaTachometerAlt className="sec-icon" /> Current Project Status Progress Overview and Achievement Summary</h3>
-      <p>Successfully, efficiently, and effectively processed, comprehensively analyzed, and systematically standardized {metrics.totalWells} individual wells containing a cumulative total of {metrics.totalLayers} stratigraphic layers with an overall geological complexity reduction achievement of {metrics.complexityReduction} percent accomplished through systematic, automated, intelligent, and completely validated standardization and classification processes that ensure absolute consistency, scientific validity, technical accuracy, and professional reliability across all datasets and wells regardless of source location format or original quality.</p>
+      <h3><FaTachometerAlt className="sec-icon" /> Current Project Status</h3>
+      <p>Successfully processed and analyzed {metrics.totalWells} wells containing {metrics.totalLayers} stratigraphic layers with an overall geological complexity reduction of {metrics.complexityReduction}% through systematic standardization and classification processes.</p>
     </div>
   ),
 
   GeologicalInfo: () => (
     <div className="sec">
-      <h3><FaGem className="sec-icon" /> Important Geological Information Educational Content and Scientific Knowledge</h3>
-      <p>Basaltic aquifer systems represent some of the most productive, most reliable, most extensively utilized, and most valuable groundwater resources in volcanic terranes worldwide, characterized by their exceptional, remarkable, and outstanding extensive lateral continuity, exceptional fracture-controlled permeability, significant groundwater storage capacity, and efficient transmission characteristics that collectively make them ideal and perfect for large-scale water supply development, long-term sustainable extraction operations, and municipal industrial agricultural and domestic consumption applications across volcanic regions worldwide.</p>
-      <p>The Columbia River Basalt Group located in the Pacific Northwest region of the United States serves as an excellent, well-documented, thoroughly studied, extensively researched, and internationally recognized example of a highly productive basalt aquifer system with transmissivity values that can range significantly from as low as 10 square meters per day in less fractured zones to as high as 500 square meters per day or more in areas with extensive fracturing development, significant vesicularity enhancement, and advanced weathering improvement within the lava flows that create optimal hydrogeological properties.</p>
-      <p>These exceptional and outstanding hydrogeological properties consistently make basaltic aquifers particularly valuable, extremely important, and highly desirable for municipal water supply systems, agricultural irrigation networks, industrial applications, domestic consumption, and various other water resource development operations, providing reliable, sustainable, long-lasting, and high-yield groundwater resources for communities, industries, agricultural operations, and domestic users across all volcanic regions worldwide.</p>
+      <h3><FaGem className="sec-icon" /> Geological Information</h3>
+      <p>Basaltic aquifer systems represent some of the most productive and reliable groundwater resources in volcanic terranes worldwide. These systems are characterized by exceptional lateral continuity, fracture-controlled permeability, and efficient transmission characteristics.</p>
+      <p>The Columbia River Basalt Group serves as an excellent example of a highly productive basalt aquifer system with transmissivity values ranging from 10 to 500 square meters per day, depending on fracturing and weathering.</p>
     </div>
   ),
 
   Environment: () => (
     <div className="sec">
-      <h3><FaTint className="sec-icon" /> Current Geological Environment Characteristics Hydrogeological Setting and Regional Context</h3>
+      <h3><FaTint className="sec-icon" /> Geological Environment Characteristics</h3>
       <div className="grid1">
         <div className="card1">
-          <span className="env-lbl">Tectonic Setting and Regional Terrane Type:</span>
-          <span className="env-val">Active Continental Rift Valley System characterized by ongoing extensional tectonics with associated volcanic activity magmatic emplacement sedimentary basin development and structural deformation that creates complex geological architectures.</span>
+          <strong>Tectonic Setting:</strong>
+          <p>Active Continental Rift Valley System with extensional tectonics and associated volcanic activity.</p>
         </div>
         <div className="card1">
-          <span className="env-lbl">Predominant Lithological Units and Rock Formations:</span>
-          <span className="env-val">Basaltic lava flows with varying degrees of fracturing and vesicularity development, Andesitic volcanic rocks with intermediate silica composition, Rhyolitic dome complexes with felsic characteristics, Pyroclastic deposits including tuff ignimbrite and volcanic breccia formations that represent the complete volcanic sequence.</span>
+          <strong>Lithological Units:</strong>
+          <p>Basaltic lava flows, Andesitic volcanic rocks, Rhyolitic dome complexes, Pyroclastic deposits.</p>
         </div>
         <div className="card1">
-          <span className="env-lbl">Hydrogeological Characteristics and Aquifer Properties:</span>
-          <span className="env-val">Complex fractured volcanic aquifer systems exhibiting dual-porosity behavior that effectively and efficiently combines both matrix porosity and fracture permeability to create highly productive and exceptionally efficient groundwater flow and storage systems with remarkable transmission capabilities.</span>
-        </div>
-        <div className="card1">
-          <span className="env-lbl">Groundwater Flow Mechanisms and Transmission Pathways:</span>
-          <span className="env-val">Predominantly fracture-controlled flow systems with significant and substantial contribution from intergranular porosity vesicular cavities and weathered zones within the volcanic rocks creating complex but highly productive flow networks that ensure optimal hydrogeological performance.</span>
+          <strong>Hydrogeological Characteristics:</strong>
+          <p>Complex fractured volcanic aquifer systems exhibiting dual-porosity behavior with both matrix porosity and fracture permeability.</p>
         </div>
       </div>
     </div>
@@ -317,271 +672,236 @@ const S = {
 
   Features: () => (
     <div className="sec">
-      <h3><FaFire className="sec-icon" /> Advanced Platform Features Technical Capabilities and Specialized Tools</h3>
+      <h3><FaFire className="sec-icon" /> Advanced Platform Features</h3>
       <div className="grid1">
-        <div className="card1"><FaFire className="fe-icon" /><strong>Advanced Causal Artificial Intelligence Engine</strong><p>Powerful machine learning and deep learning algorithms for intelligent geological interpretation and hydrostratigraphic classification with comprehensive analysis.</p></div>
-        <div className="card1"><FaRulerCombined className="fe-icon" /><strong>Three Dimensional Voxel Modeling</strong><p>Sophisticated 3D geological modeling capabilities for comprehensive subsurface visualization and spatial analysis with advanced rendering.</p></div>
-        <div className="card1"><FaLayerGroup className="fe-icon" /><strong>Volcanic Stratigraphy Analysis</strong><p>Advanced stratigraphic correlation and layer analysis for understanding complex volcanic sequences and formations with detailed interpretation.</p></div>
-        <div className="card1"><FaChartBar className="fe-icon" /><strong>Advanced Data Analytics and Visualization Tools</strong><p>Comprehensive analytical tools for statistical analysis pattern recognition and data visualization in multiple industry standard formats.</p></div>
-        <div className="card1"><FaSearch className="fe-icon" /><strong>Automated Aquifer Discovery and Characterization</strong><p>Intelligent identification and detailed characterization of promising groundwater targets with comprehensive evaluation and scientific validation.</p></div>
-        <div className="card1"><FaFilter className="fe-icon" /><strong>Intelligent Lithology Standardization System</strong><p>Automatic standardization and harmonization of diverse lithology descriptions from multiple sources and formats with complete validation worldwide.</p></div>
+        <div className="card1"><FaFire className="fe-icon" /><strong>AI Causal Engine</strong><p>Powerful ML and DL algorithms for intelligent geological interpretation and hydrostratigraphic classification.</p></div>
+        <div className="card1"><FaRulerCombined className="fe-icon" /><strong>3D Voxel Modeling</strong><p>Sophisticated 3D geological modeling for comprehensive subsurface visualization and spatial analysis.</p></div>
+        <div className="card1"><FaLayerGroup className="fe-icon" /><strong>Volcanic Stratigraphy</strong><p>Advanced stratigraphic correlation and layer analysis for understanding complex volcanic sequences.</p></div>
+        <div className="card1"><FaChartBar className="fe-icon" /><strong>Data Analytics</strong><p>Comprehensive analytical tools for statistical analysis, pattern recognition, and data visualization.</p></div>
       </div>
-      <style jsx>{`.fe-icon { color: #4da6ff; font-size: 1.2rem; margin-right: 0.75rem; }`}</style>
+      <style jsx>{`.fe-icon { color: #0066cc; font-size: 1.2rem; margin-right: 0.75rem; }`}</style>
     </div>
   ),
 
   Symbols: () => (
     <div className="sec">
-      <h3><FaLayerGroup className="sec-icon" /> International Geological Symbols Standard Notations and Global Classification System</h3>
+      <h3><FaLayerGroup className="sec-icon" /> International Geological Symbols</h3>
       <div className="sym-grid">
-        <div className="sym-card"><div className="sym-box bas">■</div><div className="sym-text"><strong>Basalt - Volcanic Extrusive Rock</strong><p>Volcanic extrusive rock formed from low-viscosity lava, typically dark gray to black in color, fine-grained texture, can form extensive lava flows and volcanic plateaus, important and productive aquifer when extensively fractured and weathered for optimal hydrogeological properties.</p></div></div>
-        <div className="sym-card"><div className="sym-box and">■</div><div className="sym-text"><strong>Andesite - Intermediate Volcanic Rock</strong><p>Intermediate volcanic rock with composition between basalt and rhyolite, typically medium to dark gray in color, fine-grained texture, commonly found in subduction zones and volcanic arc settings across all continents.</p></div></div>
-        <div className="sym-card"><div className="sym-box rhy">■</div><div className="sym-text"><strong>Rhyolite - Felsic Volcanic Rock</strong><p>Felsic volcanic rock with high silica content, typically light gray to pink in color, fine-grained texture, volcanic equivalent of granite, often forms volcanic domes flows and pyroclastic deposits in continental settings.</p></div></div>
-        <div className="sym-card"><div className="sym-box pyr">■</div><div className="sym-text"><strong>Pyroclastic Rocks - Fragmental Volcanic Deposits</strong><p>Fragmented material produced by explosive volcanic eruptions, includes tuff ignimbrite and volcanic breccia, can form excellent and highly productive aquifers when unwelded well-sorted and properly deposited for optimal hydrogeological performance.</p></div></div>
-        <div className="sym-card"><div className="sym-box flow">→</div><div className="sym-text"><strong>Groundwater Flow Direction Indicator</strong><p>Movement of water through aquifers, typically flowing from recharge areas to discharge points, controlled and directed by hydraulic gradient and permeability distribution within the geological formations and rock matrices.</p></div></div>
-        <div className="sym-card"><div className="sym-box rech">↑</div><div className="sym-text"><strong>Aquifer Recharge Zone Location</strong><p>Area where water enters an aquifer system, typically elevated terrain exposed bedrock fractures or permeable formations that allow precipitation and surface water to effectively infiltrate and recharge the groundwater resources.</p></div></div>
+        <div className="sym-card"><div className="sym-box bas">■</div><div className="sym-text"><strong>Basalt</strong><p>Volcanic extrusive rock formed from low-viscosity lava, typically dark gray to black, fine-grained.</p></div></div>
+        <div className="sym-card"><div className="sym-box and">■</div><div className="sym-text"><strong>Andesite</strong><p>Intermediate volcanic rock with medium silica content, typically gray to dark gray.</p></div></div>
+        <div className="sym-card"><div className="sym-box rhy">■</div><div className="sym-text"><strong>Rhyolite</strong><p>Felsic volcanic rock with high silica content, typically light gray to pink.</p></div></div>
+        <div className="sym-card"><div className="sym-box pyr">■</div><div className="sym-text"><strong>Pyroclastic</strong><p>Fragmental volcanic deposits including ash, lapilli, bombs, and blocks from explosive eruptions.</p></div></div>
+        <div className="sym-card"><div className="sym-box flow">→</div><div className="sym-text"><strong>Flow Direction</strong><p>Movement of water through aquifers, controlled by hydraulic gradient and permeability.</p></div></div>
+        <div className="sym-card"><div className="sym-box rech">↑</div><div className="sym-text"><strong>Recharge Zone</strong><p>Area where water enters an aquifer system, typically elevated terrain or exposed bedrock.</p></div></div>
       </div>
     </div>
   ),
 
   Properties: () => (
     <div className="sec">
-      <h3><FaGem className="sec-icon" /> Geological Characteristics Properties and Hydrogeological Parameters Definition</h3>
+      <h3><FaGem className="sec-icon" /> Geological Properties</h3>
       <div className="grid1">
-        <div className="card1"><strong>Hydraulic Conductivity and Permeability Properties:</strong><p>The ease with which water moves through rock or soil, determined and controlled by grain size distribution sorting characteristics porosity development and fracturing intensity, crucial and essential for accurate aquifer productivity assessment and reliable yield prediction in hydrogeological investigations.</p></div>
-        <div className="card1"><strong>Storage Capacity and Groundwater Retention:</strong><p>The ability of geological formations to effectively hold and reliably release water, influenced and determined by total porosity effective porosity permeability distribution and interconnected pore network development of the rock matrix and fracture systems for optimal hydrogeological performance.</p></div>
-        <div className="card1"><strong>Volcanic Aquifer Systems and Flow Behavior:</strong><p>Characterized by significant heterogeneity with permeability primarily controlled by fractures vesicles weathering zones and secondary porosity development, often exhibiting complex dual-porosity behavior with both matrix flow and fracture flow components contributing to overall system productivity efficiency and hydrogeological effectiveness.</p></div>
+        <div className="card1"><strong>Hydraulic Conductivity:</strong><p>Ease with which water moves through rock or soil, determined by grain size, sorting, porosity, and fracturing.</p></div>
+        <div className="card1"><strong>Storage Capacity:</strong><p>Ability of geological formations to hold and release water, influenced by porosity and permeability distribution.</p></div>
+        <div className="card1"><strong>Volcanic Aquifer Systems:</strong><p>Characterized by significant heterogeneity with permeability controlled by fractures, vesicles, and weathering zones.</p></div>
       </div>
     </div>
   ),
 
   Classification: () => (
     <div className="sec">
-      <h3><FaLayerGroup className="sec-icon" /> International Lithology Classification System Standardized Rock Type Definitions and Characteristics</h3>
+      <h3><FaLayerGroup className="sec-icon" /> Lithology Classification</h3>
       <div className="grid1">
-        <div className="card1"><strong>Basalt Classification and Characteristics:</strong><p>Mafic extrusive volcanic rock with low silica content, typically dark colored appearance ranging from dark gray to black, fine-grained aphanitic to glassy texture, forms extensive lava flows pillow lavas in submarine environments and volcanic plateaus covering vast geographical areas across different continents and volcanic provinces.</p></div>
-        <div className="card1"><strong>Andesite Classification and Characteristics:</strong><p>Intermediate volcanic rock with medium silica content, typically gray to dark gray in color, fine-grained texture, commonly associated with subduction zone volcanism stratovolcanoes development and volcanic arc systems in tectonically active regions worldwide.</p></div>
-        <div className="card1"><strong>Rhyolite Classification and Characteristics:</strong><p>Felsic extrusive volcanic rock with high silica content, typically light gray to pink in color, fine-grained texture, often forms volcanic domes lava flows and extensive pyroclastic deposits, representing the most silicic extrusive volcanic rock type in continental volcanic settings and geological environments.</p></div>
-        <div className="card1"><strong>Pyroclastic Rocks Classification and Characteristics:</strong><p>Volcanic fragmental deposits including ash lapilli bombs and blocks of various sizes, can be loose or welded depending on the depositional environment and post-depositional processes, important for understanding explosive eruption history stratigraphic correlation and aquifer potential assessment in volcanic sequences.</p></div>
-        <div className="card1"><strong>Sedimentary Rocks Classification and Characteristics:</strong><p>Deposited by water wind ice or gravity through various sedimentary processes, typically layered and stratified in appearance, can include clastic detrital varieties chemical precipitates and organic accumulations, important for groundwater storage and transmission in interbedded sequences with volcanic rocks.</p></div>
+        <div className="card1"><strong>Basalt:</strong><p>Mafic extrusive volcanic rock with low silica content, dark colored, fine-grained, forms extensive lava flows.</p></div>
+        <div className="card1"><strong>Andesite:</strong><p>Intermediate volcanic rock with medium silica content, gray to dark gray, commonly in subduction zones.</p></div>
+        <div className="card1"><strong>Rhyolite:</strong><p>Felsic extrusive volcanic rock with high silica content, light gray to pink, fine-grained.</p></div>
+        <div className="card1"><strong>Pyroclastic Rocks:</strong><p>Volcanic fragmental deposits including ash, lapilli, bombs, and blocks from explosive eruptions.</p></div>
       </div>
     </div>
   ),
 
   Stats: ({ metrics }) => (
     <div className="sec">
-      <h3><FaChartBar className="sec-icon" /> Project Metrics Statistical Summary and Performance Indicators Overview</h3>
+      <h3><FaChartBar className="sec-icon" /> Project Statistics</h3>
       <div className="stats-grid">
-        <div className="stat-card hl"><FaChartBar className="stat-icon" /><div><span className="stat-value">{metrics.totalWells}</span><span className="stat-label">Total Wells Successfully Processed</span></div></div>
-        <div className="stat-card"><FaLayerGroup className="stat-icon" /><div><span className="stat-value">{metrics.totalLayers}</span><span className="stat-label">Stratigraphic Layers Analyzed</span></div></div>
-        <div className="stat-card sc"><FaWater className="stat-icon" /><div><span className="stat-value">{metrics.aquiferLayers}</span><span className="stat-label">Aquifer Layers Identified as Productive</span></div></div>
-        <div className="stat-card wr"><FaTachometerAlt className="stat-icon" /><div><span className="stat-value">{metrics.avgConfidence}%</span><span className="stat-label">Average Classification Confidence Level</span></div></div>
-        <div className="stat-card in"><FaCog className="stat-icon" /><div><span className="stat-value">{metrics.complexityReduction}%</span><span className="stat-label">Complexity Reduction Through Standardization</span></div></div>
-        <div className="stat-card pr"><FaGlobe className="stat-icon" /><div><span className="stat-value">Global</span><span className="stat-label">Coordinate Systems Fully Supported</span></div></div>
+        <div className="stat-card hl"><FaChartBar className="stat-icon" /><div><span className="stat-value">{metrics.totalWells}</span><span className="stat-label">Total Wells Processed</span></div></div>
+        <div className="stat-card"><FaLayerGroup className="stat-icon" /><div><span className="stat-value">{metrics.totalLayers}</span><span className="stat-label">Layers Analyzed</span></div></div>
+        <div className="stat-card"><FaWater className="stat-icon" /><div><span className="stat-value">{metrics.aquiferLayers}</span><span className="stat-label">Aquifer Layers</span></div></div>
+        <div className="stat-card"><FaTachometerAlt className="stat-icon" /><div><span className="stat-value">{metrics.avgConfidence}%</span><span className="stat-label">Avg Confidence</span></div></div>
+        <div className="stat-card"><FaCog className="stat-icon" /><div><span className="stat-value">{metrics.complexityReduction}%</span><span className="stat-label">Complexity Reduction</span></div></div>
       </div>
     </div>
   ),
 
   MetricsSummary: ({ metrics }) => (
     <div className="sec">
-      <h3><FaInfoCircle className="sec-icon" /> Comprehensive Project Metrics Performance Indicators and Detailed Analysis Results</h3>
-      <p><strong>Total Wells Successfully Processed:</strong> {metrics.totalWells} individual wells have been comprehensively and successfully analyzed processed and standardized by the GVAS platform using advanced artificial intelligence algorithms extensive geological knowledge bases and sophisticated data processing pipelines that ensure scientific accuracy technical validity and professional reliability.</p>
-      <p><strong>Standardized Hydrostratigraphic Units Established:</strong> {metrics.totalLayers > 0 ? Math.round(metrics.totalLayers * (1 - metrics.complexityReduction/100)) : 0} distinct consistent and scientifically defensible hydrostratigraphic units have been systematically established defined and categorized through the comprehensive standardization classification and harmonization processes that ensure complete consistency and universal applicability across all datasets.</p>
-      <p><strong>Complexity Reduction Index Achievement:</strong> {metrics.complexityReduction}% - This important and valuable metric represents the overall significant reduction in geological complexity effectively achieved through systematic intelligent and comprehensive classification and grouping of similar lithological descriptions from diverse international sources that previously created confusion inconsistency and unreliability in hydrogeological interpretations.</p>
-      <p><strong>Average Classification Confidence Assessment:</strong> {metrics.avgConfidence}% average confidence level in our layer classifications hydro property predictions and geological interpretations across all processed wells demonstrating the exceptional reliability accuracy and scientific validity of the platform across all applications.</p>
-      <p><strong>Aquifer Potential and Productivity Assessment:</strong> {metrics.aquiferLayers} layers have been positively identified as productive aquifers out of a total of {metrics.totalLayers} layers analyzed providing valuable comprehensive and actionable insights into groundwater resource potential for development management and sustainable extraction operations with complete scientific backing and technical validation.</p>
+      <h3><FaInfoCircle className="sec-icon" /> Metrics Summary</h3>
+      <p><strong>Total Wells:</strong> {metrics.totalWells} wells comprehensively analyzed and processed.</p>
+      <p><strong>Complexity Reduction:</strong> {metrics.complexityReduction}% - Significant reduction in geological complexity achieved through systematic classification.</p>
+      <p><strong>Average Confidence:</strong> {metrics.avgConfidence}% - High confidence level in layer classifications and geological interpretations.</p>
+      <p><strong>Aquifer Potential:</strong> {metrics.aquiferLayers} layers identified as productive aquifers out of {metrics.totalLayers} total layers.</p>
     </div>
   ),
 
-  Nav: ({ activeSection, setActiveSection }) => (
-    <div className="nav-sec">
-      <div className="nav-buttons">
-        <button className={activeSection === 'overview' ? 'active' : ''} onClick={() => setActiveSection('overview')}><FaInfoCircle /> Overview</button>
-        <button className={activeSection === 'productive' ? 'active' : ''} onClick={() => setActiveSection('productive')}><FaWater /> Top Aquifers</button>
-        <button className={activeSection === 'upload' ? 'active' : ''} onClick={() => setActiveSection('upload')}><FaFileImport /> Quick Upload</button>
-        <button className={activeSection === 'export' ? 'active' : ''} onClick={() => setActiveSection('export')}><FaFileExport /> Export</button>
-        <button className={activeSection === 'help' ? 'active' : ''} onClick={() => setActiveSection('help')}><FaQuestionCircle /> Help</button>
+  Content: ({ activeSection, topProductive, onFileUpload, onExport }) => {
+    const renderUpload = () => (
+      <div className="content-panel">
+        <h3>Comprehensive Data Upload</h3>
+        <p>Upload your well data files in various supported formats. Our advanced system will automatically process and standardize your data.</p>
+        
+        <div className="upload-grid">
+          <div className="upload-card">
+            <h4><FaFileImport /> CSV and Excel File Upload</h4>
+            <p>Standard tabular format containing well log information with all required columns.</p>
+            <input type="file" accept=".csv,.xlsx,.xls" onChange={e => e.target.files[0] && onFileUpload(e.target.files[0])} />
+          </div>
+          <div className="upload-card">
+            <h4><FaFileImport /> Shapefile Upload</h4>
+            <p>Upload spatial data including well point locations, cross-sectional line definitions, or study area boundaries.</p>
+            <input type="file" accept=".shp,.zip" onChange={e => e.target.files[0] && onFileUpload(e.target.files[0])} />
+          </div>
+        </div>
       </div>
-    </div>
-  ),
+    );
 
-  Content: ({ activeSection, topProductive, onFileUpload, onExport }) => (
-    <div className="content-sections">
-      {activeSection === 'overview' && (
-        <div className="content-panel">
-          <h3>Platform Comprehensive Capabilities and Technical Specifications</h3>
-          <p>The GVAS Global Volcanic Aquifer Solutions platform provides comprehensive advanced and sophisticated analysis and interpretation capabilities specifically designed for volcanic hydrostratigraphy applications worldwide. With extensive global coverage and advanced AI-powered classification systems the platform transforms complex well log data from diverse international sources into actionable reliable and scientifically validated geological insights and hydrogeological understanding that meet the highest international standards and best practices in the field.</p>
-          <p>The system automatically standardizes lithology descriptions from diverse international sources accurately identifies productive aquifer layers and systematically generates detailed three-dimensional voxel models for comprehensive visualization analysis and interpretation that provide complete understanding and support critical decision making in hydrogeological investigations and groundwater resource management operations across all volcanic regions worldwide.</p>
-          <p>All classifications interpretations and predictions are scientifically defensible technically validated and backed by extensive global case studies empirical data published research from leading institutions and established hydrogeological principles that ensure professional reliability accuracy and international acceptance across all applications and geological environments.</p>
-        </div>
-      )}
-
-      {activeSection === 'productive' && (
-        <div className="content-panel">
-          <h3>Aquifer Target Analysis Identification and Comprehensive Recommendations</h3>
-          <p>Based on detailed comprehensive and systematic artificial intelligence analysis and interpretation of your uploaded well log data the following stratigraphic layers have been positively identified as the most promising groundwater targets for potential development exploitation and sustainable extraction based on their hydrogeological characteristics productivity potential and geological properties that demonstrate exceptional quality and reliability for groundwater resource development.</p>
-          
-          {topProductive.length > 0 ? (
-            <div className="table-container">
-              <table className="data-table">
-                <thead><tr><th>Rank</th><th>Well ID</th><th>Layer Type</th><th>Depth Range</th><th>Thickness</th><th>Confidence</th></tr></thead>
-                <tbody>
-                  {topProductive.map((layer, index) => (
-                    <tr key={index}>
-                      <td>{index + 1}</td><td>{layer.Well_ID}</td><td>{layer.Hydro_Property}</td>
-                      <td>{layer.Depth_Start}-{layer.Depth_End} m</td><td>{layer.Thickness} m</td>
-                      <td>{(layer.Confidence * 100).toFixed(1)}%</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ) : (
-            <p className="no-data">Currently no aquifer layers have been identified in your uploaded well data. Please upload your well log information and process it through the platform to receive detailed aquifer identification and comprehensive groundwater target recommendations with complete analysis and scientific validation.</p>
-          )}
-
-          {topProductive.length > 0 && (
-            <div className="rec-box">
-              <h4>Artificial Intelligence Powered Recommendations and Professional Guidance</h4>
-              <p>Based on comprehensive analysis the most promising and productive groundwater target within your dataset is the <strong>{topProductive[0].Hydro_Property}</strong> layer located in well <strong>{topProductive[0].Well_ID}</strong> at a depth interval between <strong>{topProductive[0].Depth_Start}-{topProductive[0].Depth_End} meters below ground surface</strong> with an exceptional classification confidence level of <strong>{(topProductive[0].Confidence * 100).toFixed(1)}%</strong>. This layer represents the optimal and most promising target for groundwater development activities and sustainable extraction operations with complete scientific backing and technical validation.</p>
-            </div>
-          )}
-        </div>
-      )}
-
-      {activeSection === 'upload' && (
-        <div className="content-panel">
-          <h3>Comprehensive Data Upload Interface and File Import Options with Complete Support</h3>
-          <p>Upload your valuable and important well data files in various supported formats including standard tabular data geographical information system files and specialized well log formats. Our advanced system will automatically process and standardize your data for comprehensive analysis and interpretation with complete validation quality assurance and scientific accuracy that meets international standards and best practices.</p>
-          
-          <div className="upload-grid">
-            <div className="upload-card">
-              <h4><FaFileImport /> CSV and Excel File Upload</h4>
-              <p>Standard tabular format containing well log information with all required columns for complete processing and comprehensive analysis by our advanced platform with automatic validation standardization and quality control procedures that ensure data integrity and reliability.</p>
-              <input type="file" accept=".csv,.xlsx,.xls" onChange={e => e.target.files[0] && onFileUpload(e.target.files[0])} />
-            </div>
-            <div className="upload-card">
-              <h4><FaFileImport /> Shapefile Upload</h4>
-              <p>Upload spatial data including well point locations cross-sectional line definitions or study area boundary polygons for geographical context and comprehensive visualization with complete spatial referencing and coordinate system support that ensures accurate geospatial analysis.</p>
-              <input type="file" accept=".shp,.zip" onChange={e => e.target.files[0] && onFileUpload(e.target.files[0])} />
+    const renderExport = () => (
+      <div className="content-panel">
+        <h3>Comprehensive Data Export Options</h3>
+        <p>Download your processed data in various industry standard formats with complete interpretations and evidence.</p>
+        
+        <div className="export-grid">
+          <div className="export-card">
+            <h4>Well Data Export</h4>
+            <div className="fmt-buttons">
+              <button onClick={() => onExport && onExport('wells', 'csv')}>CSV</button>
+              <button onClick={() => onExport && onExport('wells', 'json')}>JSON</button>
+              <button onClick={() => onExport && onExport('wells', 'shp')}>Shapefile</button>
             </div>
           </div>
-
-          <div className="info-card">
-            <h4>Comprehensive List of Supported File Formats and Complete Technical Specifications</h4>
-            <p>All supported file formats are fully validated extensively tested and completely compatible with international standards and industry best practices for geological data processing and hydrogeological analysis with comprehensive quality assurance and scientific validation.</p>
-            <ul>
-              <li><strong>CSV - Comma Separated Values:</strong> Well log data files in standard tabular format containing all necessary columns for processing including well identification coordinates elevation depth intervals and lithology descriptions with complete metadata.</li>
-              <li><strong>Shapefile ZIP Archive:</strong> Complete geographical information system shapefile bundle containing the main shapefile and all supporting files including index database and projection definition files for comprehensive spatial analysis and geospatial accuracy.</li>
-              <li><strong>Individual Shapefile:</strong> Single shapefile component which may require additional supporting files for complete functionality and comprehensive processing with full geospatial capabilities and coordinate system support.</li>
-            </ul>
+          <div className="export-card">
+            <h4>Stratigraphy Export</h4>
+            <div className="fmt-buttons">
+              <button onClick={() => onExport && onExport('layers', 'csv')}>CSV</button>
+              <button onClick={() => onExport && onExport('layers', 'json')}>JSON</button>
+              <button onClick={() => onExport && onExport('layers', 'shp')}>Shapefile</button>
+            </div>
+          </div>
+          <div className="export-card">
+            <h4>3D Model & Reports</h4>
+            <div className="fmt-buttons">
+              <button onClick={() => onExport && onExport('combined_3d', 'vtk')}>VTK</button>
+              <button onClick={() => onExport && onExport('combined_3d', 'kml')}>KML</button>
+              <button onClick={() => onExport && onExport('pdf', 'well_report')}>PDF Report</button>
+              <button onClick={() => onExport && onExport('pdf', 'project_report')}>Project Report</button>
+            </div>
           </div>
         </div>
-      )}
+      </div>
+    );
 
-      {activeSection === 'export' && (
-        <div className="content-panel">
-          <h3>Comprehensive Data Export Options and Download Capabilities with Complete Interpretation</h3>
-          <p>Download your processed and analyzed well data in various industry standard formats suitable for further analysis reporting visualization and integration with other geographical information systems and software applications. All exports include comprehensive interpretations complete evidence PDF reports with detailed explanations uncertainty assessments and global case study comparisons with scientific validation.</p>
-          
-          <div className="export-grid">
-            <div className="export-card">
-              <h4>Well Data Export Formats and Complete Options</h4>
-              <div className="fmt-buttons">
-                <button onClick={() => onExport && onExport('wells', 'csv')}>CSV Format</button>
-                <button onClick={() => onExport && onExport('wells', 'json')}>JSON Format</button>
-                <button onClick={() => onExport && onExport('wells', 'shp')}>Shapefile Format</button>
-              </div>
-            </div>
-            <div className="export-card">
-              <h4>Stratigraphy Layers Export Options and Complete Formats</h4>
-              <div className="fmt-buttons">
-                <button onClick={() => onExport && onExport('layers', 'csv')}>CSV Format</button>
-                <button onClick={() => onExport && onExport('layers', 'json')}>JSON Format</button>
-                <button onClick={() => onExport && onExport('layers', 'shp')}>Shapefile Format</button>
-              </div>
-            </div>
-            <div className="export-card">
-              <h4>Cross Section and 3D Model Exports with Complete Visualization</h4>
-              <div className="fmt-buttons">
-                <button onClick={() => onExport && onExport('combined_2d', 'png')}>PNG Image</button>
-                <button onClick={() => onExport && onExport('combined_2d', 'shp')}>Shapefile</button>
-                <button onClick={() => onExport && onExport('pdf', 'well_report')}>PDF Report with Interpretations and Evidence</button>
-                <button onClick={() => onExport && onExport('combined_3d', 'vtk')}>VTK 3D</button>
-                <button onClick={() => onExport && onExport('combined_3d', 'kml')}>KML Format</button>
-                <button onClick={() => onExport && onExport('pdf', 'project_report')}>Project PDF Report with Complete Evidence</button>
-              </div>
-            </div>
+    const renderAquifers = () => (
+      <div className="content-panel">
+        <h3>Aquifer Target Analysis</h3>
+        <p>Based on AI analysis, the following stratigraphic layers have been identified as the most promising groundwater targets:</p>
+        
+        {topProductive.length > 0 ? (
+          <div className="table-container">
+            <table className="data-table">
+              <thead><tr><th>Rank</th><th>Well ID</th><th>Layer Type</th><th>Depth Range</th><th>Confidence</th></tr></thead>
+              <tbody>
+                {topProductive.map((layer, index) => (
+                  <tr key={index}>
+                    <td>{index + 1}</td>
+                    <td>{layer.Well_ID}</td>
+                    <td>{layer.Hydro_Property}</td>
+                    <td>{layer.Depth_Start}-{layer.Depth_End} m</td>
+                    <td>{(layer.Confidence * 100).toFixed(1)}%</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
+        ) : (
+          <p className="no-data">Upload well data to see aquifer recommendations.</p>
+        )}
+        
+        {topProductive.length > 0 && (
+          <div className="rec-box">
+            <h4>AI Recommendations</h4>
+            <p>The most promising groundwater target is the <strong>{topProductive[0].Hydro_Property}</strong> layer in well <strong>{topProductive[0].Well_ID}</strong> at depth {topProductive[0].Depth_Start}-{topProductive[0].Depth_End}m with confidence of <strong>{(topProductive[0].Confidence * 100).toFixed(1)}%</strong>.</p>
+          </div>
+        )}
+      </div>
+    );
 
-          <div className="info-card">
-            <h4>Complete Export Format Information Technical Specifications and Capabilities</h4>
-            <p>All export formats include detailed interpretations comprehensive evidence complete analysis with scientific explanations global comparisons and professional validation that meet international standards and industry best practices for hydrogeological reporting and groundwater resource documentation.</p>
-            <ul>
-              <li><strong>CSV:</strong> Standard tabular data format ideal for spreadsheet analysis statistical processing and data sharing across different software platforms and applications.</li>
-              <li><strong>JSON:</strong> Lightweight data interchange format for web applications system integration and data exchange between different software and platforms.</li>
-              <li><strong>Shapefile:</strong> Geographical information system compatible vector data for spatial analysis mapping applications and geospatial visualization.</li>
-              <li><strong>VTK:</strong> Advanced three dimensional visualization data format compatible with ParaView VisIt and other scientific visualization software applications.</li>
-              <li><strong>KML:</strong> Geographical visualization format for Google Earth and similar platforms with complete spatial referencing and coordinate system support.</li>
-              <li><strong>PNG:</strong> High quality image format suitable for reports presentations publications and professional documentation with lossless data compression.</li>
-              <li><strong>PDF:</strong> Comprehensive reports with all interpretations evidence explanations scientific analysis and professional documentation that meet international standards.</li>
-            </ul>
-          </div>
+    const renderHelp = () => (
+      <div className="content-panel">
+        <h3>Help & Support Center</h3>
+        
+        <div className="help-card">
+          <h4><FaQuestionCircle /> Quick Start Guide</h4>
+          <p>Get started with GVAS through these comprehensive steps:</p>
+          <ol>
+            <li><strong>Upload Data:</strong> Import well log files in supported formats (CSV, Excel, Shapefile).</li>
+            <li><strong>Review Results:</strong> Examine AI-classified stratigraphic layers with hydro properties.</li>
+            <li><strong>Explore Models:</strong> View 3D voxel models and interactive cross-sections.</li>
+            <li><strong>Use AI Geologist:</strong> Ask questions about layers, productivity, and aquifer characteristics.</li>
+            <li><strong>Export Data:</strong> Download results in multiple formats (CSV, JSON, PDF, Shapefile, VTK, KML).</li>
+          </ol>
         </div>
-      )}
 
-      {activeSection === 'help' && (
-        <div className="content-panel">
-          <h3>Comprehensive Help Support and Complete User Assistance Center</h3>
-          
-          <div className="help-card">
-            <h4><FaQuestionCircle /> Complete Quick Start Guide Comprehensive Tutorial and Step-by-Step Instructions</h4>
-            <p>Get started with the GVAS Global Volcanic Aquifer Solutions platform through the following comprehensive and detailed steps that will guide you through the entire workflow from data import to final results export and professional reporting with complete scientific validation and technical accuracy.</p>
-            <ol>
-              <li><strong>Data Upload:</strong> Upload your well log information in any of the supported file formats including CSV Excel Shapefile or GeoJSON with complete metadata coordinate information and all required columns for comprehensive processing.</li>
-              <li><strong>Results Review:</strong> Carefully examine and review the automatically processed standardized results including the artificial intelligence classified stratigraphic layers with their corresponding hydro properties confidence scores and scientific explanations.</li>
-              <li><strong>Interactive Exploration:</strong> Explore the generated three dimensional voxel based geological models and interactive two dimensional cross-sectional views that provide valuable insights into subsurface stratigraphy relationships and geological understanding.</li>
-              <li><strong>Advanced Analysis:</strong> Utilize the artificial intelligence powered geologist to ask specific questions about individual layers overall productivity assessments aquifer characteristics and hydrogeological properties with natural language processing.</li>
-              <li><strong>Data Export:</strong> Export your processed data and results in multiple industry standard formats including CSV JSON PDF comprehensive reports Shapefile VTK and KML for further analysis reporting and professional use.</li>
-            </ol>
-            <p className="tip">For optimal results and comprehensive stratigraphic correlation upload your cross-section line definition as a Shapefile format to generate detailed two dimensional stratigraphic profiles that clearly display layer correlations and geological relationships with complete scientific accuracy.</p>
-          </div>
-
-          <div className="help-card">
-            <h4><FaEnvelope /> Complete Contact Information and Professional Support Channels</h4>
-            <p>For comprehensive technical support detailed questions valuable feedback suggestions for improvements or any other professional inquiries regarding the GVAS Global Volcanic Aquifer Solutions platform please feel free to contact our development team through the following official channels that provide complete and reliable support.</p>
-            <ul>
-              <li><strong>Primary Official Contact:</strong> <a href="mailto:wagari.mosisa@ju.edu.et" target="_blank" rel="noopener noreferrer">wagari.mosisa@ju.edu.et</a></li>
-              <li><strong>Alternate Personal Contact:</strong> <a href="mailto:wagarimosisa@gmail.com" target="_blank" rel="noopener noreferrer">wagarimosisa@gmail.com</a></li>
-            </ul>
-          </div>
-
-          <div className="help-card">
-            <h4><FaUserGraduate /> Platform Developer Professional Qualifications and Complete Information</h4>
-            <p><strong>Wagari Mosisa Kitessa</strong><br /><span className="role">Lead Developer Principal Geologist and Project Coordinator with Extensive Experience</span></p>
-            <p>GVAS Global Volcanic Aquifer Solutions platform was specifically developed designed and meticulously engineered to effectively address the significant and long-standing challenge associated with standardizing complex heterogeneous volcanic well log data for comprehensive hydrogeological analysis and detailed aquifer characterization purposes at various scales ranging from local site investigations to regional and basin scale assessments. This advanced platform transforms inconsistent and varied data formats into consistent standardized hydrostratigraphic models that can be used for reliable groundwater resource evaluation professional management and international reporting.</p>
-          </div>
-
-          <div className="help-card">
-            <h4><FaGithub /> Open Source Repository Complete Access and Community Contribution Platform</h4>
-            <p>View the complete source code make valuable contributions report technical issues suggest new features or participate in community discussions through our official open source repository that provides complete transparency full access and professional collaboration opportunities for developers researchers and hydrogeologists worldwide.</p>
-            <p><a href="https://github.com/wagarimosisa-jit/volcanostrat-ai" target="_blank" rel="noopener noreferrer" className="gh-link"><FaGithub /> wagarimosisa-jit/volcanostrat-ai</a></p>
-          </div>
-
-          <div className="help-card">
-            <h4><FaInfoCircle /> Complete Information About GVAS Platform Mission Vision and Professional Objectives</h4>
-            <p><strong>Mission Statement:</strong> The primary mission of GVAS Global Volcanic Aquifer Solutions platform is to fundamentally transform the way heterogeneous volcanic well log data is processed and interpreted by developing advanced artificial intelligence powered systems that can automatically convert complex inconsistent raw data into comprehensive uncertainty-aware hydrostratigraphic knowledge models and reliable groundwater decision-support systems for effective resource management professional analysis and international reporting that meets the highest standards in the field.</p>
-            <p><strong>Vision Statement:</strong> Our vision is to enable and empower hydrogeologists geological researchers professional consultants government water agencies private sector organizations and academic institutions from all around the world to efficiently build consistent scientifically explainable technically defensible and completely reproducible subsurface geological models from their diverse and heterogeneous well data regardless of source format original quality or geographical location with complete accuracy and international acceptance.</p>
-          </div>
+        <div className="help-card">
+          <h4><FaEnvelope /> Contact Information</h4>
+          <p>For technical support or inquiries:</p>
+          <ul>
+            <li><strong>Primary:</strong> <a href="mailto:wagari.mosisa@ju.edu.et">wagari.mosisa@ju.edu.et</a></li>
+            <li><strong>Alternate:</strong> <a href="mailto:wagarimosisa@gmail.com">wagarimosisa@gmail.com</a></li>
+          </ul>
         </div>
-      )}
-    </div>
-  ),
+
+        <div className="help-card">
+          <h4><FaUserGraduate /> About the Developer</h4>
+          <p><strong>Wagari Mosisa Kitessa</strong><br /><span className="role">Lead Developer & Principal Geologist</span></p>
+          <p>GVAS was developed to address the challenge of standardizing complex heterogeneous volcanic well log data for comprehensive hydrogeological analysis and aquifer characterization.</p>
+        </div>
+
+        <div className="help-card">
+          <h4><FaGithub /> Open Source Repository</h4>
+          <p>View source code, contribute, or report issues:</p>
+          <p><a href="https://github.com/wagarimosisa-jit/volcanostrat-ai" target="_blank" rel="noopener noreferrer" className="gh-link"><FaGithub /> wagarimosisa-jit/volcanostrat-ai</a></p>
+        </div>
+
+        <div className="help-card">
+          <h4><FaInfoCircle /> Mission & Vision</h4>
+          <p><strong>Mission:</strong> Transform how heterogeneous volcanic well log data is processed by developing AI-powered systems that convert complex inconsistent data into comprehensive hydrostratigraphic knowledge models.</p>
+          <p><strong>Vision:</strong> Enable hydrogeologists worldwide to efficiently build consistent, scientifically explainable, technically defensible subsurface geological models from diverse well data.</p>
+        </div>
+      </div>
+    );
+
+    switch (activeSection) {
+      case 'upload':
+        return renderUpload();
+      case 'export':
+        return renderExport();
+      case 'productive':
+        return renderAquifers();
+      case 'help':
+        return renderHelp();
+      default:
+        return (
+          <div className="content-panel">
+            <h3>Platform Overview</h3>
+            <p>Select a menu option from above to get started.</p>
+          </div>
+        );
+    }
+  },
 
   Footer: () => (
     <div className="footer">
-      <p>© {new Date().getFullYear()} GVAS - Global Volcanic Aquifer Solutions | Built for you!</p>
-      <p className="version">Version 1.0.0 | Advanced Global Volcanic Hydrostratigraphy Intelligence Platform for Worldwide Applications</p>
+      <p>© {new Date().getFullYear()} GVAS - Global Volcanic Aquifer Solutions</p>
+      <p className="version">Advanced AI-Powered Hydrostratigraphy Platform</p>
     </div>
   )
 };
