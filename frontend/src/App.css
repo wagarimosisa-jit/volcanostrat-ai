@@ -8,6 +8,7 @@ body {
 
 .app {
   display: flex;
+  flex-direction: column;
   min-height: 100vh;
 }
 
@@ -15,12 +16,11 @@ body {
   flex: 1;
   display: flex;
   flex-direction: column;
-  margin-left: 350px;
-  transition: margin-left 0.3s ease;
+  margin-left: 0;
 }
 
 .main-content.has-collapsed-dashboard {
-  margin-left: 60px;
+  margin-left: 0;
 }
 
 .app-header {

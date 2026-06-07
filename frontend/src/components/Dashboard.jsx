@@ -40,9 +40,11 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
 
   return (
     <div className="gvas-dashboard">
-      <div className="geological-bg"></div>
-      <div className={`side-panel ${isExpanded ? 'expanded' : 'collapsed'}`}>
+      <div className={`bottom-panel ${isExpanded ? 'expanded' : 'collapsed'}`}>
         <div className="panel-header">
+          <button className="toggle-side" onClick={onToggleExpand}>
+            {isExpanded ? '▲' : '▼'}
+          </button>
           <div className="logo-area">
             <div className="volcanic-icon">
               <div className="lava-layer l1"></div><div className="lava-layer l2"></div>
@@ -52,50 +54,55 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
             <div className="branding">
               <h2>GVAS</h2>
               <span className="full-name">Global Volcanic Aquifer Solutions</span>
-              <span className="tagline">Advanced Causal Subsurface Intelligence Platform for Volcanic Hydrostratigraphy Analysis and Interpretation Worldwide</span>
+              {isExpanded && <span className="tagline">Advanced Causal Subsurface Intelligence Platform for Volcanic Hydrostratigraphy Analysis and Interpretation Worldwide</span>}
             </div>
           </div>
-          <button className="toggle-side" onClick={onToggleExpand}>{isExpanded ? '←' : '→'}</button>
         </div>
 
-        <div className="main-vertical">
-          <div className="scroll-content">
-            <S.Welcome />
-            <S.PlatformOverview />
-            <S.CurrentStatus metrics={calculatedMetrics} />
-            <S.GeologicalInfo />
-            <S.Environment />
-            <S.Features />
-            <S.Symbols />
-            <S.Properties />
-            <S.Classification />
-            <S.Stats metrics={calculatedMetrics} />
-            <S.MetricsSummary metrics={calculatedMetrics} />
-            <S.Nav activeSection={activeSection} setActiveSection={setActiveSection} />
-            <S.Content activeSection={activeSection} topProductive={topProductive} onFileUpload={onFileUpload} onExport={onExport} />
-            <S.Footer />
+        {isExpanded && (
+          <div className="main-horizontal">
+            <div className="scroll-content">
+              <S.Welcome />
+              <S.PlatformOverview />
+              <S.CurrentStatus metrics={calculatedMetrics} />
+              <S.GeologicalInfo />
+              <S.Environment />
+              <S.Features />
+              <S.Symbols />
+              <S.Properties />
+              <S.Classification />
+              <S.Stats metrics={calculatedMetrics} />
+              <S.MetricsSummary metrics={calculatedMetrics} />
+              <S.Nav activeSection={activeSection} setActiveSection={setActiveSection} />
+              <S.Content activeSection={activeSection} topProductive={topProductive} onFileUpload={onFileUpload} onExport={onExport} />
+              <S.Footer />
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       <style jsx>{`
-        .gvas-dashboard { position: relative; height: 100%; display: flex; }
-        .geological-bg { position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+        .gvas-dashboard { width: 100%; position: relative; }
+        .geological-bg { position: fixed; bottom: 0; left: 0; right: 0; top: auto;
           background: linear-gradient(135deg, rgba(10,20,40,0.95), rgba(20,40,60,0.98), rgba(10,20,40,0.95)),
-            repeating-linear-gradient(to bottom, transparent, transparent 40px, rgba(80,120,160,0.04) 40px, rgba(80,120,160,0.04) 43px, rgba(120,160,200,0.03) 43px, rgba(120,160,200,0.03) 46px),
-            repeating-linear-gradient(-45deg, transparent, transparent 60px, rgba(100,140,180,0.03) 60px, rgba(100,140,180,0.03) 65px),
-            radial-gradient(ellipse at 50% 0%, rgba(40,80,120,0.2), transparent 100%);
+            repeating-linear-gradient(to right, transparent, transparent 40px, rgba(80,120,160,0.04) 40px, rgba(80,120,160,0.04) 43px, rgba(120,160,200,0.03) 43px, rgba(120,160,200,0.03) 46px),
+            repeating-linear-gradient(45deg, transparent, transparent 60px, rgba(100,140,180,0.03) 60px, rgba(100,140,180,0.03) 65px),
+            radial-gradient(ellipse at 50% 100%, rgba(40,80,120,0.2), transparent 100%);
           z-index: -1; pointer-events: none; }
         
-        .side-panel { width: 350px; background: rgba(15,30,50,0.9); color: #fff; display: flex; flex-direction: column;
-          transition: width 0.3s; margin: 0.5rem; border-radius: 0.75rem; border: 1px solid rgba(77,166,255,0.3);
-          box-shadow: 0 10px 40px rgba(0,0,0,0.6); backdrop-filter: blur(10px); overflow-y: auto; max-height: 100vh; }
-        .side-panel.collapsed { width: 60px; }
-        .side-panel.collapsed .logo-area .branding, .side-panel.collapsed .main-vertical { display: none; }
+        .bottom-panel { width: 100%; background: rgba(15,30,50,0.95); color: #fff; display: flex; flex-direction: column;
+          border-top: 1px solid rgba(77,166,255,0.3);
+          box-shadow: 0 -10px 40px rgba(0,0,0,0.6); backdrop-filter: blur(10px); }
+        .bottom-panel.collapsed { min-height: 70px; }
+        .bottom-panel.expanded { min-height: 350px; max-height: 60vh; }
         
-        .panel-header { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem; border-bottom: 1px solid rgba(77,166,255,0.4);
-          background: linear-gradient(135deg, rgba(52,152,219,0.2), rgba(46,204,113,0.2)); }
-        .logo-area { display: flex; align-items: center; gap: 1rem; width: 100%; }
+        .panel-header { display: flex; align-items: center; padding: 1rem; background: linear-gradient(135deg, rgba(52,152,219,0.2), rgba(46,204,113,0.2));
+          border-bottom: 1px solid rgba(77,166,255,0.4); width: 100%; box-sizing: border-box; }
+        .toggle-side { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: #fff; padding: 0.5rem 1rem;
+          border-radius: 0.5rem; cursor: pointer; font-size: 1.2rem; transition: all 0.2s; min-width: 50px; text-align: center; }
+        .toggle-side:hover { background: rgba(77,166,255,0.3); border-color: rgba(77,166,255,0.6); transform: scale(1.05); }
+        
+        .logo-area { display: flex; align-items: center; gap: 1rem; flex: 1; }
         
         .volcanic-icon { position: relative; width: 50px; height: 50px; }
         .lava-layer { position: absolute; border-radius: 50%; opacity: 0.8; }
@@ -117,11 +124,7 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
         .full-name { color: rgba(255,255,255,0.95); font-size: 1rem; display: block; margin-top: 0.25rem; font-weight: 500; }
         .tagline { color: rgba(133,193,233,0.85); font-size: 0.75rem; display: block; margin-top: 0.2rem; font-style: italic; line-height: 1.5; }
         
-        .toggle-side { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: #fff; padding: 0.6rem 0.85rem;
-          border-radius: 0.5rem; cursor: pointer; font-size: 1.1rem; transition: all 0.2s; min-width: 45px; }
-        .toggle-side:hover { background: rgba(77,166,255,0.3); border-color: rgba(77,166,255,0.6); transform: scale(1.1); }
-        
-        .main-vertical { flex: 1; display: flex; flex-direction: column; }
+        .main-horizontal { flex: 1; display: flex; flex-direction: column; width: 100%; }
         .scroll-content { flex: 1; overflow-y: auto; padding: 0.5rem; }
         
         /* All content in single column */
@@ -236,13 +239,12 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
         
         /* Responsive */
         @media (max-width: 768px) {
-          .side-panel.collapsed { display: none !important; }
-          .side-panel { width: 100% !important; max-width: 100% !important; margin: 0 !important; }
-          .side-panel.expanded, .side-panel.collapsed { width: 100% !important; }
+          .bottom-panel.collapsed { min-height: 60px !important; }
+          .bottom-panel { width: 100% !important; }
+          .bottom-panel.expanded { max-height: 70vh !important; }
         }
         @media (min-width: 768px) {
-          .side-panel { min-width: 280px !important; max-width: 350px !important; }
-          .side-panel.collapsed { width: 60px !important; }
+          .bottom-panel.expanded { max-height: 50vh !important; }
         }
         
         .sec, .content-panel, .nav-sec, .footer { width: 100%; max-width: 100%; box-sizing: border-box; }
