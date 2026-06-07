@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
-import { FaMountain, FaFileAlt, FaCube, FaRulerCombined, FaGlobe, FaComments } from 'react-icons/fa';
+import { FaFileAlt, FaCube, FaRulerCombined, FaGlobe, FaComments } from 'react-icons/fa';
 import WellLogUploader from './components/WellLogUploader';
 import Model3DViewer from './components/Model3DViewer';
 import CrossSectionTool from './components/CrossSectionTool';
@@ -156,7 +156,7 @@ function App() {
         // Base64 encoded
         const base64Data = data.split(',')[1];
         blobData = atob(base64Data);
-      } else if (typeof data === 'string' && format === 'pdf' || mime_type === 'application/pdf') {
+      } else if ((typeof data === 'string' && format === 'pdf') || mime_type === 'application/pdf') {
         // It's base64 encoded PDF data
         blobData = atob(data);
       }
