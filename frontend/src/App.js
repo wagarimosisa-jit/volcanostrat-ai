@@ -217,8 +217,8 @@ function App() {
 
       <div className={`main-content ${!isDashboardExpanded ? 'has-collapsed-dashboard' : ''}`}>
         <header className="app-header">
-          <h1><FaMountain className="volcano-icon" /> VolcanoStrat AI</h1>
-          <p>AI-Powered Volcanic Aquifer Stratigraphy</p>
+          <h1><FaGlobe className="volcano-icon" /> GVAS - Global Volcanic Aquifer Solutions</h1>
+          <p>Advanced AI-Powered Volcanic Hydrostratigraphy Platform for Worldwide Applications</p>
         </header>
 
         <div className="tabs">
@@ -360,7 +360,7 @@ function App() {
       </main>
 
       <footer className="app-footer">
-        <p>© 2026 VolcanoStrat AI | Built for you!</p>
+        <p>© 2026 GVAS - Global Volcanic Aquifer Solutions | Built for you!</p>
       </footer>
       </div>
     </div>
