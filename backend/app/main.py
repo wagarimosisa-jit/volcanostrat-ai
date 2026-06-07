@@ -4,12 +4,13 @@ from fastapi.responses import JSONResponse, FileResponse
 import pandas as pd
 import json
 import os
-from typing import List, Optional
+from typing import List, Optional, Dict
 from pathlib import Path
 import base64
 import io
 import zipfile
 import tempfile
+from datetime import datetime
 
 # Import local modules
 from .models.well_log import WellData, WellLog
@@ -17,10 +18,13 @@ from .models.response import VoxelModel, CrossSection, ExportResponse
 from .services.standardizer import prepare_well_data, standardize_lithology
 from .services.classifier import predict_hydraulic_properties
 from .services.shapefile_importer import shapefile_importer
+from .services.causal_engine import causal_engine
+from .services.file_importers import FileImporterFactory, ExcelImporter, LASImporter, GeoJSONImporter
 from .engines.voxel_engine import create_voxel_model, extract_layers
 from .engines.cross_section import generate_cross_section
 from .engines.exporter import export_to_csv, export_to_vtk, export_to_kml
 from .engines.shapefile_exporter import shapefile_exporter
+from .engines.pdf_exporter import pdf_exporter
 
 # Initialize FastAPI
 app = FastAPI(
@@ -594,3 +598,639 @@ async def upload_study_area(file: UploadFile = File(...)):
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+# ============================================================================
+# CSIE (Causal Subsurface Intelligence Engine) Endpoints
+# ============================================================================
+
+@app.post("/api/causal/analyze")
+async def analyze_causal(well_data: WellData):
+    """
+    Transform well logs into Causal Earth Process Records (CEPR).
+    
+    This is the core CSIE endpoint: instead of asking "What is underground?",
+    we answer "Why is it like this, and what caused it?"
+    
+    Returns CEPRs with:
+    - Causal processes identified
+    - Causal chains
+    - Aquifer formation explanations
+    - CCI, FEP, HCSS metrics
+    """
+    try:
+        # Standardize the well data first
+        standardized = await standardize_wells(well_data)
+        
+        # Transform to CEPR
+        ceprs = []
+        for well in standardized['wells']:
+            cepr = causal_engine.transform_to_cepr(well)
+            ceprs.append(cepr.to_dict())
+        
+        return JSONResponse(content={
+            "ceprs": ceprs,
+            "count": len(ceprs),
+            "analysis_type": "causal_earth_process_records"
+        })
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/causal/what-if")
+async def what_if_analysis(well_data: WellData, scenario: str = "What if eruption rate was lower?"):
+    """
+    Run a "What-If" geological scenario simulation.
+    
+    Example scenarios:
+    - "What if eruption rate was lower?"
+    - "What if cooling was faster?"
+    - "What if there was more tectonic stress?"
+    
+    Returns the original and modified CEPR with predicted changes.
+    """
+    try:
+        # Standardize the well data first
+        standardized = await standardize_wells(well_data)
+        
+        if not standardized['wells']:
+            raise HTTPException(status_code=400, detail="No wells to analyze")
+        
+        # Use first well for what-if analysis
+        well = standardized['wells'][0]
+        cepr = causal_engine.transform_to_cepr(well)
+        
+        # Run what-if scenario
+        result = causal_engine.get_what_if_scenario(cepr, scenario)
+        
+        return JSONResponse(content=result)
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/causal/compare")
+async def compare_causal(well_data: WellData, well_id1: str, well_id2: str):
+    """
+    Compare two wells based on causal process similarity, not just lithology.
+    
+    This is extremely different from current systems which only compare rock types.
+    We compare the geological process history that created the rocks.
+    
+    Returns:
+    - Process similarity
+    - Chain similarity
+    - Depth similarity
+    - Overall similarity with type classification
+    """
+    try:
+        # Standardize the well data first
+        standardized = await standardize_wells(well_data)
+        
+        wells = {w['Well_ID']: w for w in standardized['wells']}
+        
+        if well_id1 not in wells or well_id2 not in wells:
+            raise HTTPException(status_code=404, detail=f"One or both wells not found: {well_id1}, {well_id2}")
+        
+        # Transform to CEPR
+        cepr1 = causal_engine.transform_to_cepr(wells[well_id1])
+        cepr2 = causal_engine.transform_to_cepr(wells[well_id2])
+        
+        # Compare
+        result = causal_engine.compare_causal_similarity(cepr1, cepr2)
+        
+        return JSONResponse(content=result)
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/causal/predict")
+async def predict_aquifer_targets(well_data: WellData):
+    """
+    Predict new aquifer targets based on missing causal patterns.
+    
+    Instead of modeling existing data only, the system predicts:
+    "New productive aquifer likely between 180–220 m based on missing causal pattern continuation."
+    
+    Returns ranked list of potential aquifer targets with:
+    - Depth range
+    - Process chain
+    - Confidence
+    - Reason
+    """
+    try:
+        # Standardize the well data first
+        standardized = await standardize_wells(well_data)
+        
+        if not standardized['wells']:
+            raise HTTPException(status_code=400, detail="No wells to analyze")
+        
+        # Transform to CEPR
+        ceprs = [causal_engine.transform_to_cepr(well) for well in standardized['wells']]
+        
+        # Predict targets
+        targets = causal_engine.predict_aquifer_targets(ceprs)
+        
+        return JSONResponse(content={
+            "targets": targets,
+            "count": len(targets),
+            "analysis_type": "predictive_aquifer_discovery"
+        })
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/causal/visualization")
+async def get_causal_visualization(well_id: str):
+    """
+    Generate a visualization of the causal relationships for a well.
+    
+    Returns a base64-encoded PNG image of the causal graph.
+    """
+    try:
+        # This would need access to the well data
+        # For now, return a placeholder
+        if well_id not in causal_engine.well_ceprs:
+            raise HTTPException(status_code=404, detail=f"Well {well_id} not found in CEPR cache")
+        
+        cepr = causal_engine.well_ceprs[well_id]
+        visualization = causal_engine.get_causal_visualization(cepr)
+        
+        return JSONResponse(content=visualization)
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ============================================================================
+# Multi-Format File Upload Endpoints
+# ============================================================================
+
+@app.post("/api/upload/excel")
+async def upload_excel(file: UploadFile = File(...)):
+    """
+    Upload and process an Excel well log file (.xlsx, .xls).
+    """
+    try:
+        contents = await file.read()
+        result = ExcelImporter.import_file(contents, file.filename)
+        
+        # Convert to WellData format for processing
+        wells = []
+        for well in result['wells']:
+            intervals = well.get('Depth_Intervals', [])
+            if intervals:
+                first_interval = intervals[0]
+            else:
+                first_interval = {'depth_start': 0, 'depth_end': 100, 'raw_lithology': 'Unknown'}
+            
+            w = WellLog(
+                Well_ID=well['Well_ID'],
+                X_Coordinate=well['X_Coordinate'],
+                Y_Coordinate=well['Y_Coordinate'],
+                Elevation_m=well['Elevation_m'],
+                Depth_Start_m=first_interval['depth_start'],
+                Depth_End_m=first_interval['depth_end'],
+                Raw_Lithology_Description=first_interval['raw_lithology']
+            )
+            wells.append(w)
+        
+        well_data = WellData(wells=wells)
+        
+        # Process
+        standardized = await standardize_wells(well_data)
+        model_3d = await generate_3d_model(well_data)
+        cross_section = await generate_cross_section_endpoint(well_data)
+        
+        return JSONResponse(content={
+            "standardized": standardized,
+            "model_3d": model_3d,
+            "cross_section": cross_section,
+            "import_metadata": {
+                "format": result['format'],
+                "count": result['count'],
+                "source": result.get('source', file.filename)
+            }
+        })
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/upload/las")
+async def upload_las(file: UploadFile = File(...)):
+    """
+    Upload and process a LAS (Log ASCII Standard) well log file (.las).
+    """
+    try:
+        contents = await file.read()
+        result = LASImporter.import_file(contents, file.filename)
+        
+        # Convert to WellData format
+        wells = []
+        for well in result['wells']:
+            intervals = well.get('Depth_Intervals', [])
+            if intervals:
+                first_interval = intervals[0]
+            else:
+                first_interval = {'depth_start': 0, 'depth_end': 100, 'raw_lithology': 'Unknown'}
+            
+            w = WellLog(
+                Well_ID=well['Well_ID'],
+                X_Coordinate=well['X_Coordinate'],
+                Y_Coordinate=well['Y_Coordinate'],
+                Elevation_m=well['Elevation_m'],
+                Depth_Start_m=first_interval['depth_start'],
+                Depth_End_m=first_interval['depth_end'],
+                Raw_Lithology_Description=first_interval['raw_lithology']
+            )
+            wells.append(w)
+        
+        well_data = WellData(wells=wells)
+        
+        # Process
+        standardized = await standardize_wells(well_data)
+        model_3d = await generate_3d_model(well_data)
+        cross_section = await generate_cross_section_endpoint(well_data)
+        
+        return JSONResponse(content={
+            "standardized": standardized,
+            "model_3d": model_3d,
+            "cross_section": cross_section,
+            "import_metadata": {
+                "format": result['format'],
+                "count": result['count'],
+                "source": result.get('source', file.filename),
+                "metadata": result.get('metadata', {})
+            }
+        })
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/upload/geojson")
+async def upload_geojson(file: UploadFile = File(...)):
+    """
+    Upload and process a GeoJSON file.
+    """
+    try:
+        contents = await file.read()
+        result = GeoJSONImporter.import_file(contents, file.filename)
+        
+        # Convert to WellData format
+        wells = []
+        for well in result['wells']:
+            intervals = well.get('Depth_Intervals', [])
+            if intervals:
+                first_interval = intervals[0]
+            else:
+                first_interval = {'depth_start': 0, 'depth_end': 100, 'raw_lithology': 'Unknown'}
+            
+            w = WellLog(
+                Well_ID=well['Well_ID'],
+                X_Coordinate=well['X_Coordinate'],
+                Y_Coordinate=well['Y_Coordinate'],
+                Elevation_m=well['Elevation_m'],
+                Depth_Start_m=first_interval['depth_start'],
+                Depth_End_m=first_interval['depth_end'],
+                Raw_Lithology_Description=first_interval['raw_lithology']
+            )
+            wells.append(w)
+        
+        well_data = WellData(wells=wells)
+        
+        # Process
+        standardized = await standardize_wells(well_data)
+        model_3d = await generate_3d_model(well_data)
+        cross_section = await generate_cross_section_endpoint(well_data)
+        
+        return JSONResponse(content={
+            "standardized": standardized,
+            "model_3d": model_3d,
+            "cross_section": cross_section,
+            "import_metadata": {
+                "format": result['format'],
+                "count": result['count'],
+                "source": result.get('source', file.filename),
+                "crs": result.get('crs', 'EPSG:4326')
+            }
+        })
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ============================================================================
+# PDF Export Endpoint
+# ============================================================================
+
+@app.post("/api/export/pdf")
+async def export_pdf(
+    well_data: Optional[WellData] = None,
+    export_type: str = "well_report",
+    well_id: Optional[str] = None,
+    project_name: str = "VolcanoStrat AI Analysis"
+):
+    """
+    Export data to PDF format.
+    
+    export_type options:
+    - "well_report": Single well report
+    - "project_report": Multi-well project report
+    - "causal_report": Causal analysis report (requires well_data)
+    """
+    try:
+        if export_type == "well_report":
+            if not well_data:
+                raise HTTPException(status_code=400, detail="well_data required for well report")
+            
+            # Standardize first
+            standardized = await standardize_wells(well_data)
+            
+            if not standardized['wells']:
+                raise HTTPException(status_code=400, detail="No wells to export")
+            
+            # Use first well
+            well = standardized['wells'][0]
+            result = pdf_exporter.export_well_report(well, 'base64')
+            
+        elif export_type == "project_report":
+            if not well_data:
+                raise HTTPException(status_code=400, detail="well_data required for project report")
+            
+            # Standardize first
+            standardized = await standardize_wells(well_data)
+            
+            if not standardized['wells']:
+                raise HTTPException(status_code=400, detail="No wells to export")
+            
+            result = pdf_exporter.export_project_report(standardized['wells'], project_name, 'base64')
+            
+        elif export_type == "causal_report":
+            if not well_data:
+                raise HTTPException(status_code=400, detail="well_data required for causal report")
+            
+            # Standardize and transform to CEPR
+            standardized = await standardize_wells(well_data)
+            ceprs = [causal_engine.transform_to_cepr(well).to_dict() for well in standardized['wells']]
+            
+            result = pdf_exporter.export_causal_report(ceprs, project_name, 'base64')
+        else:
+            raise HTTPException(status_code=400, detail=f"Unknown export type: {export_type}")
+        
+        if 'error' in result:
+            raise HTTPException(status_code=500, detail=result['error'])
+        
+        return JSONResponse(content=result)
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/export/cepr")
+async def export_cepr(well_data: WellData):
+    """
+    Export well data as Causal Earth Process Records (CEPR) in JSON format.
+    
+    This exports the causal analysis results for further processing or visualization.
+    """
+    try:
+        # Standardize the well data first
+        standardized = await standardize_wells(well_data)
+        
+        # Transform to CEPR
+        ceprs = []
+        for well in standardized['wells']:
+            cepr = causal_engine.transform_to_cepr(well)
+            ceprs.append(cepr.to_dict())
+        
+        return JSONResponse(content={
+            "ceprs": ceprs,
+            "count": len(ceprs),
+            "format": "cepr_json",
+            "export_date": datetime.now().isoformat()
+        })
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ============================================================================
+# Enhanced Upload Endpoint (Handles all formats)
+# ============================================================================
+
+@app.post("/api/upload-all-formats")
+async def upload_all_formats(file: UploadFile = File(...)):
+    """
+    Universal upload endpoint that handles CSV, Excel, LAS, GeoJSON, and Shapefile.
+    
+    Automatically detects file type and processes accordingly.
+    """
+    try:
+        contents = await file.read()
+        filename = file.filename
+        
+        # Try shapefile first
+        if filename.lower().endswith(('.shp', '.zip')):
+            shapefile_result = shapefile_importer.process_uploaded_shapefile(contents, filename)
+            
+            if shapefile_result['data_type'] == 'wells':
+                well_data_dict = shapefile_importer.convert_to_well_data(shapefile_result)
+                
+                wells = []
+                for well in well_data_dict['wells']:
+                    intervals = well.get('Depth_Intervals', [])
+                    if intervals:
+                        first_interval = intervals[0]
+                    else:
+                        first_interval = {'depth_start': 0, 'depth_end': 100, 'raw_lithology': 'Unknown'}
+                    
+                    w = WellLog(
+                        Well_ID=well['Well_ID'],
+                        X_Coordinate=well['X_Coordinate'],
+                        Y_Coordinate=well['Y_Coordinate'],
+                        Elevation_m=well['Elevation_m'],
+                        Depth_Start_m=first_interval['depth_start'],
+                        Depth_End_m=first_interval['depth_end'],
+                        Raw_Lithology_Description=first_interval['raw_lithology']
+                    )
+                    wells.append(w)
+                
+                well_data = WellData(wells=wells)
+                
+                # Process
+                standardized = await standardize_wells(well_data)
+                model_3d = await generate_3d_model(well_data)
+                cross_section = await generate_cross_section_endpoint(well_data)
+                
+                return JSONResponse(content={
+                    "standardized": standardized,
+                    "model_3d": model_3d,
+                    "cross_section": cross_section,
+                    "import_metadata": {
+                        "format": "shapefile",
+                        "type": shapefile_result['data_type'],
+                        "crs": shapefile_result.get('crs', 'EPSG:4326'),
+                        "feature_count": shapefile_result.get('feature_count', 0)
+                    }
+                })
+            else:
+                return JSONResponse(content={
+                    "type": shapefile_result['data_type'],
+                    "data": shapefile_result,
+                    "import_metadata": {
+                        "format": "shapefile",
+                        "source": filename
+                    }
+                })
+        
+        # Try other formats
+        importer = FileImporterFactory.get_importer(filename)
+        if importer:
+            result = importer.import_file(contents, filename)
+            
+            # Convert to WellData format
+            wells = []
+            for well in result['wells']:
+                intervals = well.get('Depth_Intervals', [])
+                if intervals:
+                    first_interval = intervals[0]
+                else:
+                    first_interval = {'depth_start': 0, 'depth_end': 100, 'raw_lithology': 'Unknown'}
+                
+                w = WellLog(
+                    Well_ID=well['Well_ID'],
+                    X_Coordinate=well['X_Coordinate'],
+                    Y_Coordinate=well['Y_Coordinate'],
+                    Elevation_m=well['Elevation_m'],
+                    Depth_Start_m=first_interval['depth_start'],
+                    Depth_End_m=first_interval['depth_end'],
+                    Raw_Lithology_Description=first_interval['raw_lithology']
+                )
+                wells.append(w)
+            
+            well_data = WellData(wells=wells)
+            
+            # Process
+            standardized = await standardize_wells(well_data)
+            model_3d = await generate_3d_model(well_data)
+            cross_section = await generate_cross_section_endpoint(well_data)
+            
+            return JSONResponse(content={
+                "standardized": standardized,
+                "model_3d": model_3d,
+                "cross_section": cross_section,
+                "import_metadata": {
+                    "format": result['format'],
+                    "count": result['count'],
+                    "source": result.get('source', filename)
+                }
+            })
+        
+        # Default to CSV
+        if filename.lower().endswith('.csv'):
+            df = pd.read_csv(io.BytesIO(contents))
+            
+            # Validate required columns
+            required_columns = ['Well_ID', 'X_Coordinate', 'Y_Coordinate', 'Elevation_m',
+                               'Depth_Start_m', 'Depth_End_m', 'Raw_Lithology_Description']
+            for col in required_columns:
+                if col not in df.columns:
+                    raise HTTPException(status_code=400, detail=f"Missing column: {col}")
+            
+            wells = []
+            for _, row in df.iterrows():
+                well = WellLog(
+                    Well_ID=row['Well_ID'],
+                    X_Coordinate=row['X_Coordinate'],
+                    Y_Coordinate=row['Y_Coordinate'],
+                    Elevation_m=row['Elevation_m'],
+                    Depth_Start_m=row['Depth_Start_m'],
+                    Depth_End_m=row['Depth_End_m'],
+                    Raw_Lithology_Description=row['Raw_Lithology_Description']
+                )
+                wells.append(well)
+            
+            well_data = WellData(wells=wells)
+            
+            # Process
+            standardized = await standardize_wells(well_data)
+            model_3d = await generate_3d_model(well_data)
+            cross_section = await generate_cross_section_endpoint(well_data)
+            
+            return JSONResponse(content={
+                "standardized": standardized,
+                "model_3d": model_3d,
+                "cross_section": cross_section,
+                "import_metadata": {
+                    "format": "csv",
+                    "count": len(wells),
+                    "source": filename
+                }
+            })
+        
+        raise HTTPException(status_code=400, detail=f"Unsupported file format: {filename}")
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ============================================================================
+# Health and Info Endpoints
+# ============================================================================
+
+@app.get("/api/info")
+async def get_api_info():
+    """
+    Get API information and supported formats.
+    """
+    return JSONResponse(content={
+        "name": "VolcanoStrat AI - Causal Subsurface Intelligence Engine",
+        "version": "1.0.0",
+        "description": "Transforms heterogeneous volcanic well logs into uncertainty-aware hydrostratigraphic knowledge models and groundwater decision-support systems.",
+        "developer": "Wagari Mosisa Kitessa",
+        "contact": {
+            "email": ["wagari.mosisa@ju.edu.et", "wagarimosisa@gmail.com"],
+            "github": "https://github.com/wagarimosisa-jit/volcanostrat-ai"
+        },
+        "supported_formats": {
+            "import": ["CSV", "Excel (.xlsx, .xls)", "LAS", "GeoJSON", "Shapefile (.shp, .zip)"],
+            "export": ["CSV", "JSON", "PDF", "Shapefile (.zip)", "VTK (.vti)", "KML (.kml)", "PNG"]
+        },
+        "features": {
+            "causal_analysis": "Causal Earth Process Records (CEPR) transformation",
+            "what_if_simulator": "Geological scenario simulation",
+            "causal_similarity": "Well comparison based on process history",
+            "aquifer_prediction": "Predictive aquifer discovery engine",
+            "complexity_reduction": "Complexity Reduction Index (CRI) calculation",
+            "uncertainty_modeling": "Uncertainty-aware geological modeling",
+            "multi_format_support": "CSV, Excel, LAS, GeoJSON, Shapefile I/O",
+            "3d_modeling": "3D voxel geological models",
+            "cross_sections": "2D cross-section generation",
+            "pdf_reports": "Comprehensive PDF report generation"
+        },
+        "endpoints": {
+            "standardize": "/api/standardize",
+            "3d_model": "/api/3d-model",
+            "cross_section": "/api/cross-section",
+            "export": "/api/export",
+            "upload": "/api/upload",
+            "upload_shapefile": "/api/upload-shapefile",
+            "upload_cross_section": "/api/upload-cross-section-shapefile",
+            "upload_study_area": "/api/upload-study-area",
+            "causal_analyze": "/api/causal/analyze",
+            "causal_what_if": "/api/causal/what-if",
+            "causal_compare": "/api/causal/compare",
+            "causal_predict": "/api/causal/predict",
+            "upload_excel": "/api/upload/excel",
+            "upload_las": "/api/upload/las",
+            "upload_geojson": "/api/upload/geojson",
+            "export_pdf": "/api/export/pdf",
+            "export_cepr": "/api/export/cepr",
+            "upload_all": "/api/upload-all-formats"
+        }
+    })

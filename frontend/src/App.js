@@ -32,16 +32,32 @@ function App() {
       const formData = new FormData();
       formData.append('file', file);
 
-      const response = await axios.post(`${API_BASE}/api/upload`, formData, {
+      // Use the universal upload endpoint that handles all formats
+      const response = await axios.post(`${API_BASE}/api/upload-all-formats`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       });
 
-      setWells(response.data.standardized.wells);
-      setStandardizedData(response.data.standardized);
-      setVoxelModel(response.data.model_3d.voxel_model);
-      setCrossSection(response.data.cross_section);
+      // Handle different response types
+      if (response.data.standardized) {
+        setWells(response.data.standardized.wells);
+        setStandardizedData(response.data.standardized);
+        if (response.data.model_3d) {
+          setVoxelModel(response.data.model_3d.voxel_model);
+        }
+        if (response.data.cross_section) {
+          setCrossSection(response.data.cross_section);
+        }
+      } else if (response.data.type === 'cross_section_line') {
+        // Cross-section line uploaded
+        setLinePoints(response.data.line_points || []);
+        setActiveTab('cross-section');
+      } else if (response.data.type === 'study_area') {
+        // Study area uploaded
+        console.log('Study area uploaded:', response.data);
+        setError('Study area uploaded successfully! Use it for cross-sections.');
+      }
 
     } catch (err) {
       setError(err.response?.data?.detail || 'Failed to process file');
@@ -78,34 +94,95 @@ function App() {
   };
 
   const exportData = async (exportType, exportFormat) => {
-    if (!standardizedData) return;
+    if (!standardizedData && exportType !== 'pdf') return;
 
     setIsLoading(true);
     try {
-      const response = await axios.post(`${API_BASE}/api/export`, {
-        wells: { wells: wells.map(w => ({
-          Well_ID: w.Well_ID,
-          X_Coordinate: w.Coordinates.X,
-          Y_Coordinate: w.Coordinates.Y,
-          Elevation_m: w.Coordinates.Elevation,
-          Depth_Start_m: 0,
-          Depth_End_m: Math.max(...w.Layers.map(l => l.Depth_End)),
-          Raw_Lithology_Description: w.Layers.map(l => l.Modifiers.join(', ')).join('; ')
-        }))},
-        export_type: exportType,
-        export_format: exportFormat,
-        line_points: linePoints
-      });
+      let response;
+      
+      // Handle PDF exports separately
+      if (exportType === 'pdf') {
+        response = await axios.post(`${API_BASE}/api/export/pdf`, {
+          wells: { wells: wells.map(w => ({
+            Well_ID: w.Well_ID,
+            X_Coordinate: w.Coordinates.X,
+            Y_Coordinate: w.Coordinates.Y,
+            Elevation_m: w.Coordinates.Elevation,
+            Depth_Start_m: 0,
+            Depth_End_m: Math.max(...w.Layers.map(l => l.Depth_End)),
+            Raw_Lithology_Description: w.Layers.map(l => l.Modifiers.join(', ')).join('; ')
+          }))},
+          export_type: exportFormat,
+          project_name: 'VolcanoStrat AI Export'
+        });
+      } else if (exportType === 'cepr') {
+        // Export CEPR data
+        response = await axios.post(`${API_BASE}/api/export/cepr`, {
+          wells: { wells: wells.map(w => ({
+            Well_ID: w.Well_ID,
+            X_Coordinate: w.Coordinates.X,
+            Y_Coordinate: w.Coordinates.Y,
+            Elevation_m: w.Coordinates.Elevation,
+            Depth_Start_m: 0,
+            Depth_End_m: Math.max(...w.Layers.map(l => l.Depth_End)),
+            Raw_Lithology_Description: w.Layers.map(l => l.Modifiers.join(', ')).join('; ')
+          }))}
+        });
+      } else {
+        // Standard export
+        response = await axios.post(`${API_BASE}/api/export`, {
+          wells: { wells: wells.map(w => ({
+            Well_ID: w.Well_ID,
+            X_Coordinate: w.Coordinates.X,
+            Y_Coordinate: w.Coordinates.Y,
+            Elevation_m: w.Coordinates.Elevation,
+            Depth_Start_m: 0,
+            Depth_End_m: Math.max(...w.Layers.map(l => l.Depth_End)),
+            Raw_Lithology_Description: w.Layers.map(l => l.Modifiers.join(', ')).join('; ')
+          }))},
+          export_type: exportType,
+          export_format: exportFormat,
+          line_points: linePoints
+        });
+      }
 
-      const { data, filename, format } = response.data;
-      const blob = new Blob([data], { type: format === 'csv' ? 'text/csv' :
-                                       format === 'png' ? 'image/png' :
-                                       format === 'json' ? 'application/json' :
-                                       'application/octet-stream' });
+      const { data, filename, format, mime_type } = response.data;
+      
+      // Decode base64 data if needed
+      let blobData = data;
+      if (typeof data === 'string' && data.startsWith('data:')) {
+        // Base64 encoded
+        const base64Data = data.split(',')[1];
+        blobData = atob(base64Data);
+      } else if (typeof data === 'string' && format === 'pdf' || mime_type === 'application/pdf') {
+        // It's base64 encoded PDF data
+        blobData = atob(data);
+      }
+
+      // Determine content type
+      let contentType = mime_type || 
+        (format === 'csv' ? 'text/csv' :
+         format === 'png' ? 'image/png' :
+         format === 'json' ? 'application/json' :
+         format === 'pdf' ? 'application/pdf' :
+         format === 'zip' ? 'application/zip' :
+         'application/octet-stream');
+
+      // For base64 data, convert to binary
+      if (typeof blobData === 'string' && !blobData.startsWith('data:')) {
+        const binaryString = atob(blobData);
+        const bytes = new Uint8Array(binaryString.length);
+        for (let i = 0; i < binaryString.length; i++) {
+          bytes[i] = binaryString.charCodeAt(i);
+        }
+        blobData = bytes;
+      }
+
+      const blob = new Blob([blobData], { type: contentType });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = filename;
+      a.download = filename || `export.${format || 'dat'}`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -113,6 +190,7 @@ function App() {
 
     } catch (err) {
       setError(err.response?.data?.detail || 'Failed to export');
+      console.error('Export error:', err);
     } finally {
       setIsLoading(false);
     }
@@ -221,10 +299,13 @@ function App() {
             <ExportPanel
               onExport={exportData}
               availableExports={[
-                { type: 'layers', formats: ['csv', 'json'] },
-                { type: 'combined_2d', formats: ['png'] },
-                { type: 'combined_3d', formats: ['vtk', 'kml'] }
+                { type: 'wells', formats: ['csv', 'json', 'shp'] },
+                { type: 'layers', formats: ['csv', 'json', 'shp'] },
+                { type: 'combined_2d', formats: ['png', 'shp'] },
+                { type: 'combined_3d', formats: ['vtk', 'kml', 'shp'] }
               ]}
+              wells={wells}
+              standardizedData={standardizedData}
             />
           </div>
         )}
@@ -239,8 +320,13 @@ function App() {
               wells={standardizedData.wells}
             />
             <ExportPanel
-              onExport={(format) => exportData('combined_2d', format)}
-              availableExports={[{ type: 'combined_2d', formats: ['png'] }]}
+              onExport={exportData}
+              availableExports={[
+                { type: 'combined_2d', formats: ['png', 'shp'] },
+                { type: 'pdf', formats: ['well_report', 'project_report'] }
+              ]}
+              wells={wells}
+              standardizedData={standardizedData}
             />
           </div>
         )}
@@ -249,8 +335,14 @@ function App() {
           <div className="google-earth-container">
             <GoogleEarthViewer wells={standardizedData.wells} />
             <ExportPanel
-              onExport={(format) => exportData('combined_3d', format)}
-              availableExports={[{ type: 'combined_3d', formats: ['kml'] }]}
+              onExport={exportData}
+              availableExports={[
+                { type: 'combined_3d', formats: ['kml', 'shp'] },
+                { type: 'wells', formats: ['kml'] },
+                { type: 'pdf', formats: ['project_report'] }
+              ]}
+              wells={wells}
+              standardizedData={standardizedData}
             />
           </div>
         )}
