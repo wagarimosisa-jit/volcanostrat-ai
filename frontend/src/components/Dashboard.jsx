@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FaGlobe, FaWater, FaChartBar, FaTachometerAlt, FaLayerGroup, FaCog, FaInfoCircle, FaFileImport, FaFileExport, FaQuestionCircle, FaUserGraduate, FaEnvelope, FaGithub, FaFire, FaCompass, FaRulerCombined, FaSearch, FaFilter, FaGem, FaTint } from 'react-icons/fa';
 
-const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport, isExpanded = true, onToggleExpand }) => {
+const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport, isExpanded = false, onToggleExpand }) => {
   const [activeSection, setActiveSection] = useState('overview');
 
   const calculateMetrics = () => {

@@ -22,7 +22,7 @@ function App() {
     { x: 0, y: 0 },
     { x: 100, y: 100 }
   ]);
-  const [isDashboardExpanded, setIsDashboardExpanded] = useState(true);
+  const [isDashboardExpanded, setIsDashboardExpanded] = useState(false);
 
   const API_BASE = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
