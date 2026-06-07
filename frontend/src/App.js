@@ -358,7 +358,6 @@ function App() {
       <footer className="app-footer">
         <p>© 2026 VolcanoStrat AI | Built with ❤️ for Hydrogeologists</p>
       </footer>
-      </main>
       </div>
     </div>
   );
