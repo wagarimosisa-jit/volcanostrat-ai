@@ -52,9 +52,11 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
               <div className="core"></div><div className="fractures"></div>
             </div>
             <div className="branding">
-              <h2>GVAS</h2>
-              <span className="full-name">Global Volcanic Aquifer Solutions</span>
+              <h2>GVAS - Global Volcanic Aquifer Solutions</h2>
               {isExpanded && <span className="tagline">Advanced Causal Subsurface Intelligence Platform for Volcanic Hydrostratigraphy Analysis and Interpretation Worldwide</span>}
+            </div>
+            <div className="header-nav">
+              <S.Nav activeSection={activeSection} setActiveSection={setActiveSection} />
             </div>
           </div>
         </div>
@@ -73,7 +75,6 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
               <S.Classification />
               <S.Stats metrics={calculatedMetrics} />
               <S.MetricsSummary metrics={calculatedMetrics} />
-              <S.Nav activeSection={activeSection} setActiveSection={setActiveSection} />
               <S.Content activeSection={activeSection} topProductive={topProductive} onFileUpload={onFileUpload} onExport={onExport} />
               <S.Footer />
             </div>
@@ -84,18 +85,24 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
       <style jsx>{`
         .gvas-dashboard { width: 100%; position: relative; }
         
-        .bottom-panel { width: 100%; background: #1a237e; color: #fff; display: flex; flex-direction: column;
-          border-top: 2px solid #4da6ff;
-          box-shadow: 0 -4px 15px rgba(0,0,0,0.3); }
+        .bottom-panel { width: 100%; background: linear-gradient(135deg, #0d47a1 0%, #1565c0 50%, #1a237e 100%); color: #fff; display: flex; flex-direction: column;
+          border-top: 3px solid #ffd700;
+          box-shadow: 0 -4px 20px rgba(0,0,0,0.4); }
         .bottom-panel.collapsed { min-height: 70px; }
         .bottom-panel.expanded { min-height: 350px; max-height: 60vh; }
         
-        .panel-header { display: flex; align-items: center; padding: 1rem; background: #1565c0; border-bottom: 1px solid #4da6ff; width: 100%; box-sizing: border-box; }
+        .panel-header { display: flex; align-items: center; padding: 1rem; background: linear-gradient(135deg, rgba(21,101,192,0.9) 0%, rgba(26,35,126,0.9) 100%); border-bottom: 2px solid #ffd700; width: 100%; box-sizing: border-box; }
         .toggle-side { background: #4da6ff; border: none; color: #fff; padding: 0.5rem 1rem;
           border-radius: 0.5rem; cursor: pointer; font-size: 1.2rem; transition: all 0.2s; min-width: 50px; text-align: center; }
         .toggle-side:hover { background: #1e88e5; transform: scale(1.05); }
         
-        .logo-area { display: flex; align-items: center; gap: 1rem; flex: 1; }
+        .logo-area { display: flex; align-items: center; gap: 1rem; flex: 1; min-width: 0; }
+        .header-nav { display: flex; align-items: center; margin-left: auto; }
+        .header-nav .nav-sec { padding: 0; margin: 0; background: transparent; border: none; box-shadow: none; }
+        .header-nav .nav-buttons { flex-direction: row; gap: 0.25rem; }
+        .header-nav .nav-buttons button { padding: 0.5rem 0.75rem; font-size: 0.8rem; border-left: none; }
+        .header-nav .nav-buttons button:hover { background: #1a237e; transform: none; }
+        .header-nav .nav-buttons button.active { background: #4da6ff; border-left-color: transparent; box-shadow: none; }
         
         .volcanic-icon { position: relative; width: 50px; height: 50px; }
         .lava-layer { position: absolute; border-radius: 50%; opacity: 0.8; }
@@ -112,9 +119,10 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
         @keyframes glow { from {box-shadow: 0 0 5px rgba(133,193,233,0.5);} to {box-shadow: 0 0 15px rgba(133,193,233,1);} }
         @keyframes rot { from {transform: rotate(0deg);} to {transform: rotate(360deg);} }
         
-        .branding h2 { margin: 0; font-size: 2rem; font-weight: 800; letter-spacing: -1px; color: #4da6ff; }
-        .full-name { color: #e0e0e0; font-size: 1rem; display: block; margin-top: 0.25rem; font-weight: 500; }
-        .tagline { color: #b0bec5; font-size: 0.75rem; display: block; margin-top: 0.2rem; font-style: italic; line-height: 1.5; }
+        .branding { flex: 1; min-width: 400px; }
+        .branding h2 { margin: 0; font-size: 1.8rem; font-weight: 800; letter-spacing: -0.5px; color: #ffd700; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+        .full-name { color: #ffd700; font-size: 1rem; display: block; margin-top: 0.25rem; font-weight: 500; }
+        .tagline { color: #e0e0e0; font-size: 0.75rem; display: block; margin-top: 0.2rem; font-style: italic; line-height: 1.5; }
         
         .main-horizontal { flex: 1; display: flex; flex-direction: column; width: 100%; }
         .scroll-content { flex: 1; overflow-y: auto; padding: 0.5rem; }
@@ -383,7 +391,6 @@ const S = {
 
   Nav: ({ activeSection, setActiveSection }) => (
     <div className="nav-sec">
-      <h3><FaCompass className="sec-icon" /> Dashboard Navigation and Quick Access Menu</h3>
       <div className="nav-buttons">
         <button className={activeSection === 'overview' ? 'active' : ''} onClick={() => setActiveSection('overview')}><FaInfoCircle /> Overview</button>
         <button className={activeSection === 'productive' ? 'active' : ''} onClick={() => setActiveSection('productive')}><FaWater /> Top Aquifers</button>
