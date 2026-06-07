@@ -133,10 +133,10 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
         
         {/* Welcome Message */}
         <div className="welcome-message">
-          <h3><FaGlobe className="welcome-icon" /> Welcome to VolcanoStrat AI</h3>
-          <p>Your Causal Subsurface Intelligence Engine for Volcanic Hydrostratigraphy Analysis</p>
+          <h3><FaGlobe className="welcome-icon" /> Welcome to VolcanoStrat AI Platform</h3>
+          <p>Your Comprehensive Causal Subsurface Intelligence Engine specifically designed and developed for advanced Volcanic Hydrostratigraphy Analysis and interpretation</p>
           <p className="welcome-sub">
-            Transforming heterogeneous well logs into standardized, scientifically defensible hydrostratigraphic models
+            Transforming complex heterogeneous well logs from multiple sources and formats into standardized, consistent, scientifically defensible, and reproducible hydrostratigraphic models with detailed explanations and uncertainty assessments
           </p>
         </div>
         
@@ -145,15 +145,15 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
           <div className="banner-content">
             <div className="banner-item">
               <FaChartBar className="banner-icon" />
-              <span><strong>Standardized:</strong> 2,431+ Well Logs Processed</span>
+              <span><strong>Comprehensive Standardization:</strong> Processing and harmonizing well log data from diverse geological settings and formats into consistent hydrostratigraphic framework</span>
             </div>
             <div className="banner-item">
               <FaGlobe className="banner-icon" />
-              <span><strong>Global:</strong> 15+ Countries Coverage</span>
+              <span><strong>Worldwide Geological Coverage:</strong> Comprehensive volcanic ontology supporting data from all major volcanic regions and geological environments across the globe</span>
             </div>
             <div className="banner-item">
               <FaTachometerAlt className="banner-icon" />
-              <span><strong>Accuracy:</strong> 94.7% Prediction Rate</span>
+              <span><strong>Advanced Predictive Accuracy:</strong> Machine learning enhanced classification with validation against global case studies and established hydrogeological principles</span>
             </div>
           </div>
         </div>
@@ -236,12 +236,12 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
         {/* Educational Content Section */}
         <div className="educational-content">
           <div className="geo-notation">
-            <span className="notation-label">⚡ Latest Activity:</span>
-            <span className="notation-text">Processed {calculatedMetrics.totalWells} wells | {calculatedMetrics.totalLayers} layers | {calculatedMetrics.complexityReduction}% complexity reduced</span>
+            <span className="notation-label">Current Project Status and Progress:</span>
+            <span className="notation-text">Successfully processed and analyzed {calculatedMetrics.totalWells} wells containing a total of {calculatedMetrics.totalLayers} stratigraphic layers with an overall geological complexity reduction of {calculatedMetrics.complexityReduction} percent achieved through systematic standardization and classification</span>
           </div>
           <div className="geo-fact">
             <FaGem className="fact-icon" />
-            <span><strong>Did You Know?</strong> Basaltic aquifers can have transmissivity values ranging from 10-500 m²/day due to fracture networks and vesicularity. The Columbia River Basalt Group in the USA is a famous example of a highly productive basalt aquifer system.</span>
+            <span><strong>Important Geological Information:</strong> Basaltic aquifer systems represent some of the most productive groundwater resources in volcanic terranes, characterized by their extensive lateral continuity and fracture-controlled permeability. The Columbia River Basalt Group in the Pacific Northwest United States serves as an excellent example of a highly productive basalt aquifer system with transmissivity values that can range significantly depending on the degree of fracturing and vesicularity development within the lava flows.</span>
           </div>
         </div>
         
@@ -249,24 +249,24 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
         <div className="geo-environment">
           <div className="env-header">
             <FaTint className="env-icon" />
-            <span className="env-title">Current Geological Environment</span>
+            <span className="env-title">Current Geological Environment Characteristics</span>
           </div>
           <div className="env-content">
             <div className="env-item">
-              <span className="env-label">Terrane Type:</span>
-              <span className="env-value">Volcanic Rift Valley</span>
+              <span className="env-label">Tectonic Setting and Terrane Type:</span>
+              <span className="env-value">Active Continental Rift Valley System with associated volcanic activity and sedimentary basin development</span>
             </div>
             <div className="env-item">
-              <span className="env-label">Primary Lithologies:</span>
-              <span className="env-value">Basalt, Andesite, Rhyolite, Pyroclastic</span>
+              <span className="env-label">Predominant Lithological Units:</span>
+              <span className="env-value">Basaltic lava flows, Andesitic volcanic rocks, Rhyolitic dome complexes, Pyroclastic deposits including tuff and ignimbrite</span>
             </div>
             <div className="env-item">
-              <span className="env-label">Hydrogeology:</span>
-              <span className="env-value">Fractured Volcanic Aquifers</span>
+              <span className="env-label">Hydrogeological Characteristics:</span>
+              <span className="env-value">Complex fractured volcanic aquifer systems with dual-porosity behavior combining matrix and fracture permeability</span>
             </div>
             <div className="env-item">
-              <span className="env-label">Groundwater Flow:</span>
-              <span className="env-value">Fracture-Controlled</span>
+              <span className="env-label">Groundwater Flow Mechanisms:</span>
+              <span className="env-value">Predominantly fracture-controlled flow with significant contribution from intergranular and vesicular porosity in volcanic rocks</span>
             </div>
           </div>
         </div>
@@ -275,27 +275,27 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
         <div className="features-bar">
           <div className="feature-item">
             <FaFire className="feature-icon" />
-            <span>Causal AI Engine</span>
+            <span>Advanced Causal Artificial Intelligence Engine</span>
           </div>
           <div className="feature-item">
             <FaRulerCombined className="feature-icon" />
-            <span>3D Modeling</span>
+            <span>Three Dimensional Voxel Modeling</span>
           </div>
           <div className="feature-item">
             <FaLayerGroup className="feature-icon" />
-            <span>Stratigraphy</span>
+            <span>Volcanic Stratigraphy Analysis</span>
           </div>
           <div className="feature-item">
             <FaChartBar className="feature-icon" />
-            <span>Analytics</span>
+            <span>Advanced Data Analytics and Visualization Tools</span>
           </div>
           <div className="feature-item">
             <FaSearch className="feature-icon" />
-            <span>Aquifer Discovery</span>
+            <span>Automated Aquifer Discovery and Characterization</span>
           </div>
           <div className="feature-item">
             <FaFilter className="feature-icon" />
-            <span>Standardization</span>
+            <span>Intelligent Lithology Standardization System</span>
           </div>
         </div>
 
@@ -310,81 +310,81 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
         <div className="geo-sidebar">
           <div className="sidebar-header">
             <FaMountain className="sidebar-icon" />
-            <span className="sidebar-title">Geological Notations</span>
+            <span className="sidebar-title">International Geological Symbols and Notations</span>
           </div>
           <div className="notations-list">
             <div className="notation-item">
-              <span className="notation-symbol">🌋</span>
-              <span className="notation-desc">Basalt - High Productivity Aquifer</span>
+              <span className="notation-symbol">B</span>
+              <span className="notation-desc">Basalt - Volcanic extrusive rock formed from low-viscosity lava, typically dark gray to black, fine-grained, can form extensive lava flows and plateaus, important aquifer when fractured</span>
             </div>
             <div className="notation-item">
-              <span className="notation-symbol">🪨</span>
-              <span className="notation-desc">Andesite - Moderate Productivity</span>
+              <span className="notation-symbol">A</span>
+              <span className="notation-desc">Andesite - Intermediate volcanic rock with composition between basalt and rhyolite, typically medium to dark gray, fine-grained, commonly found in subduction zones</span>
             </div>
             <div className="notation-item">
-              <span className="notation-symbol">✨</span>
-              <span className="notation-desc">Rhyolite - Low Productivity</span>
+              <span className="notation-symbol">R</span>
+              <span className="notation-desc">Rhyolite - Felsic volcanic rock with high silica content, typically light gray to pink, fine-grained, volcanic equivalent of granite, often forms domes and flows</span>
             </div>
             <div className="notation-item">
-              <span className="notation-symbol">💨</span>
-              <span className="notation-desc">Pyroclastic - Variable Productivity</span>
+              <span className="notation-symbol">P</span>
+              <span className="notation-desc">Pyroclastic Rocks - Fragmented material produced by explosive volcanic eruptions, includes tuff, ignimbrite, and volcanic breccia, can form excellent aquifers when unwelded</span>
             </div>
             <div className="notation-item">
-              <span className="notation-symbol">🌊</span>
-              <span className="notation-desc">Groundwater Flow Direction</span>
+              <span className="notation-symbol">→</span>
+              <span className="notation-desc">Groundwater Flow Direction - Movement of water through aquifers, typically from recharge areas to discharge points, controlled by hydraulic gradient and permeability</span>
             </div>
             <div className="notation-item">
-              <span className="notation-symbol">⬆️</span>
-              <span className="notation-desc">Aquifer Recharge Zone</span>
+              <span className="notation-symbol">↑</span>
+              <span className="notation-desc">Aquifer Recharge Zone - Area where water enters an aquifer system, typically elevated terrain, fractures, or permeable formations that allow precipitation to infiltrate</span>
             </div>
           </div>
           
-          {/* Quick Geological Facts */}
+          {/* Geological Characteristics and Properties */}
           <div className="geo-facts-sidebar">
             <div className="fact-header">
               <FaGem className="fact-icon-header" />
-              <span>Quick Facts</span>
+              <span>Geological Characteristics and Properties</span>
             </div>
             <div className="facts-content">
               <div className="fact-item">
-                <strong>Transmissivity:</strong> 10-500 m²/day
+                <strong>Hydraulic Conductivity:</strong> The ease with which water moves through rock or soil, determined by grain size, sorting, porosity, and fracturing, crucial for aquifer productivity assessment
               </div>
               <div className="fact-item">
-                <strong>Porosity:</strong> 5-30% (vesicular)
+                <strong>Storage Capacity:</strong> The ability of geological formations to hold and release water, influenced by porosity, permeability, and effective porosity of the rock matrix
               </div>
               <div className="fact-item">
-                <strong>Depth Range:</strong> 0-500m typical
+                <strong>Volcanic Aquifer Systems:</strong> Characterized by heterogeneity with permeability controlled by fractures, vesicles, and weathering zones, often exhibiting dual-porosity behavior with both matrix and fracture flow
               </div>
             </div>
           </div>
         </div>
         
-        {/* Stratigraphy Legend */}
+        {/* International Stratigraphy Legend */}
         <div className="stratigraphy-legend">
           <div className="legend-header">
             <FaLayerGroup className="legend-icon" />
-            <span className="legend-title">Stratigraphy Legend</span>
+            <span className="legend-title">International Lithology Classification System</span>
           </div>
           <div className="legend-content">
             <div className="legend-row">
               <div className="legend-swatch basalt"></div>
-              <span className="legend-label">Basalt (High T: 100-500 m²/day)</span>
+              <span className="legend-label">Basalt - Mafic extrusive volcanic rock with low silica content, typically dark colored, fine-grained aphanitic to glassy texture, forms lava flows, pillow lavas, and volcanic plateaus</span>
             </div>
             <div className="legend-row">
               <div className="legend-swatch andesite"></div>
-              <span className="legend-label">Andesite (Moderate T: 10-100 m²/day)</span>
+              <span className="legend-label">Andesite - Intermediate volcanic rock with medium silica content, typically gray to dark gray, fine-grained, commonly associated with subduction zone volcanism and stratovolcanoes</span>
             </div>
             <div className="legend-row">
               <div className="legend-swatch rhyolite"></div>
-              <span className="legend-label">Rhyolite (Low T: 1-10 m²/day)</span>
+              <span className="legend-label">Rhyolite - Felsic extrusive volcanic rock with high silica content, typically light gray to pink, fine-grained, often forms volcanic domes, flows, and pyroclastic deposits</span>
             </div>
             <div className="legend-row">
               <div className="legend-swatch pyroclastic"></div>
-              <span className="legend-label">Pyroclastic (Variable T: 50-300 m²/day)</span>
+              <span className="legend-label">Pyroclastic Rocks - Volcanic fragmental deposits including ash, lapilli, bombs, and blocks, can be loose or welded, important for understanding explosive eruption history and aquifer potential</span>
             </div>
             <div className="legend-row">
               <div className="legend-swatch sedimentary"></div>
-              <span className="legend-label">Sedimentary (Low T: 0.1-5 m²/day)</span>
+              <span className="legend-label">Sedimentary Rocks - Deposited by water, wind, ice, or gravity, typically layered, can include clastic, chemical, and organic varieties, important for groundwater storage in interbedded sequences</span>
             </div>
           </div>
         </div>
@@ -427,56 +427,54 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
         <div className="dashboard-content">
           {activeSection === 'overview' && (
             <div className="content-section">
-              <h3>Platform Overview</h3>
+              <h3>Comprehensive Platform Overview and Introduction</h3>
               <p>
-                <strong>VolcanoStrat AI</strong> is a global volcanic hydrostratigraphy and aquifer modeling platform 
-                that automatically transforms complex, inconsistent well-log descriptions into standardized, 
-                scientifically defensible hydrostratigraphic units.
+                <strong>VolcanoStrat AI</strong> represents a revolutionary and comprehensive global volcanic hydrostratigraphy and aquifer modeling platform that has been specifically designed and developed to address the significant challenges associated with processing and interpreting complex heterogeneous well log data. This advanced platform automatically and systematically transforms raw, inconsistent, and often confusing well-log descriptions from multiple sources and formats into standardized, consistent, scientifically defensible, and reproducible hydrostratigraphic units that can be used for further analysis, interpretation, and decision-making purposes.
               </p>
               
               <div className="feature-list">
                 <div className="feature-item">
                   <FaGlobe className="feature-icon" />
                   <div className="feature-text">
-                    <strong>Global Coverage</strong>
-                    <p>Supports well data from anywhere in the world with comprehensive volcanic ontology</p>
+                    <strong>Global Coverage and Comprehensive Support</strong>
+                    <p>VolcanoStrat AI platform supports well data from anywhere in the world with our comprehensive volcanic lithology ontology that has been developed and validated against data from all major volcanic regions including but not limited to East African Rift System, Pacific Ring of Fire, Mid-Atlantic Ridge, and various continental volcanic provinces</p>
                   </div>
                 </div>
                 
                 <div className="feature-item">
                   <FaCog className="feature-icon" />
                   <div className="feature-text">
-                    <strong>AI-Powered Standardization</strong>
-                    <p>Automatic lithology standardization using machine learning and global knowledge base</p>
+                    <strong>Artificial Intelligence Powered Lithology Standardization</strong>
+                    <p>Automatic and intelligent lithology standardization process that utilizes advanced machine learning algorithms and our extensive global volcanic knowledge base to transform raw inconsistent well log descriptions into standardized scientifically defensible hydrostratigraphic classifications</p>
                   </div>
                 </div>
                 
                 <div className="feature-item">
                   <FaChartBar className="feature-icon" />
                   <div className="feature-text">
-                    <strong>Advanced Analytics</strong>
-                    <p>3D voxel modeling, cross-section generation, complexity reduction metrics</p>
+                    <strong>Advanced Analytics and Modeling Capabilities</strong>
+                    <p>Comprehensive suite of analytical tools including three dimensional voxel based geological modeling, two dimensional cross-section generation and visualization, complexity reduction metrics calculation, and statistical analysis of stratigraphic patterns and relationships</p>
                   </div>
                 </div>
                 
                 <div className="feature-item">
                   <FaWater className="feature-icon" />
                   <div className="feature-text">
-                    <strong>Aquifer Discovery</strong>
-                    <p>Identifies promising groundwater targets with confidence scores and reasoning</p>
+                    <strong>Intelligent Aquifer Discovery and Target Identification</strong>
+                    <p>Automated identification and characterization of promising groundwater targets with detailed confidence scores, comprehensive reasoning, and supporting evidence based on geological, hydrological, and geophysical data analysis</p>
                   </div>
                 </div>
               </div>
 
               <div className="metrics-summary">
-                <h4>Current Project Metrics</h4>
+                <h4>Comprehensive Project Metrics and Performance Indicators</h4>
                 <ul>
-                  <li><strong>Total Wells:</strong> {calculatedMetrics.totalWells} wells processed</li>
-                  <li><strong>Original Descriptions:</strong> {calculatedMetrics.totalLayers} layer descriptions</li>
-                  <li><strong>Standardized Units:</strong> {calculatedMetrics.totalLayers > 0 ? Math.round(calculatedMetrics.totalLayers * (1 - calculatedMetrics.complexityReduction/100)) : 0} unique hydrostratigraphic units</li>
-                  <li><strong>Complexity Reduction Index:</strong> {calculatedMetrics.complexityReduction}% - This represents how much geological complexity has been reduced</li>
-                  <li><strong>Average Confidence:</strong> {calculatedMetrics.avgConfidence}% confidence in classifications</li>
-                  <li><strong>Aquifer Potential:</strong> {calculatedMetrics.aquiferLayers} productive layers out of {calculatedMetrics.totalLayers} total</li>
+                  <li><strong>Total Wells Processed:</strong> {calculatedMetrics.totalWells} individual wells have been successfully analyzed and standardized by the platform</li>
+                  <li><strong>Original Descriptions Processed:</strong> {calculatedMetrics.totalLayers} unique layer descriptions have been imported and systematically categorized</li>
+                  <li><strong>Standardized Hydrostratigraphic Units:</strong> {calculatedMetrics.totalLayers > 0 ? Math.round(calculatedMetrics.totalLayers * (1 - calculatedMetrics.complexityReduction/100)) : 0} distinct and consistent hydrostratigraphic units have been established through the standardization process</li>
+                  <li><strong>Complexity Reduction Index:</strong> {calculatedMetrics.complexityReduction}% - This important metric represents the overall reduction in geological complexity achieved through systematic classification and grouping of similar lithological descriptions</li>
+                  <li><strong>Average Classification Confidence:</strong> {calculatedMetrics.avgConfidence}% average confidence level in our layer classifications and hydro property predictions across all processed wells</li>
+                  <li><strong>Aquifer Potential Assessment:</strong> {calculatedMetrics.aquiferLayers} layers have been identified as productive aquifers out of a total of {calculatedMetrics.totalLayers} layers analyzed, providing valuable insights into groundwater resource potential</li>
                 </ul>
               </div>
             </div>
@@ -484,8 +482,8 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
 
           {activeSection === 'productive' && (
             <div className="content-section">
-              <h3>Top Aquifer Targets</h3>
-              <p>Based on AI analysis of your well data, these are the most promising groundwater targets:</p>
+              <h3>Comprehensive Aquifer Target Analysis and Recommendations</h3>
+              <p>Based on detailed artificial intelligence analysis and interpretation of your uploaded well log data, the following stratigraphic layers have been identified as the most promising groundwater targets for potential development and exploitation. These recommendations are based on comprehensive evaluation of geological, hydrological, and geophysical characteristics:</p>
               
               {topProductive.length > 0 ? (
                 <div className="table-container">
@@ -515,20 +513,20 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
                   </table>
                 </div>
               ) : (
-                <p className="no-data">No aquifer layers identified. Upload well data to see recommendations.</p>
+                <p className="no-data">Currently no aquifer layers have been identified in your uploaded well data. Please upload your well log information and process it through the platform to receive detailed aquifer identification and comprehensive groundwater target recommendations.</p>
               )}
 
               <div className="recommendation-box">
-                <h4>🎯 AI Recommendation</h4>
+                <h4>Artificial Intelligence Powered Recommendation and Guidance</h4>
                 {topProductive.length > 0 ? (
                   <p>
-                    The most promising groundwater target is <strong>{topProductive[0].Hydro_Property}</strong> 
-                    in well <strong>{topProductive[0].Well_ID}</strong> between 
-                    <strong>{topProductive[0].Depth_Start}-{topProductive[0].Depth_End} m depth</strong> 
-                    with <strong>{(topProductive[0].Confidence * 100).toFixed(1)}% confidence</strong>.
+                    Based on comprehensive analysis, the most promising and productive groundwater target within your dataset is the <strong>{topProductive[0].Hydro_Property}</strong> layer 
+                    located in well <strong>{topProductive[0].Well_ID}</strong> at a depth interval between 
+                    <strong>{topProductive[0].Depth_Start}-{topProductive[0].Depth_End} meters below ground surface</strong> 
+                    with an exceptional classification <strong>{(topProductive[0].Confidence * 100).toFixed(1)}% confidence level</strong>. This layer represents the optimal target for groundwater development activities.
                   </p>
                 ) : (
-                  <p>Upload and process your well data to receive AI-powered drilling recommendations.</p>
+                  <p>To receive detailed artificial intelligence powered drilling recommendations and aquifer target identification, please upload your well data files and process them through our comprehensive standardization and analysis pipeline.</p>
                 )}
               </div>
             </div>
@@ -536,13 +534,13 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
 
           {activeSection === 'upload' && (
             <div className="content-section">
-              <h3>Quick Upload</h3>
-              <p>Upload your well data files (CSV, Shapefile ZIP, or .shp)</p>
+              <h3>Comprehensive Data Upload Interface</h3>
+              <p>Upload your valuable well data files in various supported formats including comma separated values files, shapefile archives, and individual shapefiles. Our advanced system will automatically process and standardize your data for comprehensive analysis and interpretation.</p>
               
               <div className="upload-options">
                 <div className="upload-option">
-                  <h4><FaFileImport /> CSV Upload</h4>
-                  <p>Standard format with required columns</p>
+                  <h4><FaFileImport /> Comma Separated Values CSV File Upload</h4>
+                  <p>Standard tabular format containing well log information with all required columns for complete processing and analysis by our advanced platform</p>
                   <input 
                     type="file" 
                     accept=".csv" 
@@ -551,8 +549,8 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
                 </div>
                 
                 <div className="upload-option">
-                  <h4><FaFileImport /> Shapefile Upload</h4>
-                  <p>Upload well points, cross-section lines, or study area polygons</p>
+                  <h4><FaFileImport /> Geographical Information System Shapefile Upload</h4>
+                  <p>Upload spatial data including well point locations, cross-sectional line definitions, or study area boundary polygons for geographical context and visualization</p>
                   <input 
                     type="file" 
                     accept=".shp,.zip" 
@@ -562,13 +560,13 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
               </div>
 
               <div className="info-box">
-                <h4>✨ Supported Formats</h4>
+                <h4>Comprehensive List of Supported File Formats and Types</h4>
                 <ul>
-                  <li><strong>CSV:</strong> Well logs with required columns</li>
-                  <li><strong>Shapefile (ZIP):</strong> Complete shapefile bundle with .shp, .shx, .dbf, .prj</li>
-                  <li><strong>Shapefile (.shp):</strong> Single shapefile (requires supporting files)</li>
-                  <li><strong>Excel:</strong> Coming soon</li>
-                  <li><strong>LAS Files:</strong> Coming soon</li>
+                  <li><strong>CSV - Comma Separated Values:</strong> Well log data files in standard tabular format containing all necessary columns for processing including well identification, coordinates, elevation, depth intervals, and lithology descriptions</li>
+                  <li><strong>Shapefile ZIP Archive:</strong> Complete geographical information system shapefile bundle containing the main shapefile and all supporting files including index, database, and projection definition files</li>
+                  <li><strong>Individual Shapefile:</strong> Single shapefile component which may require additional supporting files for complete functionality and processing</li>
+                  <li><strong>Excel Spreadsheet:</strong> Microsoft Excel format support is currently under development and will be available in future releases</li>
+                  <li><strong>LAS Well Log Format:</strong> Standard well log ASCII format commonly used in the petroleum industry is currently being developed for future implementation</li>
                 </ul>
               </div>
             </div>
@@ -576,54 +574,55 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
 
           {activeSection === 'export' && (
             <div className="content-section">
-              <h3>Export Data</h3>
-              <p>Download your processed data in various formats</p>
+              <h3>Comprehensive Data Export and Download Options</h3>
+              <p>Download your processed and analyzed well data in various industry standard formats suitable for further analysis, reporting, visualization, and integration with other geographical information systems and software applications.</p>
               
               <div className="export-options">
                 <div className="export-group">
-                  <h4>📊 Well Data</h4>
+                  <h4>Well Data Export Formats and Options</h4>
                   <div className="format-buttons">
-                    <button onClick={() => onExport && onExport('wells', 'csv')}>CSV</button>
-                    <button onClick={() => onExport && onExport('wells', 'json')}>JSON</button>
-                    <button onClick={() => onExport && onExport('wells', 'shp')}>Shapefile</button>
+                    <button onClick={() => onExport && onExport('wells', 'csv')}>CSV Format</button>
+                    <button onClick={() => onExport && onExport('wells', 'json')}>JSON Format</button>
+                    <button onClick={() => onExport && onExport('wells', 'shp')}>Shapefile Format</button>
                   </div>
                 </div>
                 
                 <div className="export-group">
-                  <h4>🎨 Stratigraphy Layers</h4>
+                  <h4>Stratigraphy Layers Export Options</h4>
                   <div className="format-buttons">
-                    <button onClick={() => onExport && onExport('layers', 'csv')}>CSV</button>
-                    <button onClick={() => onExport && onExport('layers', 'json')}>JSON</button>
-                    <button onClick={() => onExport && onExport('layers', 'shp')}>Shapefile</button>
+                    <button onClick={() => onExport && onExport('layers', 'csv')}>CSV Format</button>
+                    <button onClick={() => onExport && onExport('layers', 'json')}>JSON Format</button>
+                    <button onClick={() => onExport && onExport('layers', 'shp')}>Shapefile Format</button>
                   </div>
                 </div>
                 
                 <div className="export-group">
-                  <h4>📏 2D Cross-Section</h4>
+                  <h4>Two Dimensional Cross Section Export</h4>
                   <div className="format-buttons">
-                    <button onClick={() => onExport && onExport('combined_2d', 'png')}>PNG Image</button>
-                    <button onClick={() => onExport && onExport('combined_2d', 'shp')}>Shapefile</button>
+                    <button onClick={() => onExport && onExport('combined_2d', 'png')}>PNG Image Format</button>
+                    <button onClick={() => onExport && onExport('combined_2d', 'shp')}>Shapefile Format</button>
                   </div>
                 </div>
                 
                 <div className="export-group">
-                  <h4>🎲 3D Model</h4>
+                  <h4>Three Dimensional Model Export</h4>
                   <div className="format-buttons">
-                    <button onClick={() => onExport && onExport('combined_3d', 'vtk')}>VTK</button>
-                    <button onClick={() => onExport && onExport('combined_3d', 'kml')}>KML</button>
-                    <button onClick={() => onExport && onExport('combined_3d', 'shp')}>Shapefile</button>
+                    <button onClick={() => onExport && onExport('combined_3d', 'vtk')}>VTK Format</button>
+                    <button onClick={() => onExport && onExport('combined_3d', 'kml')}>KML Format</button>
+                    <button onClick={() => onExport && onExport('combined_3d', 'shp')}>Shapefile Format</button>
                   </div>
                 </div>
               </div>
 
               <div className="info-box">
-                <h4>ℹ️ Export Information</h4>
+                <h4>Comprehensive Export Format Information and Details</h4>
                 <ul>
-                  <li><strong>CSV/JSON:</strong> Tabular data for analysis</li>
-                  <li><strong>Shapefile:</strong> GIS-compatible vector data (ZIP format)</li>
-                  <li><strong>VTK:</strong> 3D visualization format for ParaView and other tools</li>
-                  <li><strong>KML:</strong> Google Earth compatible format</li>
-                  <li><strong>PNG:</strong> Image format for reports and presentations</li>
+                  <li><strong>CSV - Comma Separated Values Format:</strong> Standard tabular data format ideal for spreadsheet analysis, statistical processing, and data sharing across different software platforms and applications</li>
+                  <li><strong>JSON - JavaScript Object Notation Format:</strong> Lightweight data interchange format that is easy for humans to read and write and easy for machines to parse and generate, ideal for web applications and data exchange</li>
+                  <li><strong>Shapefile Format:</strong> Geographical information system compatible vector data format stored as a set of related files, typically distributed as a compressed ZIP archive for convenience</li>
+                  <li><strong>VTK - Visualization Toolkit Format:</strong> Advanced three dimensional visualization data format compatible with ParaView, VisIt, and other scientific visualization software applications</li>
+                  <li><strong>KML - Keyhole Markup Language Format:</strong> XML based notation for expressing geographic annotation and visualization within Internet based earth browsers including Google Earth</li>
+                  <li><strong>PNG - Portable Network Graphics Format:</strong> High quality image format suitable for reports, presentations, publications, and documentation with lossless data compression</li>
                 </ul>
               </div>
             </div>
@@ -631,35 +630,35 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
 
           {activeSection === 'help' && (
             <div className="content-section">
-              <h3>Help & Support</h3>
+              <h3>Comprehensive Help Support and User Assistance</h3>
               
               <div className="help-section">
-                <h4><FaQuestionCircle /> Quick Start Guide</h4>
-                <p>Get started with VolcanoStrat AI in 5 easy steps:</p>
+                <h4><FaQuestionCircle /> Comprehensive Quick Start Guide and Tutorial</h4>
+                <p>Get started with VolcanoStrat AI platform through the following comprehensive steps that will guide you through the entire workflow from data import to final results and export:</p>
                 <ol>
-                  <li><strong>Upload</strong> your well data (CSV, Excel, LAS, GeoJSON, Shapefile)</li>
-                  <li><strong>Review</strong> the standardized results and AI-classified layers</li>
-                  <li><strong>Explore</strong> 3D voxel models and interactive cross-sections</li>
-                  <li><strong>Analyze</strong> with the AI Geologist - ask about layers, productivity, aquifers</li>
-                  <li><strong>Export</strong> in multiple formats (CSV, JSON, PDF, Shapefile, VTK, KML)</li>
+                  <li><strong>Data Upload:</strong> Upload your well log information in any of the supported file formats including comma separated values, Microsoft Excel spreadsheets, LAS well log ASCII files, GeoJSON geographical data format, or various shapefile configurations</li>
+                  <li><strong>Results Review:</strong> Carefully examine and review the automatically processed standardized results including the artificial intelligence classified stratigraphic layers with their corresponding hydro properties and confidence scores</li>
+                  <li><strong>Interactive Exploration:</strong> Explore the generated three dimensional voxel based geological models and interactive two dimensional cross-sectional views that provide valuable insights into subsurface stratigraphy and relationships</li>
+                  <li><strong>Advanced Analysis:</strong> Utilize the artificial intelligence powered geologist to ask specific questions about individual layers, overall productivity assessments, aquifer characteristics, and hydrogeological properties</li>
+                  <li><strong>Data Export:</strong> Export your processed data and results in multiple industry standard formats including CSV tabular data, JSON structured data, PDF comprehensive reports, Shapefile spatial data, VTK three dimensional models, and KML geographical data</li>
                 </ol>
-                <p className="info-box">💡 <strong>Pro Tip:</strong> Upload your cross-section line as a Shapefile to generate 2D stratigraphic profiles and see layer correlations!</p>
+                <p className="info-box">Important Professional Tip: For optimal results and comprehensive stratigraphic correlation, upload your cross-section line definition as a Shapefile format to generate detailed two dimensional stratigraphic profiles that clearly display layer correlations and geological relationships</p>
               </div>
 
               <div className="help-section">
-                <h4><FaEnvelope /> Contact Information</h4>
+                <h4><FaEnvelope /> Comprehensive Contact Information and Support Channels</h4>
                 <p>
-                  For support, questions, or feedback, please contact:
+                  For comprehensive technical support, detailed questions, valuable feedback, suggestions for improvements, or any other inquiries regarding the VolcanoStrat AI platform, please feel free to contact our development team:
                 </p>
                 <ul>
                   <li>
-                    <strong>Primary:</strong> 
+                    <strong>Primary Official Contact:</strong> 
                     <a href="mailto:wagari.mosisa@ju.edu.et" target="_blank" rel="noopener noreferrer">
                       wagari.mosisa@ju.edu.et
                     </a>
                   </li>
                   <li>
-                    <strong>Alternate:</strong> 
+                    <strong>Alternate Personal Contact:</strong> 
                     <a href="mailto:wagarimosisa@gmail.com" target="_blank" rel="noopener noreferrer">
                       wagarimosisa@gmail.com
                     </a>
@@ -668,22 +667,20 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
               </div>
 
               <div className="help-section">
-                <h4><FaUserGraduate /> Web Developer</h4>
+                <h4><FaUserGraduate /> Platform Developer and Project Leader Information</h4>
                 <p>
                   <strong>Wagari Mosisa Kitessa</strong><br />
-                  <span className="role">Lead Developer & Geologist</span>
+                  <span className="role">Lead Developer, Principal Geologist, and Project Coordinator</span>
                 </p>
                 <p>
-                  VolcanoStrat AI was developed to address the challenge of standardizing 
-                  heterogeneous volcanic well log data for hydrogeological analysis and 
-                  aquifer characterization at regional to basin scales.
+                  VolcanoStrat AI platform was specifically developed and designed to effectively address the significant and longstanding challenge associated with standardizing complex heterogeneous volcanic well log data for comprehensive hydrogeological analysis and detailed aquifer characterization purposes at various scales ranging from local site investigations to regional and basin scale assessments. This advanced platform transforms inconsistent and varied data formats into consistent standardized hydrostratigraphic models that can be used for reliable groundwater resource evaluation and management.
                 </p>
               </div>
 
               <div className="help-section">
-                <h4><FaGithub /> Connect on GitHub</h4>
+                <h4><FaGithub /> Open Source Repository and Community Contribution Platform</h4>
                 <p>
-                  View the source code, contribute, or report issues:
+                  View the complete source code, make valuable contributions, report technical issues, suggest new features, or participate in community discussions through our official open source repository:
                 </p>
                 <p>
                   <a 
@@ -698,16 +695,12 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
               </div>
 
               <div className="help-section">
-                <h4><FaInfoCircle /> About VolcanoStrat AI</h4>
+                <h4><FaInfoCircle /> Comprehensive Information About VolcanoStrat AI Platform</h4>
                 <p>
-                  <strong>Mission:</strong> To transform heterogeneous volcanic well logs into 
-                  uncertainty-aware hydrostratigraphic knowledge models and groundwater 
-                  decision-support systems.
+                  <strong>Mission Statement:</strong> The primary mission of VolcanoStrat AI platform is to fundamentally transform the way heterogeneous volcanic well log data is processed and interpreted by developing advanced artificial intelligence powered systems that can automatically convert complex inconsistent raw data into comprehensive uncertainty-aware hydrostratigraphic knowledge models and reliable groundwater decision-support systems for effective resource management.
                 </p>
                 <p>
-                  <strong>Vision:</strong> Enable hydrogeologists, researchers, consultants, 
-                  water agencies, and academic institutions worldwide to build consistent, 
-                  explainable, and reproducible subsurface models from heterogeneous well data.
+                  <strong>Vision Statement:</strong> Our vision is to enable and empower hydrogeologists, geological researchers, professional consultants, government water agencies, private sector organizations, and academic institutions from all around the world to efficiently build consistent, scientifically explainable, technically defensible, and completely reproducible subsurface geological models from their diverse and heterogeneous well data regardless of source format or original quality.
                 </p>
               </div>
             </div>
@@ -718,9 +711,9 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
         <div className="dashboard-footer">
           <p>
             © {new Date().getFullYear()} VolcanoStrat AI | 
-            Built with ❤️ for Hydrogeologists Worldwide
+            Built for you!
           </p>
-          <p className="version">Version 1.0.0 | Global Volcanic Hydrostratigraphy Platform</p>
+          <p className="version">Version 1.0.0 | Advanced Global Volcanic Hydrostratigraphy Intelligence Platform</p>
         </div>
       </div>
 

@@ -360,7 +360,7 @@ function App() {
       </main>
 
       <footer className="app-footer">
-        <p>© 2026 VolcanoStrat AI | Built with ❤️ for Hydrogeologists</p>
+        <p>© 2026 VolcanoStrat AI | Built for you!</p>
       </footer>
       </div>
     </div>
