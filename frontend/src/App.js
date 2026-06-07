@@ -6,6 +6,7 @@ import CrossSectionTool from './components/CrossSectionTool';
 import ExportPanel from './components/ExportPanel';
 import AIChat from './components/AIChat';
 import GoogleEarthViewer from './components/GoogleEarthViewer';
+import Dashboard from './components/Dashboard';
 import './App.css';
 
 function App() {
@@ -117,50 +118,64 @@ function App() {
     }
   };
 
+  const handleExport = (exportType, exportFormat) => {
+    exportData(exportType, exportFormat);
+  };
+
   return (
     <div className="app">
-      <header className="app-header">
-        <h1>🌋 VolcanoStrat AI</h1>
-        <p>AI-Powered Volcanic Aquifer Stratigraphy</p>
-      </header>
+      {/* Dashboard Sidebar */}
+      <Dashboard
+        wells={wells}
+        standardizedData={standardizedData}
+        voxelModel={voxelModel}
+        onFileUpload={handleFileUpload}
+        onExport={handleExport}
+      />
 
-      <div className="tabs">
-        <button
-          className={activeTab === 'upload' ? 'active' : ''}
-          onClick={() => setActiveTab('upload')}
-        >
-          📄 Upload Data
-        </button>
-        <button
-          className={activeTab === '3d' ? 'active' : ''}
-          onClick={() => setActiveTab('3d')}
-          disabled={!voxelModel}
-        >
-          🎯 3D Model
-        </button>
-        <button
-          className={activeTab === 'cross-section' ? 'active' : ''}
-          onClick={() => setActiveTab('cross-section')}
-          disabled={!standardizedData}
-        >
-          📏 Cross-Section
-        </button>
-        <button
-          className={activeTab === 'google-earth' ? 'active' : ''}
-          onClick={() => setActiveTab('google-earth')}
-          disabled={!standardizedData}
-        >
-          🌍 Google Earth
-        </button>
-        <button
-          className={activeTab === 'chat' ? 'active' : ''}
-          onClick={() => setActiveTab('chat')}
-        >
-          💬 AI Geologist
-        </button>
-      </div>
+      <div className="main-content">
+        <header className="app-header">
+          <h1>🌋 VolcanoStrat AI</h1>
+          <p>AI-Powered Volcanic Aquifer Stratigraphy</p>
+        </header>
 
-      <main className="app-main">
+        <div className="tabs">
+          <button
+            className={activeTab === 'upload' ? 'active' : ''}
+            onClick={() => setActiveTab('upload')}
+          >
+            📄 Upload Data
+          </button>
+          <button
+            className={activeTab === '3d' ? 'active' : ''}
+            onClick={() => setActiveTab('3d')}
+            disabled={!voxelModel}
+          >
+            🎯 3D Model
+          </button>
+          <button
+            className={activeTab === 'cross-section' ? 'active' : ''}
+            onClick={() => setActiveTab('cross-section')}
+            disabled={!standardizedData}
+          >
+            📏 Cross-Section
+          </button>
+          <button
+            className={activeTab === 'google-earth' ? 'active' : ''}
+            onClick={() => setActiveTab('google-earth')}
+            disabled={!standardizedData}
+          >
+            🌍 Google Earth
+          </button>
+          <button
+            className={activeTab === 'chat' ? 'active' : ''}
+            onClick={() => setActiveTab('chat')}
+          >
+            💬 AI Geologist
+          </button>
+        </div>
+
+        <main className="app-main">
         {error && <div className="error-message">{error}</div>}
 
         {isLoading && (
@@ -251,6 +266,8 @@ function App() {
       <footer className="app-footer">
         <p>© 2026 VolcanoStrat AI | Built with ❤️ for Hydrogeologists</p>
       </footer>
+      </main>
+      </div>
     </div>
   );
 }
