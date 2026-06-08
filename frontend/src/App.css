@@ -4,6 +4,24 @@ body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: #f0f2f5;
   color: #333;
+  background-image: url('https://images.unsplash.com/photo-1605540436563-5bca919ae766?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2074&q=80');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}
+
+/* Overlay to make text readable on background image */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(2px);
+  z-index: -1;
 }
 
 .app {
@@ -17,6 +35,7 @@ body {
   display: flex;
   flex-direction: column;
   margin-left: 0;
+  width: 100%;
 }
 
 .main-content.has-collapsed-dashboard {
@@ -106,13 +125,13 @@ body {
 .app-main {
   flex: 1;
   padding: 1.5rem;
-  max-width: 1400px;
-  margin: 0 auto;
   width: 100%;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(248, 249, 250, 0.98));
+  max-width: 100%;
+  margin: 0;
+  background: rgba(255, 255, 255, 0.85);
   border-radius: 0.75rem;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-  margin: 1rem auto;
+  margin: 1rem 0;
   border: 1px solid rgba(0, 0, 0, 0.05);
   /* Geological pattern overlay */
   background-image: 
