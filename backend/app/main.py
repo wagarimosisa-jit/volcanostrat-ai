@@ -65,6 +65,45 @@ async def health_check():
     """Health check endpoint"""
     return {"status": "healthy", "version": "1.0.0"}
 
+def _standardize_wells_data(well_data: WellData) -> Dict:
+    """Standardizes well logs and extracts modifiers. Returns dict."""
+    standardized_wells = []
+    for well in well_data.wells:
+        intervals = [{
+            "depth_start": well.Depth_Start_m,
+            "depth_end": well.Depth_End_m,
+            "raw_lithology": well.Raw_Lithology_Description
+        }]
+        standardized = prepare_well_data(
+            well.Well_ID,
+            intervals,
+            well.X_Coordinate,
+            well.Y_Coordinate,
+            well.Elevation_m
+        )
+
+        # Add hydro property predictions
+        for layer in standardized['Layers']:
+            std_lith = None
+            for interval in intervals:
+                std = standardize_lithology(interval['raw_lithology'])
+                if std['standard_lithology']:
+                    std_lith = std['standard_lithology']
+                    break
+
+            if std_lith:
+                prediction = predict_hydraulic_properties({
+                    'standard_lithology': std_lith,
+                    'modifiers': layer['Modifiers']
+                })
+                layer['Predicted_T'] = prediction['Predicted_T']
+                layer['T_Range'] = prediction['T_Range']
+
+        standardized_wells.append(standardized)
+
+    return {"wells": standardized_wells}
+
+
 @app.post("/api/standardize")
 async def standardize_wells(well_data: WellData):
     """
@@ -72,42 +111,8 @@ async def standardize_wells(well_data: WellData):
     Returns wells with layers containing ONLY modifiers.
     """
     try:
-        standardized_wells = []
-        for well in well_data.wells:
-            intervals = [{
-                "depth_start": well.Depth_Start_m,
-                "depth_end": well.Depth_End_m,
-                "raw_lithology": well.Raw_Lithology_Description
-            }]
-            standardized = prepare_well_data(
-                well.Well_ID,
-                intervals,
-                well.X_Coordinate,
-                well.Y_Coordinate,
-                well.Elevation_m
-            )
-
-            # Add hydro property predictions
-            for layer in standardized['Layers']:
-                std_lith = None
-                for interval in intervals:
-                    std = standardize_lithology(interval['raw_lithology'])
-                    if std['standard_lithology']:
-                        std_lith = std['standard_lithology']
-                        break
-
-                if std_lith:
-                    prediction = predict_hydraulic_properties({
-                        'standard_lithology': std_lith,
-                        'modifiers': layer['Modifiers']
-                    })
-                    layer['Predicted_T'] = prediction['Predicted_T']
-                    layer['T_Range'] = prediction['T_Range']
-
-            standardized_wells.append(standardized)
-
-        return JSONResponse(content={"wells": standardized_wells})
-
+        result = _standardize_wells_data(well_data)
+        return JSONResponse(content=result)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -119,7 +124,7 @@ async def generate_3d_model(well_data: WellData, resolution: float = 10.0):
     """
     try:
         # First standardize
-        standardized = await standardize_wells(well_data)
+        standardized = _standardize_wells_data(well_data)
 
         # Create voxel model
         voxel_model = create_voxel_model(standardized['wells'], resolution)
@@ -178,7 +183,7 @@ async def export_data(
     """
     try:
         # First standardize the well data
-        standardized = await standardize_wells(well_data)
+        standardized = _standardize_wells_data(well_data)
         wells = standardized['wells']
         
         if export_type == "layers":
@@ -327,12 +332,12 @@ async def export_shapefile(
         if export_type == "wells":
             if not well_data:
                 raise HTTPException(status_code=400, detail="well_data required for wells export")
-            standardized = await standardize_wells(well_data)
+            standardized = _standardize_wells_data(well_data)
             result = shapefile_exporter.export_wells_to_shapefile(standardized['wells'])
         elif export_type == "layers":
             if not well_data:
                 raise HTTPException(status_code=400, detail="well_data required for layers export")
-            standardized = await standardize_wells(well_data)
+            standardized = _standardize_wells_data(well_data)
             result = shapefile_exporter.export_stratigraphy_layers_to_shapefile(
                 voxel_model or {}, standardized['wells']
             )
@@ -416,7 +421,7 @@ async def upload_file(file: UploadFile = File(...)):
                 well_data = WellData(wells=wells)
                 
                 # Process
-                standardized = await standardize_wells(well_data)
+                standardized = _standardize_wells_data(well_data)
                 model_3d = await generate_3d_model(well_data)
                 cross_section = await generate_cross_section_endpoint(well_data)
                 
@@ -483,7 +488,7 @@ async def upload_file(file: UploadFile = File(...)):
         well_data = WellData(wells=wells)
 
         # Process
-        standardized = await standardize_wells(well_data)
+        standardized = _standardize_wells_data(well_data)
         model_3d = await generate_3d_model(well_data)
         cross_section = await generate_cross_section_endpoint(well_data)
 
@@ -680,7 +685,7 @@ async def analyze_causal(well_data: WellData):
     """
     try:
         # Standardize the well data first
-        standardized = await standardize_wells(well_data)
+        standardized = _standardize_wells_data(well_data)
         
         # Transform to CEPR
         ceprs = []
@@ -712,7 +717,7 @@ async def what_if_analysis(well_data: WellData, scenario: str = "What if eruptio
     """
     try:
         # Standardize the well data first
-        standardized = await standardize_wells(well_data)
+        standardized = _standardize_wells_data(well_data)
         
         if not standardized['wells']:
             raise HTTPException(status_code=400, detail="No wells to analyze")
@@ -746,7 +751,7 @@ async def compare_causal(well_data: WellData, well_id1: str, well_id2: str):
     """
     try:
         # Standardize the well data first
-        standardized = await standardize_wells(well_data)
+        standardized = _standardize_wells_data(well_data)
         
         wells = {w['Well_ID']: w for w in standardized['wells']}
         
@@ -782,7 +787,7 @@ async def predict_aquifer_targets(well_data: WellData):
     """
     try:
         # Standardize the well data first
-        standardized = await standardize_wells(well_data)
+        standardized = _standardize_wells_data(well_data)
         
         if not standardized['wells']:
             raise HTTPException(status_code=400, detail="No wells to analyze")
@@ -861,7 +866,7 @@ async def upload_excel(file: UploadFile = File(...)):
         well_data = WellData(wells=wells)
         
         # Process
-        standardized = await standardize_wells(well_data)
+        standardized = _standardize_wells_data(well_data)
         model_3d = await generate_3d_model(well_data)
         cross_section = await generate_cross_section_endpoint(well_data)
         
@@ -912,7 +917,7 @@ async def upload_las(file: UploadFile = File(...)):
         well_data = WellData(wells=wells)
         
         # Process
-        standardized = await standardize_wells(well_data)
+        standardized = _standardize_wells_data(well_data)
         model_3d = await generate_3d_model(well_data)
         cross_section = await generate_cross_section_endpoint(well_data)
         
@@ -964,7 +969,7 @@ async def upload_geojson(file: UploadFile = File(...)):
         well_data = WellData(wells=wells)
         
         # Process
-        standardized = await standardize_wells(well_data)
+        standardized = _standardize_wells_data(well_data)
         model_3d = await generate_3d_model(well_data)
         cross_section = await generate_cross_section_endpoint(well_data)
         
@@ -1009,7 +1014,7 @@ async def export_pdf(
                 raise HTTPException(status_code=400, detail="well_data required for well report")
             
             # Standardize first
-            standardized = await standardize_wells(well_data)
+            standardized = _standardize_wells_data(well_data)
             
             if not standardized['wells']:
                 raise HTTPException(status_code=400, detail="No wells to export")
@@ -1023,7 +1028,7 @@ async def export_pdf(
                 raise HTTPException(status_code=400, detail="well_data required for project report")
             
             # Standardize first
-            standardized = await standardize_wells(well_data)
+            standardized = _standardize_wells_data(well_data)
             
             if not standardized['wells']:
                 raise HTTPException(status_code=400, detail="No wells to export")
@@ -1035,7 +1040,7 @@ async def export_pdf(
                 raise HTTPException(status_code=400, detail="well_data required for causal report")
             
             # Standardize and transform to CEPR
-            standardized = await standardize_wells(well_data)
+            standardized = _standardize_wells_data(well_data)
             ceprs = [causal_engine.transform_to_cepr(well).to_dict() for well in standardized['wells']]
             
             result = pdf_exporter.export_causal_report(ceprs, project_name, 'base64')
@@ -1060,7 +1065,7 @@ async def export_cepr(well_data: WellData):
     """
     try:
         # Standardize the well data first
-        standardized = await standardize_wells(well_data)
+        standardized = _standardize_wells_data(well_data)
         
         # Transform to CEPR
         ceprs = []
@@ -1123,7 +1128,7 @@ async def upload_all_formats(file: UploadFile = File(...)):
                 well_data = WellData(wells=wells)
                 
                 # Process
-                standardized = await standardize_wells(well_data)
+                standardized = _standardize_wells_data(well_data)
                 model_3d = await generate_3d_model(well_data)
                 cross_section = await generate_cross_section_endpoint(well_data)
                 
@@ -1176,7 +1181,7 @@ async def upload_all_formats(file: UploadFile = File(...)):
             well_data = WellData(wells=wells)
             
             # Process
-            standardized = await standardize_wells(well_data)
+            standardized = _standardize_wells_data(well_data)
             model_3d = await generate_3d_model(well_data)
             cross_section = await generate_cross_section_endpoint(well_data)
             
@@ -1218,7 +1223,7 @@ async def upload_all_formats(file: UploadFile = File(...)):
             well_data = WellData(wells=wells)
             
             # Process
-            standardized = await standardize_wells(well_data)
+            standardized = _standardize_wells_data(well_data)
             model_3d = await generate_3d_model(well_data)
             cross_section = await generate_cross_section_endpoint(well_data)
             
