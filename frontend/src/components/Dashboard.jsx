@@ -122,18 +122,11 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
 
   return (
     <div className="gvas-dashboard">
-      <div className={`bottom-panel ${isExpanded ? 'expanded' : 'collapsed'}`}>
+      <div className={`top-panel ${isExpanded ? 'expanded' : 'collapsed'}`}>
         <div className="panel-header">
-          <button className="toggle-side" onClick={onToggleExpand}>
-            {isExpanded ? '▲' : '▼'}
-          </button>
           <div className="logo-area">
-            <div className="nasa-logo">
-              <span className="nasa-circle">NASA</span>
-            </div>
             <div className="branding">
-              <h2>GVAS</h2>
-              <span className="full-name">Global Volcanic Aquifer Solutions</span>
+              <h2><FaGlobe className="gvas-icon" /> GVAS - Global Volcanic Aquifer Solutions</h2>
               {isExpanded && <span className="tagline">Advanced AI-Powered Hydrostratigraphy Platform</span>}
             </div>
           </div>
@@ -175,7 +168,6 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
           <div className="main-horizontal">
             <div className="scroll-content">
               {getActiveContent()}
-              <S.Footer />
             </div>
           </div>
         )}
@@ -184,32 +176,34 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
       <style jsx>{`
         .gvas-dashboard { width: 100%; position: relative; }
         
-        /* Professional NASA-inspired Style */
-        .bottom-panel { 
+        /* Modern Professional Style */
+        .top-panel { 
           width: 100%; 
-          background: linear-gradient(135deg, #0a1628 0%, #1a1a2e 100%); 
+          background: linear-gradient(135deg, #1976d2 0%, #2196f3 100%); 
           color: #fff; 
           display: flex; 
           flex-direction: column;
-          border-top: 2px solid #0066cc;
-          box-shadow: 0 -4px 20px rgba(0,0,0,0.6); 
+          border-bottom: 2px solid #4da6ff;
+          box-shadow: 0 4px 20px rgba(0,0,0,0.2); 
         }
-        .bottom-panel.collapsed { min-height: 70px; }
-        .bottom-panel.expanded { min-height: 400px; max-height: 70vh; }
+        .top-panel.collapsed { min-height: 70px; }
+        .top-panel.expanded { min-height: auto; max-height: none; }
         
         .panel-header { 
           display: flex; 
           align-items: center; 
-          padding: 1rem; 
-          background: #0a1628; 
+          padding: 1rem 2rem; 
+          background: transparent; 
           border-bottom: 1px solid rgba(255,255,255,0.1); 
           width: 100%; 
           box-sizing: border-box; 
           position: relative;
+          justify-content: space-between;
         }
+        .gvas-icon { font-size: 1.5rem; color: #ff9800; margin-right: 0.5rem; }
         
         .toggle-side { 
-          background: #0066cc; 
+          background: #4da6ff; 
           border: none; 
           color: #fff; 
           padding: 0.5rem 1rem;
@@ -223,49 +217,27 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
         }
         .toggle-side:hover { background: #0052a3; transform: scale(1.05); }
         
-        /* NASA Logo */
-        .nasa-logo { display: flex; align-items: center; }
-        .nasa-circle {
-          width: 50px;
-          height: 50px;
-          background: #fff;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: #003875;
-          font-weight: 900;
-          font-size: 0.9rem;
-          letter-spacing: -0.5px;
-          margin-right: 1rem;
-        }
-        
+
         .logo-area { display: flex; align-items: center; gap: 1rem; flex: 1; min-width: 0; }
         
-        .branding { flex: 1; min-width: 400px; }
+        .branding { flex: 1; }
         .branding h2 { 
           margin: 0; 
           font-size: 1.8rem; 
-          font-weight: 800; 
+          font-weight: 700; 
           color: #fff; 
-          font-family: 'Arial', sans-serif;
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          display: flex;
+          align-items: center;
           letter-spacing: -0.5px;
         }
-        .full-name { 
-          color: #ccc; 
-          font-size: 0.9rem; 
-          display: block; 
-          margin-top: 0.2rem; 
-          font-weight: 400;
-          opacity: 0.9;
-        }
         .tagline { 
-          color: #888; 
-          font-size: 0.75rem; 
+          color: #b3c7ff; 
+          font-size: 0.85rem; 
           display: block; 
-          margin-top: 0.2rem; 
-          font-style: normal; 
-          line-height: 1.4;
+          margin-top: 0.3rem; 
+          font-weight: 300; 
+          opacity: 0.9;
         }
         
         /* Main Navigation */
@@ -298,9 +270,9 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
           border-color: rgba(255,255,255,0.4);
         }
         .nav-button.active {
-          background: #0066cc;
+          background: #4da6ff;
           color: #fff;
-          border-color: #0066cc;
+          border-color: #4da6ff;
         }
         
         .chevron {
@@ -318,7 +290,7 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
           left: 0;
           min-width: 200px;
           background: #0a1628;
-          border: 1px solid #0066cc;
+          border: 1px solid #4da6ff;
           border-radius: 0.35rem;
           box-shadow: 0 8px 32px rgba(0,0,0,0.4);
           z-index: 1000;
@@ -346,13 +318,13 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
           color: #fff;
         }
         .submenu-item.active {
-          background: #0066cc;
+          background: #4da6ff;
           color: #fff;
         }
         .nsubmenu-dot {
           width: 8px;
           height: 8px;
-          background: #0066cc;
+          background: #4da6ff;
           border-radius: 50%;
           flex-shrink: 0;
         }
@@ -371,7 +343,7 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
           margin: 0 0 1.5rem 0; 
           background: rgba(255,255,255,0.03); 
           border-radius: 0.5rem;
-          border-left: 4px solid #0066cc;
+          border-left: 4px solid #4da6ff;
           box-shadow: 0 2px 15px rgba(0,0,0,0.3);
         }
         .sec h3 { 
@@ -384,7 +356,7 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
           border-bottom: 1px solid rgba(0,102,204,0.3); 
           padding-bottom: 0.75rem;
         }
-        .sec-icon { color: #0066cc; font-size: 1.3rem; }
+        .sec-icon { color: #4da6ff; font-size: 1.3rem; }
         .sec p, .sec li, .sec a { color: #ccc; line-height: 1.7; font-size: 0.95rem; }
         .sec a { color: #0088ff; text-decoration: none; }
         .sec a:hover { text-decoration: underline; color: #00aaff; }
@@ -395,7 +367,7 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
           padding: 1rem; 
           background: rgba(255,255,255,0.02); 
           border-radius: 0.5rem; 
-          border-left: 3px solid #0066cc;
+          border-left: 3px solid #4da6ff;
           transition: all 0.3s;
         }
         .card1:hover { background: rgba(255,255,255,0.05); }
@@ -431,7 +403,7 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
         .sym-box.and { background: #1a3d2e; color: #fff; }
         .sym-box.rhy { background: #8b2e48; color: #fff; }
         .sym-box.pyr { background: #663300; color: #fff; }
-        .sym-box.flow { background: #0066cc; color: #fff; }
+        .sym-box.flow { background: #4da6ff; color: #fff; }
         .sym-box.rech { background: #006400; color: #fff; }
         .sym-text strong { display: block; color: #fff; margin-bottom: 0.5rem; font-size: 0.9rem; }
         .sym-text p { margin: 0; color: #bbb; font-size: 0.85rem; line-height: 1.6; }
@@ -451,9 +423,9 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
         .stat-card:hover { 
           transform: translateY(-5px); 
           box-shadow: 0 10px 30px rgba(0,102,204,0.2); 
-          border-color: #0066cc;
+          border-color: #4da6ff;
         }
-        .stat-card.hl { background: rgba(0,102,204,0.1); border-color: #0066cc; }
+        .stat-card.hl { background: rgba(0,102,204,0.1); border-color: #4da6ff; }
         .stat-icon { font-size: 1.75rem; color: #0088ff; }
         .stat-value { font-size: 1.75rem; font-weight: bold; color: #fff; }
         .stat-label { 
@@ -470,14 +442,14 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
           margin: 0 0 1rem 0; 
           background: rgba(255,255,255,0.03); 
           border-radius: 0.5rem;
-          border-left: 4px solid #0066cc;
+          border-left: 4px solid #4da6ff;
           box-shadow: 0 2px 15px rgba(0,0,0,0.3);
         }
         .content-panel h3 { 
           color: #fff; 
           margin: 0 0 1rem 0; 
           font-size: 1.2rem; 
-          border-bottom: 2px solid #0066cc; 
+          border-bottom: 2px solid #4da6ff; 
           padding-bottom: 0.75rem;
         }
         .content-panel p { color: #ccc; margin: 0 0 1rem 0; line-height: 1.7; font-size: 0.95rem; }
@@ -526,7 +498,7 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
         .fmt-buttons { display: flex; gap: 0.5rem; flex-wrap: wrap; }
         .fmt-buttons button { 
           padding: 0.5rem 0.75rem; 
-          background: #0066cc; 
+          background: #4da6ff; 
           border: none;
           border-radius: 0.35rem; 
           color: #fff; 
@@ -569,7 +541,7 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
           align-items: center; 
           gap: 0.5rem; 
           padding: 0.5rem 1rem; 
-          background: #0066cc;
+          background: #4da6ff;
           border-radius: 0.35rem; 
           color: #fff; 
           text-decoration: none; 
@@ -589,21 +561,11 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
           color: #ccc;
         }
         
-        .footer { 
-          background: rgba(255,255,255,0.02); 
-          border-top: 1px solid rgba(0,102,204,0.2); 
-          padding: 1rem; 
-          text-align: center;
-          border-radius: 0 0 0.5rem 0.5rem; 
-          margin: 0.5rem 0 0 0;
-        }
-        .footer p { margin: 0.25rem 0; line-height: 1.6; color: #666; font-size: 0.8rem; }
-        .version { font-size: 0.7rem; margin-top: 0.25rem; opacity: 0.7; color: #666; }
-        
+
         /* Scrollbar */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: #0a1628; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb { background: #0066cc; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: #4da6ff; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #0088ff; }
         
         /* Responsive */
@@ -679,7 +641,7 @@ const S = {
         <div className="card1"><FaLayerGroup className="fe-icon" /><strong>Volcanic Stratigraphy</strong><p>Advanced stratigraphic correlation and layer analysis for understanding complex volcanic sequences.</p></div>
         <div className="card1"><FaChartBar className="fe-icon" /><strong>Data Analytics</strong><p>Comprehensive analytical tools for statistical analysis, pattern recognition, and data visualization.</p></div>
       </div>
-      <style jsx>{`.fe-icon { color: #0066cc; font-size: 1.2rem; margin-right: 0.75rem; }`}</style>
+      <style jsx>{`.fe-icon { color: #4da6ff; font-size: 1.2rem; margin-right: 0.75rem; }`}</style>
     </div>
   ),
 
@@ -898,12 +860,8 @@ const S = {
     }
   },
 
-  Footer: () => (
-    <div className="footer">
-      <p>© {new Date().getFullYear()} GVAS - Global Volcanic Aquifer Solutions</p>
-      <p className="version">Advanced AI-Powered Hydrostratigraphy Platform</p>
-    </div>
-  )
+
 };
 
 export default Dashboard;
+

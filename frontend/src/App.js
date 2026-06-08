@@ -204,12 +204,18 @@ function App() {
 
   return (
     <div className="app">
-      <div className={`main-content ${!isDashboardExpanded ? 'has-collapsed-dashboard' : ''}`}>
-        <header className="app-header">
-          <h1><FaGlobe className="volcano-icon" /> GVAS - Global Volcanic Aquifer Solutions</h1>
-          <p>Advanced AI-Powered Volcanic Hydrostratigraphy Platform for Worldwide Applications</p>
-        </header>
+      {/* Dashboard at top */}
+      <Dashboard
+        wells={wells}
+        standardizedData={standardizedData}
+        voxelModel={voxelModel}
+        onFileUpload={handleFileUpload}
+        onExport={handleExport}
+        isExpanded={true}
+        onToggleExpand={() => setIsDashboardExpanded(!isDashboardExpanded)}
+      />
 
+      <div className={`main-content`}>
         <div className="tabs">
           <button
             className={activeTab === 'upload' ? 'active' : ''}
@@ -352,17 +358,6 @@ function App() {
         <p>© 2026 GVAS - Global Volcanic Aquifer Solutions | Built for you!</p>
       </footer>
       </div>
-
-      {/* Dashboard at bottom */}
-      <Dashboard
-        wells={wells}
-        standardizedData={standardizedData}
-        voxelModel={voxelModel}
-        onFileUpload={handleFileUpload}
-        onExport={handleExport}
-        isExpanded={isDashboardExpanded}
-        onToggleExpand={() => setIsDashboardExpanded(!isDashboardExpanded)}
-      />
     </div>
   );
 }
