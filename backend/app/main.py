@@ -11,9 +11,15 @@ import io
 import zipfile
 import tempfile
 from datetime import datetime
+from dotenv import load_dotenv
+
+_env_root = Path(__file__).resolve().parent.parent.parent
+load_dotenv(_env_root / ".env")
+load_dotenv(_env_root / "backend" / ".env")
 
 # Import local modules
 from .models.well_log import WellData, WellLog
+from .models.chat import ChatRequest, ChatResponse
 from .models.response import VoxelModel, CrossSection, ExportResponse
 from .services.standardizer import prepare_well_data, standardize_lithology
 from .services.classifier import predict_hydraulic_properties
@@ -26,6 +32,8 @@ from .engines.exporter import export_to_csv, export_to_vtk, export_to_kml
 from .engines.shapefile_exporter import shapefile_exporter
 from .engines.pdf_exporter import pdf_exporter
 from .engines.pdf_exporter_enhanced import pdf_exporter_enhanced
+from .services.chat_service import handle_chat
+from .services.llm_service import llm_service
 
 # Initialize FastAPI
 app = FastAPI(
@@ -597,6 +605,57 @@ async def upload_study_area(file: UploadFile = File(...)):
             "source": study_area.get('source', file.filename)
         })
         
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ============================================================================
+# AI Geologist Chat (Hybrid: CSIE + Geology KB + Multi-LLM)
+# ============================================================================
+
+@app.get("/api/chat/providers")
+async def get_chat_providers():
+    """List configured LLM providers and chat modes."""
+    return JSONResponse(content={
+        "providers": llm_service.list_providers(),
+        "default_provider": os.getenv("LLM_PROVIDER", "auto"),
+        "llm_enabled": llm_service.enabled,
+        "modes": ["hybrid", "geology_only", "general"],
+        "mode_descriptions": {
+            "hybrid": "Causal engine + geology KB first, then LLM for open questions",
+            "geology_only": "Well data, causal analysis, and built-in geology only (no LLM)",
+            "general": "General-purpose LLM with GVAS project context",
+        },
+    })
+
+
+@app.post("/api/chat", response_model=ChatResponse)
+async def chat_with_geologist(request: ChatRequest):
+    """
+    Hybrid AI Geologist chat endpoint.
+
+    Routes to causal CSIE, structured well analysis, geology knowledge base,
+    or external LLM (OpenAI, Anthropic, Gemini, Ollama) based on question and mode.
+    """
+    try:
+        history = [{"role": m.role, "content": m.content} for m in (request.history or [])]
+        result = await handle_chat(
+            message=request.message,
+            history=history,
+            wells=request.wells,
+            voxel_model=request.voxel_model,
+            provider=request.provider,
+            mode=request.mode or "hybrid",
+        )
+        provider = None
+        if result["source"].startswith("llm:"):
+            provider = result["source"].split(":", 1)[1]
+        return ChatResponse(
+            response=result["response"],
+            source=result["source"],
+            mode=result["mode"],
+            provider=provider,
+        )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -1227,6 +1286,8 @@ async def get_api_info():
             "causal_what_if": "/api/causal/what-if",
             "causal_compare": "/api/causal/compare",
             "causal_predict": "/api/causal/predict",
+            "chat": "/api/chat",
+            "chat_providers": "/api/chat/providers",
             "upload_excel": "/api/upload/excel",
             "upload_las": "/api/upload/las",
             "upload_geojson": "/api/upload/geojson",

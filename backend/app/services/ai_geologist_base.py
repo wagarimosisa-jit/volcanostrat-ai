@@ -1,5 +1,5 @@
 """
-Base AI Geologist Service for VolcanoStrat AI
+Base AI Geologist Service for GVAS
 Core functionality for geological analysis and recommendations
 """
 
