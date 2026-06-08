@@ -1,13 +1,13 @@
-from pydantic import BaseModel, Field, condecimal, conint
+from pydantic import BaseModel, Field, condecimal
 from typing import List, Optional
 
 class WellLog(BaseModel):
     Well_ID: str = Field(..., description="Unique well identifier")
     X_Coordinate: condecimal(ge=-180, le=180) = Field(..., description="Longitude (WGS84 decimal degrees)")
     Y_Coordinate: condecimal(ge=-90, le=90) = Field(..., description="Latitude (WGS84 decimal degrees)")
-    Elevation_m: float = Field(..., description="Elevation in meters (WGS84)")
-    Depth_Start_m: conint(ge=0) = Field(..., description="Start depth in meters (below ground)")
-    Depth_End_m: conint(gt=0) = Field(..., description="End depth in meters (below ground)")
+    Elevation_m: condecimal(ge=0) = Field(..., description="Elevation in meters (WGS84)")
+    Depth_Start_m: condecimal(ge=0) = Field(..., description="Start depth in meters (below ground)")
+    Depth_End_m: condecimal(gt=0) = Field(..., description="End depth in meters (below ground)")
     Raw_Lithology_Description: str = Field(..., description="Raw lithology description from well log")
 
 class WellData(BaseModel):
