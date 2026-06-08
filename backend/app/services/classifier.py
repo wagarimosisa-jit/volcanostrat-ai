@@ -42,12 +42,18 @@ def predict_hydraulic_properties(layer: Dict) -> Dict:
     # Get base T
     t_value = None
     if lithology in base_t_values:
-        for mod in modifiers:
-            if mod in base_t_values[lithology]:
-                t_value = base_t_values[lithology][mod]
-                break
-        if t_value is None:
-            t_value = np.mean(list(base_t_values[lithology].values()))
+        lith_data = base_t_values[lithology]
+        if isinstance(lith_data, dict):
+            # If it's a dict, look for modifier match or take average
+            for mod in modifiers:
+                if mod in lith_data:
+                    t_value = lith_data[mod]
+                    break
+            if t_value is None:
+                t_value = np.mean(list(lith_data.values()))
+        else:
+            # If it's a direct float value (like Clay, Alluvium)
+            t_value = lith_data
 
     if t_value is None:
         t_value = 10.0  # Default
