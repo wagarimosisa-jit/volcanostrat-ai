@@ -204,7 +204,16 @@ function App() {
 
   return (
     <div className="app">
-      {/* Dashboard at top */}
+      {/* Top Header with GVAS Branding */}
+      <header className="gvas-header">
+        <h1>
+          <FaGlobe className="gvas-header-icon" /> 
+          GVAS - Global Volcanic Aquifer Solutions
+        </h1>
+        <p className="gvas-tagline">Advanced AI-Powered Hydrostratigraphy Platform</p>
+      </header>
+
+      {/* Dashboard Navigation */}
       <Dashboard
         wells={wells}
         standardizedData={standardizedData}

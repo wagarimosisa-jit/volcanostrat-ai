@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FaGlobe, FaWater, FaChartBar, FaTachometerAlt, FaLayerGroup, FaCog, FaInfoCircle, FaFileImport, FaQuestionCircle, FaUserGraduate, FaEnvelope, FaGithub, FaLinkedin, FaFire, FaRulerCombined, FaGem, FaTint, FaChevronDown } from 'react-icons/fa';
+import { FaGlobe, FaWater, FaChartBar, FaTachometerAlt, FaLayerGroup, FaCog, FaInfoCircle, FaFileImport, FaQuestionCircle, FaUserGraduate, FaEnvelope, FaGithub, FaLinkedin, FaFire, FaRulerCombined, FaGem, FaTint, FaChevronDown, FaBars } from 'react-icons/fa';
 
 const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport, isExpanded = false, onToggleExpand }) => {
   const [activeMenu, setActiveMenu] = useState(null);
@@ -161,8 +161,7 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
         <div className="panel-header">
           <div className="logo-area">
             <div className="branding">
-              <h2><FaGlobe className="gvas-icon" /> GVAS - Global Volcanic Aquifer Solutions</h2>
-              {isExpanded && <span className="tagline">Advanced AI-Powered Hydrostratigraphy Platform</span>}
+              <h2><FaBars className="gvas-icon" /> Navigation Menu</h2>
             </div>
           </div>
           
@@ -214,27 +213,39 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
         /* Modern Professional Style */
         .top-panel { 
           width: 100%; 
-          background: linear-gradient(135deg, #1565c0 0%, #1976d2 100%); 
+          background: linear-gradient(135deg, #1976d2 0%, #2196f3 100%); 
           color: #fff; 
           display: flex; 
           flex-direction: column;
-          border-bottom: 3px solid #ff9800;
-          box-shadow: 0 4px 20px rgba(0,0,0,0.3); 
+          box-shadow: 0 4px 20px rgba(0,0,0,0.2); 
           font-weight: 500;
+          padding: 0.5rem 0;
         }
-        .top-panel.collapsed { min-height: 70px; }
+        .top-panel.collapsed { min-height: 60px; }
         .top-panel.expanded { min-height: auto; max-height: none; }
         
         .panel-header { 
           display: flex; 
           align-items: center; 
-          padding: 1rem 2rem; 
+          padding: 0.8rem 2rem; 
           background: transparent; 
           border-bottom: 1px solid rgba(255,255,255,0.1); 
           width: 100%; 
           box-sizing: border-box; 
           position: relative;
           justify-content: space-between;
+        }
+        
+        .branding { flex: 1; }
+        .branding h2 { 
+          margin: 0; 
+          font-size: 1.5rem; 
+          font-weight: 700; 
+          color: #fff; 
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          letter-spacing: -0.5px;
+          display: flex;
+          align-items: center;
         }
         .gvas-icon { font-size: 1.6rem; color: #ff9800; margin-right: 0.5rem; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
         
@@ -277,17 +288,6 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
 
         .logo-area { display: flex; align-items: center; gap: 1rem; flex: 1; min-width: 0; }
         
-        .branding { flex: 1; }
-        .branding h2 { 
-          margin: 0; 
-          font-size: 1.8rem; 
-          font-weight: 700; 
-          color: #fff; 
-          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-          display: flex;
-          align-items: center;
-          letter-spacing: -0.5px;
-        }
         .tagline { 
           color: #b3c7ff; 
           font-size: 0.85rem; 

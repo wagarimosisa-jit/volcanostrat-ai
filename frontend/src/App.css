@@ -78,6 +78,43 @@ body::before {
   font-size: 1.1rem;
 }
 
+/* Top GVAS Header */
+.gvas-header {
+  background: linear-gradient(135deg, #1565c0 0%, #1976d2 100%);
+  color: white;
+  padding: 1.5rem 2rem;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  border-bottom: 3px solid #ff9800;
+}
+
+.gvas-header h1 {
+  margin: 0;
+  font-size: 2.8rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  letter-spacing: -0.5px;
+  text-shadow: 2px 2px 6px rgba(0,0,0,0.4);
+}
+
+.gvas-header-icon {
+  font-size: 2.8rem;
+  color: #ff9800;
+  text-shadow: 2px 2px 6px rgba(0,0,0,0.4);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.gvas-tagline {
+  margin: 0.5rem 0 0;
+  font-size: 1.2rem;
+  opacity: 0.95;
+  font-weight: 300;
+  letter-spacing: 0.5px;
+}
+
 .tabs {
   display: flex;
   justify-content: center;
