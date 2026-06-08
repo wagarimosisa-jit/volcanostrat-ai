@@ -571,7 +571,7 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
         
         /* Developer Profile */
         .developer-profile { display: flex; align-items: center; gap: 1.5rem; margin: 1rem 0; padding: 1rem; background: rgba(255,255,255,0.05); border-radius: 0.5rem; border: 1px solid rgba(0,102,204,0.2); }
-        .dev-photo { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid #4da6ff; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .dev-photo { width: 150px; height: 180px; border-radius: 0.5rem; object-fit: cover; border: 3px solid #4da6ff; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
         .dev-info { flex: 1; }
         .dev-info h5 { margin: 0 0 0.5rem 0; color: #fff; font-size: 1.2rem; }
         .linkedin-link { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: #0077b5; border-radius: 0.35rem; color: #fff; text-decoration: none; transition: all 0.2s; margin: 0.5rem 0; }
@@ -958,7 +958,7 @@ const S = {
         <div className="help-card">
           <h4><FaUserGraduate /> About the Developer</h4>
           <div className="developer-profile">
-            <img src="https://media.licdn.com/dms/image/v2/C5603AQHqJz8qL8ZQ4w/profile-displayphoto-shrink_800_800/0/1661234567789?e=2147483647&v=beta&t=abc123" alt="Wagari Mosisa Kitessa, PhD" className="dev-photo" />
+            <img src="https://via.placeholder.com/150x180/1976d2/ffffff?text=Dr.+Wagari+Mosisa" alt="Wagari Mosisa Kitessa, PhD" className="dev-photo" />
             <div className="dev-info">
               <h5>Wagari Mosisa Kitessa, PhD</h5>
               <p className="role">Lead Developer & Principal Geologist</p>
