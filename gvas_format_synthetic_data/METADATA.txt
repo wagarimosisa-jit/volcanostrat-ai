@@ -1,0 +1,25 @@
+GVAS Synthetic Data - Raw Format
+============================================================
+Generated: 2026-06-08 21:42:53
+Total Wells: 10
+Intervals per Well: 20
+Max Depth: 50m
+
+Study Area:
+  Longitude: 38.7 - 39.1°E
+  Latitude: 8.9 - 9.1°N
+  Elevation: 1500 - 2000m
+
+GVAS Format Columns:
+  1. Well_ID - Unique well identifier
+  2. X_Coordinate - Longitude (WGS84 decimal degrees)
+  3. Y_Coordinate - Latitude (WGS84 decimal degrees)
+  4. Elevation_m - Elevation in meters (WGS84)
+  5. Depth_Start_m - Start depth in meters (below ground)
+  6. Depth_End_m - End depth in meters (below ground)
+  7. Raw_Lithology_Description - Raw lithology description
+
+Files Generated:
+  - Individual well CSVs in 'wells/' directory
+  - ALL_WELLS_GVAS_FORMAT.csv
+  - METADATA.txt
