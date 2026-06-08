@@ -161,7 +161,7 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
         <div className="panel-header">
           <div className="logo-area">
             <div className="branding">
-              <h2><FaBars className="gvas-icon" /> Navigation Menu</h2>
+              <h2><FaBars className="gvas-icon" /></h2>
             </div>
           </div>
           
@@ -239,15 +239,12 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
         .branding { flex: 1; }
         .branding h2 { 
           margin: 0; 
-          font-size: 1.5rem; 
-          font-weight: 700; 
-          color: #fff; 
-          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-          letter-spacing: -0.5px;
+          padding: 0;
           display: flex;
           align-items: center;
+          min-height: 40px;
         }
-        .gvas-icon { font-size: 1.6rem; color: #ff9800; margin-right: 0.5rem; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        .gvas-icon { font-size: 1.6rem; color: #ff9800; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
         
         /* Enhanced typography */
         .sec h3 { 
