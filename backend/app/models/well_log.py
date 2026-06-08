@@ -1,14 +1,27 @@
-from pydantic import BaseModel, Field, condecimal
+from pydantic import BaseModel, Field, validator
 from typing import List, Optional
+import decimal
 
 class WellLog(BaseModel):
     Well_ID: str = Field(..., description="Unique well identifier")
-    X_Coordinate: condecimal(ge=-180, le=180) = Field(..., description="Longitude (WGS84 decimal degrees)")
-    Y_Coordinate: condecimal(ge=-90, le=90) = Field(..., description="Latitude (WGS84 decimal degrees)")
-    Elevation_m: condecimal(ge=0) = Field(..., description="Elevation in meters (WGS84)")
-    Depth_Start_m: condecimal(ge=0) = Field(..., description="Start depth in meters (below ground)")
-    Depth_End_m: condecimal(gt=0) = Field(..., description="End depth in meters (below ground)")
+    X_Coordinate: float = Field(..., description="Longitude (WGS84 decimal degrees)")
+    Y_Coordinate: float = Field(..., description="Latitude (WGS84 decimal degrees)")
+    Elevation_m: float = Field(..., description="Elevation in meters (WGS84)")
+    Depth_Start_m: float = Field(..., description="Start depth in meters (below ground)")
+    Depth_End_m: float = Field(..., description="End depth in meters (below ground)")
     Raw_Lithology_Description: str = Field(..., description="Raw lithology description from well log")
+
+    @validator('X_Coordinate', 'Y_Coordinate', 'Elevation_m', 'Depth_Start_m', 'Depth_End_m', pre=True)
+    def parse_numbers(cls, v):
+        """Accept integers, floats, decimals, and numeric strings"""
+        if isinstance(v, (int, float, decimal.Decimal)):
+            return float(v)
+        if isinstance(v, str):
+            try:
+                return float(v)
+            except ValueError:
+                raise ValueError(f"'{v}' is not a valid number")
+        return v
 
 class WellData(BaseModel):
     wells: List[WellLog] = Field(..., description="List of well logs")
