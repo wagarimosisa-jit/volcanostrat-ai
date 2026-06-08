@@ -179,6 +179,16 @@ body::before {
   background-size: 50px 50px, 80px 80px, 30px 30px;
 }
 
+.success-message {
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+  color: #2e7d32;
+  border-radius: 0.75rem;
+  margin-bottom: 1rem;
+  border: 1px solid #a5d6a7;
+  font-weight: 500;
+}
+
 .error-message {
   padding: 1rem 1.5rem;
   background: linear-gradient(135deg, #ffebee, #ffcdd2);

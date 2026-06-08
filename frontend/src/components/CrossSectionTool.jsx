@@ -26,9 +26,59 @@ const CrossSectionTool = ({ crossSection, onGenerate, linePoints, onLinePointsCh
     ]);
   };
 
+  const bounds = wells.reduce((acc, w) => ({
+    minX: Math.min(acc.minX, w.Coordinates.X),
+    maxX: Math.max(acc.maxX, w.Coordinates.X),
+    minY: Math.min(acc.minY, w.Coordinates.Y),
+    maxY: Math.max(acc.maxY, w.Coordinates.Y)
+  }), { minX: Infinity, maxX: -Infinity, minY: Infinity, maxY: -Infinity });
+
+  const pad = 0.01;
+  const rangeX = (bounds.maxX - bounds.minX) || 1;
+  const rangeY = (bounds.maxY - bounds.minY) || 1;
+
+  const toSvg = (x, y) => ({
+    sx: 20 + ((x - bounds.minX + pad) / (rangeX + 2 * pad)) * 360,
+    sy: 20 + ((bounds.maxY - y + pad) / (rangeY + 2 * pad)) * 260
+  });
+
+  const handleMapClick = (e) => {
+    const svg = e.currentTarget;
+    const rect = svg.getBoundingClientRect();
+    const sx = e.clientX - rect.left;
+    const sy = e.clientY - rect.top;
+    const x = bounds.minX + ((sx - 20) / 360) * (rangeX + 2 * pad) - pad;
+    const y = bounds.maxY - (((sy - 20) / 260) * (rangeY + 2 * pad) - pad);
+    const nextIndex = localLinePoints.findIndex(p => p.x === 0 && p.y === 0);
+    const idx = nextIndex >= 0 ? nextIndex : (localLinePoints.length < 2 ? localLinePoints.length : 1);
+    const newPoints = [...localLinePoints];
+    if (newPoints[idx]) {
+      newPoints[idx] = { x: parseFloat(x.toFixed(6)), y: parseFloat(y.toFixed(6)) };
+      setLocalLinePoints(newPoints);
+    }
+  };
+
+  const p1 = toSvg(localLinePoints[0]?.x || 0, localLinePoints[0]?.y || 0);
+  const p2 = toSvg(localLinePoints[1]?.x || 0, localLinePoints[1]?.y || 0);
+
   return (
     <div className="cross-section-tool">
       <h3>Cross-Section Tool</h3>
+
+      {wells?.length > 0 && (
+        <div className="map-picker">
+          <h4>Click on the map to set cross-section line points</h4>
+          <svg width="400" height="300" onClick={handleMapClick}>
+            {wells.map((w, i) => {
+              const { sx, sy } = toSvg(w.Coordinates.X, w.Coordinates.Y);
+              return <circle key={i} className="well-dot" cx={sx} cy={sy} r={6} />;
+            })}
+            <line className="section-line" x1={p1.sx} y1={p1.sy} x2={p2.sx} y2={p2.sy} />
+            <circle className="line-point" cx={p1.sx} cy={p1.sy} r={8} />
+            <circle className="line-point" cx={p2.sx} cy={p2.sy} r={8} />
+          </svg>
+        </div>
+      )}
 
       <div className="controls">
         <div className="point-controls">
@@ -79,7 +129,7 @@ const CrossSectionTool = ({ crossSection, onGenerate, linePoints, onLinePointsCh
         </div>
       )}
 
-      <style jsx>{`
+      <style>{`
         .cross-section-tool {
           background-color: white;
           padding: 1.5rem;

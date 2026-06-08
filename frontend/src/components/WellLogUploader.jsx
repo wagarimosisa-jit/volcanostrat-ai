@@ -205,7 +205,7 @@ const WellLogUploader = ({ onFileUpload, sampleData }) => {
         </div>
       </div>
 
-      <style jsx>{`
+      <style>{`
         .well-log-uploader {
           max-width: 800px;
           margin: 0 auto;

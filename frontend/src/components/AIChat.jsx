@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
+import axios from 'axios';
 
-const AIChat = ({ wells, voxelModel }) => {
+const AIChat = ({ wells, voxelModel, apiBase = 'http://localhost:8000' }) => {
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
@@ -28,12 +29,67 @@ const AIChat = ({ wells, voxelModel }) => {
     setInputValue('');
     setIsLoading(true);
 
-    // Simulate AI response (in production, call backend API)
-    setTimeout(() => {
-      const response = generateAIResponse(inputValue, wells, voxelModel);
+    try {
+      const response = await fetchAIResponse(inputValue, wells, voxelModel);
       setMessages(prev => [...prev, { role: 'assistant', content: response }]);
+    } catch {
+      setMessages(prev => [...prev, { role: 'assistant', content: 'Sorry, I could not process that request. Please try again.' }]);
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
+  };
+
+  const toApiWellData = () => ({
+    wells: wells.map(w => ({
+      Well_ID: w.Well_ID,
+      X_Coordinate: w.Coordinates.X,
+      Y_Coordinate: w.Coordinates.Y,
+      Elevation_m: w.Coordinates.Elevation,
+      Depth_Start_m: 0,
+      Depth_End_m: Math.max(...w.Layers.map(l => l.Depth_End)),
+      Raw_Lithology_Description: w.Layers.map(l => l.Modifiers?.join(', ') || '').join('; ')
+    }))
+  });
+
+  const fetchAIResponse = async (question, wells, voxelModel) => {
+    const q = question.toLowerCase();
+    const wellData = toApiWellData();
+
+    if (wells.length > 0) {
+      if (q.includes('what if') || q.includes('what-if')) {
+        const { data } = await axios.post(`${apiBase}/api/causal/what-if`, wellData, {
+          params: { scenario: question }
+        });
+        const orig = data.original_metrics;
+        const mod = data.modified_metrics;
+        return `**What-If Analysis:** ${question}\n\n` +
+          `**Original:** CCI ${(orig.cci * 100).toFixed(1)}%, FEP ${orig.fep?.toFixed(1)}, HCSS ${(orig.hcss * 100).toFixed(1)}%\n\n` +
+          `**Modified:** CCI ${(mod.cci * 100).toFixed(1)}%, FEP ${mod.fep?.toFixed(1)}, HCSS ${(mod.hcss * 100).toFixed(1)}%\n\n` +
+          (data.changes?.map(c => `- ${c}`).join('\n') || '');
+      }
+      if (q.includes('causal') || q.includes('cepr') || q.includes('analyze')) {
+        const { data } = await axios.post(`${apiBase}/api/causal/analyze`, wellData);
+        const cepr = data.ceprs?.[0];
+        if (cepr) {
+          return `**Causal Analysis (CEPR) for ${cepr.well_id}:**\n\n` +
+            `- **CCI:** ${(cepr.cci * 100).toFixed(1)}%\n` +
+            `- **FEP:** ${cepr.fep?.toFixed(1)}\n` +
+            `- **HCSS:** ${(cepr.hcss * 100).toFixed(1)}%\n` +
+            `- **Processes identified:** ${cepr.processes?.length || 0}\n\n` +
+            (cepr.causal_chains?.slice(0, 2).map(c => `Chain: ${c.join(' → ')}`).join('\n') || '');
+        }
+      }
+      if (q.includes('predict') || q.includes('target')) {
+        const { data } = await axios.post(`${apiBase}/api/causal/predict`, wellData);
+        if (data.targets?.length) {
+          return `**Predicted Aquifer Targets:**\n\n` +
+            data.targets.map(t => `- **${t.depth_range || `${t.depth_start}-${t.depth_end}m`}** (${(t.confidence * 100).toFixed(0)}%): ${t.reason}`).join('\n');
+        }
+        return 'No aquifer targets predicted with current data. Upload more wells for better predictions.';
+      }
+    }
+
+    return generateAIResponse(question, wells, voxelModel);
   };
 
   const generateAIResponse = (question, wells, voxelModel) => {
@@ -85,7 +141,7 @@ const AIChat = ({ wells, voxelModel }) => {
     }
 
     if (q.includes('why') || q.includes('explain')) {
-      return `**How VolcanoStrat AI Works:**\n\n` +
+      return `**How GVAS Works:**\n\n` +
         `1. **Standardization:** Your raw lithology descriptions are matched against a **global volcanic ontology** (10M+ well logs).\n` +
         `2. **Modifier Extraction:** Key properties like **fracturing, weathering, porosity** are identified.\n` +
         `3. **Classification:** Layers are classified as **aquifers/aquitards** based on **global case studies** (Ethiopia, Canary Islands, Hawaii).\n` +
@@ -243,7 +299,7 @@ const AIChat = ({ wells, voxelModel }) => {
         </div>
       </div>
 
-      <style jsx>{`
+      <style>{`
         .ai-chat {
           background-color: white;
           padding: 1.5rem;

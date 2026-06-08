@@ -1,11 +1,11 @@
-# 🌋 VolcanoStrat AI - Causal Subsurface Intelligence Engine (CSIE)
+# GVAS - Global Volcanic Aquifer Solutions
 
-**VolcanoStrat AI is an explainable AI platform that transforms heterogeneous volcanic well logs into uncertainty-aware hydrostratigraphic knowledge models and groundwater decision-support systems.**
+**GVAS (Global Volcanic Aquifer Solutions) is an explainable AI platform that transforms heterogeneous volcanic well logs into uncertainty-aware hydrostratigraphic knowledge models and groundwater decision-support systems.**
 
-This is **NOT** just another geological modeling tool. VolcanoStrat AI answers a fundamentally different question:
+This is **NOT** just another geological modeling tool. GVAS answers a fundamentally different question:
 
 - **Traditional Tools:** *"What is underground?"* (description)
-- **VolcanoStrat AI:** *"Why is it like this, and what caused it?"* (causal understanding)
+- **GVAS:** *"Why is it like this, and what caused it?"* (causal understanding)
 
 ## 🚀 Key Innovation: Causal Stratigraphy
 
@@ -74,7 +74,7 @@ Each well log is transformed from a static description to a **Causal Earth Proce
 
 ## 🎯 Mission Statement
 
-**VolcanoStrat AI transforms heterogeneous volcanic well logs into standardized, explainable hydrostratigraphic knowledge models and groundwater decision-support systems.**
+**GVAS transforms heterogeneous volcanic well logs into standardized, explainable hydrostratigraphic knowledge models and groundwater decision-support systems.**
 
 This enables hydrogeologists, researchers, consultants, water agencies, and academic institutions worldwide to:
 - Build consistent, explainable, and reproducible subsurface models
@@ -458,7 +458,7 @@ export DATABASE_URL=postgresql://username:password@localhost/dbname
 
 ## 🎓 Academic References
 
-VolcanoStrat AI is built upon a **comprehensive foundation of 87+ academic references** covering:
+GVAS is built upon a **comprehensive foundation of 87+ academic references** covering:
 
 - **Volcanology & Hydrogeology** - 15 references
 - **Regional Volcanic Studies** - 15 references (Ethiopia, Canary Islands, Hawaii, Iceland)
@@ -487,9 +487,9 @@ VolcanoStrat AI is built upon a **comprehensive foundation of 87+ academic refer
 - **Explainable AI:** Ribeiro et al. (2016), Lundberg & Lee (2017), Molnar (2022)
 
 ### Citation Guide:
-When using VolcanoStrat AI in academic work, please cite:
+When using GVAS in academic work, please cite:
 ```
-Kitessa, W. M. (2026). VolcanoStrat AI: Causal Subsurface Intelligence Engine for Volcanic 
+Kitessa, W. M. (2026). GVAS: Causal Subsurface Intelligence Engine for Volcanic 
 Hydrostratigraphy and Aquifer Modeling. Jimma University, Ethiopia. 
 https://github.com/wagarimosisa-jit/volcanostrat-ai
 ```
@@ -508,4 +508,4 @@ This project is proprietary software developed by Wagari Mosisa Kitessa for hydr
 
 ---
 
-**© 2026 VolcanoStrat AI | Wagari Mosisa Kitessa**
+**© 2026 GVAS | Wagari Mosisa Kitessa**

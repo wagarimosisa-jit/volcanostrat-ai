@@ -1,5 +1,5 @@
 """
-PDF Report Exporter for VolcanoStrat AI
+PDF Report Exporter for GVAS
 Generates comprehensive geological reports in PDF format
 """
 
@@ -97,7 +97,7 @@ class PDFExporter:
         except Exception as e:
             return {'error': f'Failed to generate PDF: {str(e)}'}
     
-    def export_project_report(self, wells: List[Dict], project_name: str = "VolcanoStrat AI Analysis", 
+    def export_project_report(self, wells: List[Dict], project_name: str = "GVAS Analysis", 
                               output_format: str = 'base64') -> Dict:
         """
         Generate a comprehensive project report for multiple wells.
@@ -268,7 +268,7 @@ class PDFExporter:
         title_style.alignment = TA_CENTER
         title_style.spaceAfter = 10
         
-        story.append(Paragraph("VolcanoStrat AI - Well Analysis Report", title_style))
+        story.append(Paragraph("GVAS - Well Analysis Report", title_style))
         
         subtitle_style = styles['Heading2']
         subtitle_style.fontSize = 14
@@ -397,7 +397,7 @@ class PDFExporter:
         title_style.fontSize = 28
         title_style.alignment = TA_CENTER
         title_style.spaceAfter = 20
-        story.append(Paragraph("VolcanoStrat AI", title_style))
+        story.append(Paragraph("GVAS", title_style))
         
         title_style2 = styles['Heading1']
         title_style2.fontSize = 24
@@ -440,7 +440,7 @@ class PDFExporter:
         
         text = f"This report presents the analysis of <b>{total_wells}</b> wells with a total of <b>{total_layers}</b> stratigraphic layers. "
         text += f"The analysis identified <b>{total_aquifers}</b> aquifer layers ({aquifer_pct:.1f}% of all layers) and <b>{total_aquitards}</b> aquitard layers. "
-        text += "Each well has been processed through VolcanoStrat AI's standardized lithological classification system. "
+        text += "Each well has been processed through GVAS's standardized lithological classification system. "
         text += "Hydraulic properties have been predicted based on global volcanic aquifer studies. "
         text += "Recommendations for groundwater development are provided based on the most productive layers."
         

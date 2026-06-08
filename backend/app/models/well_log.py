@@ -30,5 +30,5 @@ class StandardizedWell(BaseModel):
 
 class WellResponse(BaseModel):
     wells: List[StandardizedWell]
-    project_name: Optional[str] = "VolcanoStrat AI Project"
+    project_name: Optional[str] = "GVAS Project"
     global_comparisons: Optional[dict] = None

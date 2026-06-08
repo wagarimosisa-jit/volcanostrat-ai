@@ -189,10 +189,12 @@ class LASImporter:
             las = lasio.read(io.StringIO(text_content))
             
             # Extract well information
-            well_data = LASImporter._extract_well_data(las)
+            well_data = LASImporter._extract_well_data(las, filename)
             
             # Extract curves/intervals
             intervals = LASImporter._extract_intervals(las)
+            if intervals:
+                well_data['Depth_Intervals'] = intervals
             
             return {
                 'wells': [well_data],
@@ -211,7 +213,7 @@ class LASImporter:
             raise ValueError(f"Failed to read LAS file: {str(e)}")
     
     @staticmethod
-    def _extract_well_data(las) -> Dict:
+    def _extract_well_data(las, filename: str = "unknown") -> Dict:
         """Extract well metadata from LAS file"""
         well_info = {}
         
@@ -256,21 +258,19 @@ class LASImporter:
         depth_col = None
         lith_col = None
         
-        for col in las.columns:
+        curve_names = list(las.keys())
+        for col in curve_names:
             col_lower = col.lower().strip()
-            if 'depth' in col_lower:
+            if 'depth' in col_lower or col_lower == 'dept':
                 depth_col = col
             elif any(lith in col_lower for lith in ['lith', 'rock', 'strat', 'formation']):
                 lith_col = col
         
-        if not depth_col:
-            # Try first column as depth
-            if len(las.columns) > 0:
-                depth_col = las.columns[0]
+        if not depth_col and curve_names:
+            depth_col = curve_names[0]
         
         if not lith_col:
-            # Try to find a column with text data
-            for col in las.columns:
+            for col in curve_names:
                 if col != depth_col:
                     lith_col = col
                     break

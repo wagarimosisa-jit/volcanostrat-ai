@@ -95,7 +95,7 @@ const GoogleEarthViewer = ({ wells }) => {
         <p>Click on a point to see details</p>
       </div>
 
-      <style jsx>{`
+      <style>{`
         .google-earth-viewer {
           position: relative;
           width: 100%;

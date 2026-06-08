@@ -196,7 +196,7 @@ const ExportPanel = ({ onExport, availableExports, wells, standardizedData }) =>
         <FaInfoCircle /> <span>All formats support global coordinate systems (WGS84). Shapefiles include metadata and projection information.</span>
       </div>
 
-      <style jsx>{`
+      <style>{`
         .export-panel {
           background-color: white;
           padding: 1.5rem;

@@ -3,9 +3,15 @@ import io
 import json
 import base64
 from typing import List, Dict
-import vtk
-from vtk.util import numpy_support
 import numpy as np
+
+
+def _get_vtk():
+    try:
+        import vtk
+        return vtk
+    except ImportError as e:
+        raise ImportError("vtk not installed. Install with: pip install vtk") from e
 
 def export_to_csv(wells: List[Dict]) -> str:
     """Exports well data to CSV (modifiers-only)"""
@@ -43,6 +49,8 @@ def export_to_vtk(voxel_model: Dict) -> str:
     origin = voxel_model['origin']
     resolution = voxel_model['resolution']
     extent = voxel_model['extent']
+
+    vtk = _get_vtk()
 
     # Create VTK grid
     grid = vtk.vtkImageData()
@@ -96,7 +104,7 @@ def export_to_kml(wells: List[Dict]) -> str:
     kml_header = """<?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://www.opengis.net/kml/2.2">
   <Document>
-    <name>VolcanoStrat AI - Well Data</name>
+    <name>GVAS - Well Data</name>
     <description>3D Volcanic Aquifer Model</description>
 """
 

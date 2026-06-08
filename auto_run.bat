@@ -1,5 +1,5 @@
 @echo off
-rem VolcanoStrat AI - Auto Run Script
+rem GVAS - Auto Run Script
 rem ====================================
 rem This script automatically starts both backend and frontend servers
 

@@ -415,7 +415,7 @@ class ShapefileExporter:
                         'name': name,
                         'feature_count': len(gdf),
                         'crs': str(gdf.crs) if gdf.crs else 'EPSG:4326',
-                        'exported_by': 'VolcanoStrat AI',
+                        'exported_by': 'GVAS',
                         'columns': gdf.columns.tolist()
                     }
                     zipf.writestr(f"{name}_metadata.json", json.dumps(metadata, indent=2))

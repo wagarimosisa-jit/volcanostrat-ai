@@ -29,8 +29,8 @@ from .engines.pdf_exporter_enhanced import pdf_exporter_enhanced
 
 # Initialize FastAPI
 app = FastAPI(
-    title="VolcanoStrat AI",
-    description="AI-Powered Volcanic Aquifer Stratigraphy Platform",
+    title="GVAS",
+    description="Global Volcanic Aquifer Solutions - AI-Powered Hydrostratigraphy Platform",
     version="1.0.0",
     docs_url="/api/docs",
     redoc_url="/api/redoc"
@@ -179,13 +179,13 @@ async def export_data(
                 return JSONResponse(content={
                     "format": "csv",
                     "data": csv_data,
-                    "filename": "volcanostrat_layers.csv"
+                    "filename": "gvas_layers.csv"
                 })
             elif export_format == "json":
                 return JSONResponse(content={
                     "format": "json",
                     "data": wells,
-                    "filename": "volcanostrat_layers.json"
+                    "filename": "gvas_layers.json"
                 })
             elif export_format in ["shp", "shapefile"]:
                 # Export layers as shapefile
@@ -934,7 +934,7 @@ async def export_pdf(
     well_data: Optional[WellData] = None,
     export_type: str = "well_report",
     well_id: Optional[str] = None,
-    project_name: str = "VolcanoStrat AI Analysis"
+    project_name: str = "GVAS Analysis"
 ):
     """
     Export data to PDF format.
@@ -1190,7 +1190,7 @@ async def get_api_info():
     Get API information and supported formats.
     """
     return JSONResponse(content={
-        "name": "VolcanoStrat AI - Causal Subsurface Intelligence Engine",
+        "name": "GVAS - Global Volcanic Aquifer Solutions",
         "version": "1.0.0",
         "description": "Transforms heterogeneous volcanic well logs into uncertainty-aware hydrostratigraphic knowledge models and groundwater decision-support systems.",
         "developer": "Wagari Mosisa Kitessa",

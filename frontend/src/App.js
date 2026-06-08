@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { FaFileAlt, FaCube, FaRulerCombined, FaGlobe, FaComments } from 'react-icons/fa';
+import { FaFileAlt, FaCube, FaRulerCombined, FaGlobe, FaComments, FaProjectDiagram } from 'react-icons/fa';
 import WellLogUploader from './components/WellLogUploader';
 import Model3DViewer from './components/Model3DViewer';
 import CrossSectionTool from './components/CrossSectionTool';
 import ExportPanel from './components/ExportPanel';
 import AIChat from './components/AIChat';
 import GoogleEarthViewer from './components/GoogleEarthViewer';
+import CausalAnalysis from './components/CausalAnalysis';
 import Dashboard from './components/Dashboard';
 import './App.css';
+import './components/components.css';
 
 function App() {
   const [wells, setWells] = useState([]);
@@ -18,17 +20,31 @@ function App() {
   const [activeTab, setActiveTab] = useState('upload');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
   const [linePoints, setLinePoints] = useState([
     { x: 0, y: 0 },
     { x: 100, y: 100 }
   ]);
-  const [isDashboardExpanded, setIsDashboardExpanded] = useState(false);
+  const [isDashboardExpanded, setIsDashboardExpanded] = useState(true);
 
   const API_BASE = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+
+  const toApiWellData = () => ({
+    wells: wells.map(w => ({
+      Well_ID: w.Well_ID,
+      X_Coordinate: w.Coordinates.X,
+      Y_Coordinate: w.Coordinates.Y,
+      Elevation_m: w.Coordinates.Elevation,
+      Depth_Start_m: 0,
+      Depth_End_m: Math.max(...w.Layers.map(l => l.Depth_End)),
+      Raw_Lithology_Description: w.Layers.map(l => l.Modifiers.join(', ')).join('; ')
+    }))
+  });
 
   const handleFileUpload = async (file) => {
     setIsLoading(true);
     setError(null);
+    setSuccess(null);
 
     try {
       const formData = new FormData();
@@ -58,7 +74,7 @@ function App() {
       } else if (response.data.type === 'study_area') {
         // Study area uploaded
         console.log('Study area uploaded:', response.data);
-        setError('Study area uploaded successfully! Use it for cross-sections.');
+        setSuccess('Study area uploaded successfully! Use it for cross-sections.');
       }
 
     } catch (err) {
@@ -75,15 +91,7 @@ function App() {
     setIsLoading(true);
     try {
       const response = await axios.post(`${API_BASE}/api/cross-section`, {
-        wells: { wells: wells.map(w => ({
-          Well_ID: w.Well_ID,
-          X_Coordinate: w.Coordinates.X,
-          Y_Coordinate: w.Coordinates.Y,
-          Elevation_m: w.Coordinates.Elevation,
-          Depth_Start_m: 0,
-          Depth_End_m: Math.max(...w.Layers.map(l => l.Depth_End)),
-          Raw_Lithology_Description: w.Layers.map(l => l.Modifiers.join(', ')).join('; ')
-        }))},
+        wells: toApiWellData(),
         line_points: linePoints
       });
 
@@ -105,43 +113,17 @@ function App() {
       // Handle PDF exports separately
       if (exportType === 'pdf') {
         response = await axios.post(`${API_BASE}/api/export/pdf`, {
-          wells: { wells: wells.map(w => ({
-            Well_ID: w.Well_ID,
-            X_Coordinate: w.Coordinates.X,
-            Y_Coordinate: w.Coordinates.Y,
-            Elevation_m: w.Coordinates.Elevation,
-            Depth_Start_m: 0,
-            Depth_End_m: Math.max(...w.Layers.map(l => l.Depth_End)),
-            Raw_Lithology_Description: w.Layers.map(l => l.Modifiers.join(', ')).join('; ')
-          }))},
+          wells: toApiWellData(),
           export_type: exportFormat,
-          project_name: 'VolcanoStrat AI Export'
+          project_name: 'GVAS Export'
         });
       } else if (exportType === 'cepr') {
-        // Export CEPR data
         response = await axios.post(`${API_BASE}/api/export/cepr`, {
-          wells: { wells: wells.map(w => ({
-            Well_ID: w.Well_ID,
-            X_Coordinate: w.Coordinates.X,
-            Y_Coordinate: w.Coordinates.Y,
-            Elevation_m: w.Coordinates.Elevation,
-            Depth_Start_m: 0,
-            Depth_End_m: Math.max(...w.Layers.map(l => l.Depth_End)),
-            Raw_Lithology_Description: w.Layers.map(l => l.Modifiers.join(', ')).join('; ')
-          }))}
+          wells: toApiWellData()
         });
       } else {
-        // Standard export
         response = await axios.post(`${API_BASE}/api/export`, {
-          wells: { wells: wells.map(w => ({
-            Well_ID: w.Well_ID,
-            X_Coordinate: w.Coordinates.X,
-            Y_Coordinate: w.Coordinates.Y,
-            Elevation_m: w.Coordinates.Elevation,
-            Depth_Start_m: 0,
-            Depth_End_m: Math.max(...w.Layers.map(l => l.Depth_End)),
-            Raw_Lithology_Description: w.Layers.map(l => l.Modifiers.join(', ')).join('; ')
-          }))},
+          wells: toApiWellData(),
           export_type: exportType,
           export_format: exportFormat,
           line_points: linePoints
@@ -220,8 +202,9 @@ function App() {
         voxelModel={voxelModel}
         onFileUpload={handleFileUpload}
         onExport={handleExport}
-        isExpanded={true}
+        isExpanded={isDashboardExpanded}
         onToggleExpand={() => setIsDashboardExpanded(!isDashboardExpanded)}
+        onNavigateToUpload={() => setActiveTab('upload')}
       />
 
       <div className={`main-content`}>
@@ -254,6 +237,13 @@ function App() {
             <FaGlobe /> Google Earth
           </button>
           <button
+            className={activeTab === 'causal' ? 'active' : ''}
+            onClick={() => setActiveTab('causal')}
+            disabled={!standardizedData}
+          >
+            <FaProjectDiagram /> Causal Analysis
+          </button>
+          <button
             className={activeTab === 'chat' ? 'active' : ''}
             onClick={() => setActiveTab('chat')}
           >
@@ -263,6 +253,7 @@ function App() {
 
         <main className="app-main">
         {error && <div className="error-message">{error}</div>}
+        {success && <div className="success-message">{success}</div>}
 
         {isLoading && (
           <div className="loading-overlay">
@@ -355,10 +346,15 @@ function App() {
           </div>
         )}
 
+        {activeTab === 'causal' && standardizedData && (
+          <CausalAnalysis wells={wells} apiBase={API_BASE} />
+        )}
+
         {activeTab === 'chat' && (
           <AIChat
             wells={standardizedData?.wells || []}
             voxelModel={voxelModel}
+            apiBase={API_BASE}
           />
         )}
       </main>

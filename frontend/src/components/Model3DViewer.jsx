@@ -1,15 +1,10 @@
 import React, { useRef, useEffect, useState } from 'react';
 import * as THREE from 'three';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { OrbitControls, Environment, useHelper } from '@react-three/drei';
-import * as dat from 'dat.gui';
+import { Canvas } from '@react-three/fiber';
+import { OrbitControls, Environment } from '@react-three/drei';
 
 const Layer = ({ position, size, color, modifiers, layerNumber, onClick }) => {
   const meshRef = useRef();
-
-  useFrame((state) => {
-    meshRef.current.rotation.y += 0.005;
-  });
 
   return (
     <mesh
@@ -35,27 +30,33 @@ const Model3DViewer = ({ wells, voxelModel, onLinePointsChange }) => {
   const [showAxes, setShowAxes] = useState(true);
   const [wireframe, setWireframe] = useState(false);
 
-  // Convert voxel model to simplified layers for visualization
+  const layerColors = {
+    'Aquifer (High Productivity)': '#1a237e',
+    'Aquifer (Moderate Productivity)': '#303f9f',
+    'Aquifer (Low Productivity)': '#7986cb',
+    'Aquitard': '#9e9e9e',
+    'Unknown': '#ff5722'
+  };
+
   const layers = [];
-  if (voxelModel) {
-    const layerColors = {
-      'Aquifer (High Productivity)': '#1a237e',
-      'Aquifer (Moderate Productivity)': '#303f9f',
-      'Aquifer (Low Productivity)': '#7986cb',
-      'Aquitard': '#9e9e9e',
-      'Unknown': '#ff5722'
-    };
+  if (wells?.length) {
+    const scale = 50000;
+    const centerX = wells.reduce((s, w) => s + w.Coordinates.X, 0) / wells.length;
+    const centerY = wells.reduce((s, w) => s + w.Coordinates.Y, 0) / wells.length;
 
     wells.forEach(well => {
-      well.Layers.forEach((layer, index) => {
+      const xPos = (well.Coordinates.X - centerX) * scale;
+      const yPos = (well.Coordinates.Y - centerY) * scale;
+      well.Layers.forEach((layer) => {
         const color = layerColors[layer.Hydro_Property] || '#9e9e9e';
         layers.push({
-          position: [0, 0, -layer.Depth_Start / 2],
-          size: [10, 10, layer.Thickness],
-          color: color,
+          position: [xPos, yPos, -(layer.Depth_Start + layer.Thickness / 2)],
+          size: [8, 8, layer.Thickness],
+          color,
           modifiers: layer.Modifiers,
           layerNumber: layer.Layer_Number,
-          hydroProperty: layer.Hydro_Property
+          hydroProperty: layer.Hydro_Property,
+          wellId: well.Well_ID
         });
       });
     });
@@ -119,8 +120,11 @@ const Model3DViewer = ({ wells, voxelModel, onLinePointsChange }) => {
         {selectedLayer && (
           <div className="layer-info">
             <h4>Selected Layer: {selectedLayer}</h4>
-            <p>Click on a layer in the 3D model to select it.</p>
+            <p>Layers are positioned at each well&apos;s coordinates. Use orbit controls to explore.</p>
           </div>
+        )}
+        {voxelModel && (
+          <p className="voxel-info">Voxel model loaded ({voxelModel.extent?.join('×') || 'grid'} cells)</p>
         )}
 
         <div className="legend">
@@ -144,7 +148,7 @@ const Model3DViewer = ({ wells, voxelModel, onLinePointsChange }) => {
         </div>
       </div>
 
-      <style jsx>{`
+      <style>{`
         .model-3d-viewer {
           display: flex;
           gap: 1rem;

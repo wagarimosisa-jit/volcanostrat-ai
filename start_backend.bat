@@ -1,8 +1,8 @@
 @echo off
-rem VolcanoStrat AI - Backend Server Start Script
+rem GVAS - Backend Server Start Script
 rem ================================================
 
-echo Starting VolcanoStrat AI Backend Server...
+echo Starting GVAS Backend Server...
 echo.
 
 rem Check if we're in the correct directory

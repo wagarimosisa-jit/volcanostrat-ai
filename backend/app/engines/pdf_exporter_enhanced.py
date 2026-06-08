@@ -1,5 +1,5 @@
 """
-Enhanced PDF Report Exporter for VolcanoStrat AI
+Enhanced PDF Report Exporter for GVAS
 Generates comprehensive geological reports with interpretations and evidence
 """
 
@@ -158,7 +158,7 @@ class EnhancedPDFExporter:
         styles = self._get_styles()
         
         # Report metadata
-        metadata_text = f"Report generated on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} | VolcanoStrat AI v1.0 | Developer: Wagari Mosisa Kitessa"
+        metadata_text = f"Report generated on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} | GVAS v1.0 | Developer: Wagari Mosisa Kitessa"
         elements.append(Paragraph(metadata_text, styles['Metadata']))
         elements.append(Spacer(1, 12))
         
@@ -439,7 +439,7 @@ class EnhancedPDFExporter:
                 bottomMargin=36,
                 leftMargin=36,
                 rightMargin=36,
-                title=f"VolcanoStrat AI Report - {datetime.now().strftime('%Y%m%d')}"
+                title=f"GVAS Report - {datetime.now().strftime('%Y%m%d')}"
             )
             
             # Build story (list of flowables)
@@ -447,7 +447,7 @@ class EnhancedPDFExporter:
             
             # Add title
             story.append(Spacer(1, 24))
-            story.append(Paragraph("VolcanoStrat AI - Comprehensive Geological Report", styles['Title']))
+            story.append(Paragraph("GVAS - Comprehensive Geological Report", styles['Title']))
             story.append(Paragraph("Explainable Volcanic Hydrostratigraphy Analysis", styles['Heading2']))
             story.append(Spacer(1, 12))
             
@@ -464,7 +464,7 @@ class EnhancedPDFExporter:
             
             summary_text = f"""
             This report presents the analysis of <b>{total_wells} wells</b> with a total of <b>{total_layers} stratigraphic layers</b> 
-            using VolcanoStrat AI's Causal Subsurface Intelligence Engine (CSIE). The analysis transforms 
+            using GVAS's Causal Subsurface Intelligence Engine (CSIE). The analysis transforms 
             heterogeneous well-log descriptions into standardized, scientifically defensible hydrostratigraphic 
             units with transparent reasoning and confidence scoring.
             <br/><br/>
@@ -504,7 +504,7 @@ class EnhancedPDFExporter:
             story.append(Spacer(1, 12))
             
             credit_text = """
-            <b>VolcanoStrat AI</b><br/>
+            <b>GVAS</b><br/>
             Causal Subsurface Intelligence Engine (CSIE)<br/>
             Developed by: Wagari Mosisa Kitessa<br/>
             Jimma University, Ethiopia | wagari.mosisa@ju.edu.et | wagarimosisa@gmail.com<br/>
@@ -523,7 +523,7 @@ class EnhancedPDFExporter:
                 return {
                     'pdf': base64.b64encode(buffer.getvalue()).decode('utf-8'),
                     'type': 'comprehensive_report',
-                    'filename': f'volcanostrat_report_{datetime.now().strftime("%Y%m%d_%H%M%S")}.pdf',
+                    'filename': f'gvas_report_{datetime.now().strftime("%Y%m%d_%H%M%S")}.pdf',
                     'well_count': total_wells,
                     'layer_count': total_layers,
                     'generated_at': datetime.now().isoformat()
@@ -532,7 +532,7 @@ class EnhancedPDFExporter:
                 return {
                     'pdf': buffer.getvalue(),
                     'type': 'comprehensive_report',
-                    'filename': f'volcanostrat_report_{datetime.now().strftime("%Y%m%d_%H%M%S")}.pdf',
+                    'filename': f'gvas_report_{datetime.now().strftime("%Y%m%d_%H%M%S")}.pdf',
                     'well_count': total_wells,
                     'layer_count': total_layers,
                     'generated_at': datetime.now().isoformat()

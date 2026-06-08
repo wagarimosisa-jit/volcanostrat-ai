@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FaGlobe, FaWater, FaChartBar, FaTachometerAlt, FaLayerGroup, FaCog, FaInfoCircle, FaFileImport, FaQuestionCircle, FaUserGraduate, FaEnvelope, FaGithub, FaLinkedin, FaFire, FaRulerCombined, FaGem, FaTint, FaChevronDown, FaBars } from 'react-icons/fa';
 
-const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport, isExpanded = false, onToggleExpand }) => {
+const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport, isExpanded = false, onToggleExpand, onNavigateToUpload }) => {
   const [activeMenu, setActiveMenu] = useState(null);
   const [activeSubMenu, setActiveSubMenu] = useState(null);
 
@@ -110,7 +110,7 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
       title: 'Tools',
       icon: <FaCog />,
       submenu: [
-        { id: 'upload', title: 'Quick Upload', component: <S.Content activeSection="upload" topProductive={topProductive} onFileUpload={onFileUpload} onExport={onExport} /> },
+        { id: 'upload', title: 'Quick Upload', component: <S.Content activeSection="upload" topProductive={topProductive} onFileUpload={onFileUpload} onExport={onExport} onNavigateToUpload={onNavigateToUpload} /> },
         { id: 'export', title: 'Export Options', component: <S.Content activeSection="export" topProductive={topProductive} onFileUpload={onFileUpload} onExport={onExport} /> },
         { id: 'aquifers', title: 'Top Aquifers', component: <S.Content activeSection="productive" topProductive={topProductive} onFileUpload={onFileUpload} onExport={onExport} /> }
       ]
@@ -207,7 +207,7 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
         )}
       </div>
 
-      <style jsx>{`
+      <style>{`
         .gvas-dashboard { width: 100%; position: relative; }
         
         /* Modern Professional Style */
@@ -880,7 +880,7 @@ const S = {
         <div className="card1"><FaLayerGroup className="fe-icon" /><strong>Volcanic Stratigraphy</strong><p>Advanced stratigraphic correlation and layer analysis tools specifically designed for understanding complex volcanic sequences. The system automatically identifies and correlates volcanic layers, recognizes volcanic facies associations, and interprets volcanic depositional environments.</p></div>
         <div className="card1"><FaChartBar className="fe-icon" /><strong>Data Analytics</strong><p>Comprehensive analytical tools for statistical analysis, spatial pattern recognition, and multidimensional data visualization. The analytics suite includes descriptive statistics, correlation analysis, cluster analysis, and various visualization tools for exploring relationships in well log data.</p></div>
       </div>
-      <style jsx>{`.fe-icon { color: #4da6ff; font-size: 1.2rem; margin-right: 0.75rem; }`}</style>
+      <style>{`.fe-icon { color: #4da6ff; font-size: 1.2rem; margin-right: 0.75rem; }`}</style>
     </div>
   ),
 
@@ -1011,24 +1011,16 @@ const S = {
     </div>
   ),
 
-  Content: ({ activeSection, topProductive, onFileUpload, onExport }) => {
+  Content: ({ activeSection, topProductive, onFileUpload, onExport, onNavigateToUpload }) => {
     const renderUpload = () => (
       <div className="content-panel">
-        <h3>Comprehensive Data Upload</h3>
-        <p>Upload your well data files in various supported formats. Our advanced system will automatically process and standardize your data.</p>
-        
-        <div className="upload-grid">
-          <div className="upload-card">
-            <h4><FaFileImport /> CSV and Excel File Upload</h4>
-            <p>Standard tabular format containing well log information with all required columns.</p>
-            <input type="file" accept=".csv,.xlsx,.xls" onChange={e => e.target.files[0] && onFileUpload(e.target.files[0])} />
-          </div>
-          <div className="upload-card">
-            <h4><FaFileImport /> Shapefile Upload</h4>
-            <p>Upload spatial data including well point locations, cross-sectional line definitions, or study area boundaries.</p>
-            <input type="file" accept=".shp,.zip" onChange={e => e.target.files[0] && onFileUpload(e.target.files[0])} />
-          </div>
-        </div>
+        <h3>Data Upload</h3>
+        <p>Use the <strong>Upload Data</strong> tab for all file imports. GVAS supports CSV, Excel, LAS, GeoJSON, and Shapefile formats.</p>
+        {onNavigateToUpload && (
+          <button className="nav-upload-btn" onClick={onNavigateToUpload}>
+            <FaFileImport /> Go to Upload Data Tab
+          </button>
+        )}
       </div>
     );
 
