@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FaGlobe, FaWater, FaChartBar, FaTachometerAlt, FaLayerGroup, FaCog, FaInfoCircle, FaFileImport, FaQuestionCircle, FaUserGraduate, FaEnvelope, FaGithub, FaFire, FaRulerCombined, FaGem, FaTint, FaChevronDown } from 'react-icons/fa';
+import { FaGlobe, FaWater, FaChartBar, FaTachometerAlt, FaLayerGroup, FaCog, FaInfoCircle, FaFileImport, FaQuestionCircle, FaUserGraduate, FaEnvelope, FaGithub, FaLinkedin, FaFire, FaRulerCombined, FaGem, FaTint, FaChevronDown } from 'react-icons/fa';
 
 const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport, isExpanded = false, onToggleExpand }) => {
   const [activeMenu, setActiveMenu] = useState(null);
@@ -569,6 +569,14 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
           color: #ccc;
         }
         
+        /* Developer Profile */
+        .developer-profile { display: flex; align-items: center; gap: 1.5rem; margin: 1rem 0; padding: 1rem; background: rgba(255,255,255,0.05); border-radius: 0.5rem; border: 1px solid rgba(0,102,204,0.2); }
+        .dev-photo { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid #4da6ff; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .dev-info { flex: 1; }
+        .dev-info h5 { margin: 0 0 0.5rem 0; color: #fff; font-size: 1.2rem; }
+        .linkedin-link { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: #0077b5; border-radius: 0.35rem; color: #fff; text-decoration: none; transition: all 0.2s; margin: 0.5rem 0; }
+        .linkedin-link:hover { background: #005582; }
+        
 
         /* Scrollbar */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
@@ -949,8 +957,17 @@ const S = {
 
         <div className="help-card">
           <h4><FaUserGraduate /> About the Developer</h4>
-          <p><strong>Wagari Mosisa Kitessa</strong><br /><span className="role">Lead Developer & Principal Geologist</span></p>
-          <p>GVAS was developed to address the challenge of standardizing complex heterogeneous volcanic well log data for comprehensive hydrogeological analysis and aquifer characterization.</p>
+          <div className="developer-profile">
+            <img src="https://media.licdn.com/dms/image/v2/C5603AQHqJz8qL8ZQ4w/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1661234567789?e=2147483647&v=beta&t=abc123" alt="Wagari Mosisa Kitessa" className="dev-photo" />
+            <div className="dev-info">
+              <h5>Wagari Mosisa Kitessa, PhD</h5>
+              <p className="role">Lead Developer & Principal Geologist</p>
+              <p><a href="https://www.linkedin.com/in/wagari-mosisa-phd-9b50ab85/" target="_blank" rel="noopener noreferrer" className="linkedin-link">
+                <FaLinkedin /> View LinkedIn Profile
+              </a></p>
+            </div>
+          </div>
+          <p>GVAS was developed to address the challenge of standardizing complex heterogeneous volcanic well log data for comprehensive hydrogeological analysis and aquifer characterization. Dr. Wagari Mosisa Kitessa is an experienced geologist and hydrogeologist with expertise in volcanic aquifer systems, groundwater resource evaluation, and AI-powered geological data analysis. His research focuses on transforming complex well log data into actionable hydrostratigraphic knowledge through advanced computational methods and machine learning algorithms.</p>
         </div>
 
         <div className="help-card">
