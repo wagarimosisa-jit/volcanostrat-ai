@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FaGlobe, FaWater, FaChartBar, FaTachometerAlt, FaLayerGroup, FaCog, FaInfoCircle, FaFileImport, FaQuestionCircle, FaUserGraduate, FaEnvelope, FaGithub, FaLinkedin, FaFire, FaRulerCombined, FaGem, FaTint, FaChevronDown, FaSearch } from 'react-icons/fa';
+import { FaGlobe, FaWater, FaChartBar, FaTachometerAlt, FaLayerGroup, FaCog, FaInfoCircle, FaFileImport, FaQuestionCircle, FaUserGraduate, FaEnvelope, FaGithub, FaLinkedin, FaFire, FaRulerCombined, FaGem, FaTint, FaChevronDown } from 'react-icons/fa';
 
 const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport, isExpanded = false, onToggleExpand }) => {
   const [activeMenu, setActiveMenu] = useState(null);
@@ -62,7 +62,7 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
     },
     {
       id: 'geology',
-      title: 'Geology',
+      title: 'Geological Data',
       icon: <FaLayerGroup />,
       submenu: [
         { id: 'geo-info', title: 'Geological Information', component: <S.GeologicalInfo /> },
@@ -85,7 +85,7 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
     },
     {
       id: 'gvas-scope',
-      title: 'GVAS Scope',
+      title: 'Application Scope',
       icon: <FaGlobe />,
       submenu: [
         { id: 'scope-overview', title: 'Scope Overview', component: <S.ScopeOverview /> },
@@ -123,16 +123,6 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
         { id: 'help-main', title: 'Help Center', component: <S.Content activeSection="help" topProductive={topProductive} onFileUpload={onFileUpload} onExport={onExport} /> },
         { id: 'tutorials', title: 'Tutorials & Guides', component: <S.Tutorials /> },
         { id: 'documentation', title: 'Documentation', component: <S.Documentation /> }
-      ]
-    },
-    {
-      id: 'research',
-      title: 'Research',
-      icon: <FaSearch />,
-      submenu: [
-        { id: 'publications', title: 'Publications', component: <S.Publications /> },
-        { id: 'case-studies', title: 'Case Studies', component: <S.CaseStudies /> },
-        { id: 'methodology', title: 'Methodology', component: <S.Methodology /> }
       ]
     },
     {
@@ -974,30 +964,6 @@ const S = {
       <h3><FaFileImport className="sec-icon" /> Technical Documentation</h3>
       <p>Comprehensive technical documentation is available for the GVAS platform, providing detailed information about its architecture, functionality, data requirements, and implementation. The documentation is designed to support developers, system administrators, and advanced users who need in-depth understanding of the platform's technical aspects, as well as researchers and students interested in the underlying algorithms and methods.</p>
       <p>The GVAS technical documentation includes several components: system architecture documentation that describes the platform's overall structure, components, and data flow; API documentation that provides detailed information about the platform's programming interfaces, endpoints, and data formats; data specification documents that define the requirements and formats for input data; algorithm documentation that explains the mathematical and computational methods used in the AI engine and modeling systems; and installation and deployment guides that provide instructions for setting up and configuring the platform in various environments. The documentation also includes best practices and recommendations for data preparation, platform configuration, and result interpretation, as well as case studies and examples that demonstrate the platform's application to real-world hydrogeological problems. Whether you are a developer looking to extend the platform's functionality, a system administrator responsible for deployment and maintenance, or a researcher interested in the underlying methods, the GVAS technical documentation provides the information you need to effectively use and understand the platform.</p>
-    </div>
-  ),
-
-  Publications: () => (
-    <div className="sec">
-      <h3><FaFire className="sec-icon" /> Research Publications</h3>
-      <p>The GVAS platform is built on a foundation of rigorous scientific research in the fields of hydrogeology, volcanic stratigraphy, and artificial intelligence. Our team has published numerous peer-reviewed papers, technical reports, and conference presentations that document the development, validation, and application of the methods and technologies incorporated into the platform. These publications cover a wide range of topics including AI-powered well log interpretation, volcanic aquifer characterization, hydrostratigraphic modeling, and groundwater resource evaluation in complex volcanic terrains.</p>
-      <p>Our research publications demonstrate the scientific validity and practical applicability of the GVAS approach. Studies have been conducted in various volcanic regions worldwide, with results published in leading hydrogeology and geology journals. The research validates the platform's ability to accurately standardize and interpret complex well log data, generate reliable hydrostratigraphic models, and provide actionable insights for groundwater resource management. Publications also document the platform's performance benchmarks, accuracy metrics, and comparisons with traditional interpretation methods, demonstrating the advantages of AI-powered approaches for volcanic hydrostratigraphy.</p>
-    </div>
-  ),
-
-  CaseStudies: () => (
-    <div className="sec">
-      <h3><FaGem className="sec-icon" /> Real-World Case Studies</h3>
-      <p>GVAS has been successfully applied to numerous real-world hydrogeological projects in volcanic terrains across the globe. Our case studies demonstrate the platform's effectiveness in addressing complex geological challenges, standardizing diverse well log datasets, and generating actionable hydrostratigraphic models for groundwater resource evaluation and management. Each case study provides a comprehensive overview of the project context, data challenges, GVAS application, results, and the value delivered to stakeholders.</p>
-      <p>Case studies include applications in various volcanic regions such as the Ethiopian Rift Valley, the Columbia River Basalt Group in the USA, Icelandic volcanic zones, and the Deccan Traps in India. These projects have involved the analysis of thousands of wells, millions of stratigraphic layers, and complex geological sequences spanning various volcanic formations and ages. The case studies demonstrate how GVAS has enabled hydrogeologists to efficiently process and interpret large volumes of data, identify productive aquifer zones, assess groundwater potential, and develop sustainable water management strategies. Results from these projects have been used to support water supply planning, well field optimization, environmental impact assessments, and policy development.</p>
-    </div>
-  ),
-
-  Methodology: () => (
-    <div className="sec">
-      <h3><FaCog className="sec-icon" /> Scientific Methodology</h3>
-      <p>The GVAS platform employs a robust scientific methodology that combines advanced artificial intelligence techniques with established hydrogeological principles. Our approach is grounded in the understanding that volcanic terrains present unique challenges for well log interpretation due to their complexity, heterogeneity, and the diversity of data sources and formats. The GVAS methodology addresses these challenges through a systematic, multi-stage process that ensures data standardization, accurate interpretation, and reliable model generation.</p>
-      <p>The GVAS methodology includes several key stages: data preprocessing and quality control, where raw well log data is cleaned, validated, and standardized; AI-powered feature extraction, where advanced machine learning algorithms identify and extract relevant geological features from the data; stratigraphic correlation and classification, where layers and formations are identified and grouped into hydrostratigraphic units; geological modeling, where 3D models of the subsurface are created based on interpreted data; and validation and quality assurance, where results are checked against known geological constraints and expert interpretations. Each stage employs state-of-the-art techniques and is supported by extensive geological knowledge bases, ensuring that the platform delivers scientifically valid and technically defensible results.</p>
     </div>
   ),
 
