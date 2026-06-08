@@ -117,7 +117,6 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
   const selectSubMenu = (menuId, subMenuId) => {
     setActiveMenu(menuId);
     setActiveSubMenu(subMenuId);
-    setActiveSection(subMenuId);
   };
 
   // Find active submenu component
