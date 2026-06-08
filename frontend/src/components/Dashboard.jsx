@@ -958,7 +958,7 @@ const S = {
         <div className="help-card">
           <h4><FaUserGraduate /> About the Developer</h4>
           <div className="developer-profile">
-            <img src="https://media.licdn.com/dms/image/v2/C5603AQHqJz8qL8ZQ4w/profile-displayphoto-shrink_800_800/0/1661234567789?e=2147483647&v=beta&t=abc123" alt="Wagari Mosisa Kitessa, PhD" className="dev-photo" onError="this.onerror=null;this.src='https://via.placeholder.com/100x100?text=WMK';" />
+            <img src="https://media.licdn.com/dms/image/v2/C5603AQHqJz8qL8ZQ4w/profile-displayphoto-shrink_800_800/0/1661234567789?e=2147483647&v=beta&t=abc123" alt="Wagari Mosisa Kitessa, PhD" className="dev-photo" />
             <div className="dev-info">
               <h5>Wagari Mosisa Kitessa, PhD</h5>
               <p className="role">Lead Developer & Principal Geologist</p>
