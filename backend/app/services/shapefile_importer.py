@@ -88,7 +88,11 @@ class ShapefileImporter:
                 shutil.rmtree(extract_dir)
     
     def _process_single_shapefile(self, content: bytes, filename: str) -> Dict:
-        """Process a single .shp file."""
+        """Process a single .shp file.
+        
+        Note: Shapefiles require multiple files (.shp, .shx, .dbf, etc.).
+        Uploading a single .shp without companions will fail.
+        """
         with tempfile.NamedTemporaryFile(suffix='.shp', delete=False) as tmp_shp:
             tmp_shp.write(content)
             tmp_shp_path = tmp_shp.name
@@ -99,6 +103,16 @@ class ShapefileImporter:
             result['data_type'] = data_type
             result['source'] = filename
             return result
+        except Exception as e:
+            error_msg = str(e)
+            # Check if it's a missing shapefile component error
+            if "Unable to open" in error_msg and ".shx" in error_msg:
+                raise ValueError(
+                    "Shapefile upload failed: Missing required files. "
+                    "Shapefiles require .shp, .shx, .dbf, and .prj files. "
+                    "Please upload as a .zip file containing all shapefile components."
+                )
+            raise ValueError(f"Failed to read shapefile: {error_msg}")
         finally:
             os.unlink(tmp_shp_path)
     
