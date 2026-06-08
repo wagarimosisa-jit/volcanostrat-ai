@@ -116,6 +116,24 @@ async def standardize_wells(well_data: WellData):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+def _generate_3d_model_data(well_data: WellData, resolution: float = 10.0) -> Dict:
+    """Generates 3D voxel model data. Returns dict."""
+    # First standardize
+    standardized = _standardize_wells_data(well_data)
+
+    # Create voxel model
+    voxel_model = create_voxel_model(standardized['wells'], resolution)
+
+    # Extract layers
+    layers = extract_layers(voxel_model)
+
+    return {
+        "voxel_model": voxel_model,
+        "layers": layers,
+        "wells": standardized['wells']
+    }
+
+
 @app.post("/api/3d-model")
 async def generate_3d_model(well_data: WellData, resolution: float = 10.0):
     """
@@ -123,23 +141,31 @@ async def generate_3d_model(well_data: WellData, resolution: float = 10.0):
     Returns voxel model and extracted layers.
     """
     try:
-        # First standardize
-        standardized = _standardize_wells_data(well_data)
-
-        # Create voxel model
-        voxel_model = create_voxel_model(standardized['wells'], resolution)
-
-        # Extract layers
-        layers = extract_layers(voxel_model)
-
-        return JSONResponse(content={
-            "voxel_model": voxel_model,
-            "layers": layers,
-            "wells": standardized['wells']
-        })
-
+        result = _generate_3d_model_data(well_data, resolution)
+        return JSONResponse(content=result)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+def _generate_cross_section_data(
+    well_data: WellData,
+    line_points: List[dict] = [
+        {"x": 0, "y": 0},
+        {"x": 100, "y": 100}
+    ],
+    resolution: float = 10.0
+) -> Dict:
+    """Generates 2D cross-section data. Returns dict."""
+    # Generate 3D model first
+    model_data = _generate_3d_model_data(well_data, resolution)
+
+    # Generate cross-section
+    cross_section = generate_cross_section(model_data['voxel_model'], line_points)
+
+    return {
+        "cross_section": cross_section,
+        "wells": model_data['wells']
+    }
+
 
 @app.post("/api/cross-section")
 async def generate_cross_section_endpoint(
@@ -154,17 +180,8 @@ async def generate_cross_section_endpoint(
     Generates a 2D cross-section from well data.
     """
     try:
-        # Generate 3D model first
-        model_data = await generate_3d_model(well_data, resolution)
-
-        # Generate cross-section
-        cross_section = generate_cross_section(model_data['voxel_model'], line_points)
-
-        return JSONResponse(content={
-            "cross_section": cross_section,
-            "wells": model_data['wells']
-        })
-
+        result = _generate_cross_section_data(well_data, line_points, resolution)
+        return JSONResponse(content=result)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -217,7 +234,7 @@ async def export_data(
         elif export_type == "combined_2d":
             if line_points is None:
                 line_points = [{"x": 0, "y": 0}, {"x": 100, "y": 100}]
-            cross_section = await generate_cross_section_endpoint(well_data, line_points, resolution)
+            cross_section = _generate_cross_section_data(well_data, line_points, resolution)
             
             if export_format == "png":
                 return JSONResponse(content={
@@ -240,7 +257,7 @@ async def export_data(
                 })
 
         elif export_type == "combined_3d":
-            model_data = await generate_3d_model(well_data, resolution)
+            model_data = _generate_3d_model_data(well_data, resolution)
             voxel_model = model_data['voxel_model']
             
             if export_format == "vtk":
@@ -347,7 +364,7 @@ async def export_shapefile(
                     raise HTTPException(status_code=400, detail="well_data or cross_section required")
                 if line_points is None:
                     line_points = [{"x": 0, "y": 0}, {"x": 100, "y": 100}]
-                cross_section = await generate_cross_section_endpoint(well_data, line_points, resolution)
+                cross_section = _generate_cross_section_data(well_data, line_points, resolution)
             result = shapefile_exporter.export_2d_stratigraphy_to_shapefile(
                 cross_section, line_points or [], resolution
             )
@@ -355,7 +372,7 @@ async def export_shapefile(
             if not voxel_model:
                 if not well_data:
                     raise HTTPException(status_code=400, detail="well_data or voxel_model required")
-                model_data = await generate_3d_model(well_data, resolution)
+                model_data = _generate_3d_model_data(well_data, resolution)
                 voxel_model = model_data['voxel_model']
             result = shapefile_exporter.export_3d_model_to_shapefile(voxel_model, resolution)
         elif export_type == "cross_section":
@@ -422,8 +439,8 @@ async def upload_file(file: UploadFile = File(...)):
                 
                 # Process
                 standardized = _standardize_wells_data(well_data)
-                model_3d = await generate_3d_model(well_data)
-                cross_section = await generate_cross_section_endpoint(well_data)
+                model_3d = _generate_3d_model_data(well_data)
+                cross_section = _generate_cross_section_data(well_data)
                 
                 return JSONResponse(content={
                     "standardized": standardized,
@@ -489,8 +506,8 @@ async def upload_file(file: UploadFile = File(...)):
 
         # Process
         standardized = _standardize_wells_data(well_data)
-        model_3d = await generate_3d_model(well_data)
-        cross_section = await generate_cross_section_endpoint(well_data)
+        model_3d = _generate_3d_model_data(well_data)
+        cross_section = _generate_cross_section_data(well_data)
 
         return JSONResponse(content={
             "standardized": standardized,
@@ -867,8 +884,8 @@ async def upload_excel(file: UploadFile = File(...)):
         
         # Process
         standardized = _standardize_wells_data(well_data)
-        model_3d = await generate_3d_model(well_data)
-        cross_section = await generate_cross_section_endpoint(well_data)
+        model_3d = _generate_3d_model_data(well_data)
+        cross_section = _generate_cross_section_data(well_data)
         
         return JSONResponse(content={
             "standardized": standardized,
@@ -918,8 +935,8 @@ async def upload_las(file: UploadFile = File(...)):
         
         # Process
         standardized = _standardize_wells_data(well_data)
-        model_3d = await generate_3d_model(well_data)
-        cross_section = await generate_cross_section_endpoint(well_data)
+        model_3d = _generate_3d_model_data(well_data)
+        cross_section = _generate_cross_section_data(well_data)
         
         return JSONResponse(content={
             "standardized": standardized,
@@ -970,8 +987,8 @@ async def upload_geojson(file: UploadFile = File(...)):
         
         # Process
         standardized = _standardize_wells_data(well_data)
-        model_3d = await generate_3d_model(well_data)
-        cross_section = await generate_cross_section_endpoint(well_data)
+        model_3d = _generate_3d_model_data(well_data)
+        cross_section = _generate_cross_section_data(well_data)
         
         return JSONResponse(content={
             "standardized": standardized,
@@ -1129,8 +1146,8 @@ async def upload_all_formats(file: UploadFile = File(...)):
                 
                 # Process
                 standardized = _standardize_wells_data(well_data)
-                model_3d = await generate_3d_model(well_data)
-                cross_section = await generate_cross_section_endpoint(well_data)
+                model_3d = _generate_3d_model_data(well_data)
+                cross_section = _generate_cross_section_data(well_data)
                 
                 return JSONResponse(content={
                     "standardized": standardized,
@@ -1182,8 +1199,8 @@ async def upload_all_formats(file: UploadFile = File(...)):
             
             # Process
             standardized = _standardize_wells_data(well_data)
-            model_3d = await generate_3d_model(well_data)
-            cross_section = await generate_cross_section_endpoint(well_data)
+            model_3d = _generate_3d_model_data(well_data)
+            cross_section = _generate_cross_section_data(well_data)
             
             return JSONResponse(content={
                 "standardized": standardized,
@@ -1224,8 +1241,8 @@ async def upload_all_formats(file: UploadFile = File(...)):
             
             # Process
             standardized = _standardize_wells_data(well_data)
-            model_3d = await generate_3d_model(well_data)
-            cross_section = await generate_cross_section_endpoint(well_data)
+            model_3d = _generate_3d_model_data(well_data)
+            cross_section = _generate_cross_section_data(well_data)
             
             return JSONResponse(content={
                 "standardized": standardized,
