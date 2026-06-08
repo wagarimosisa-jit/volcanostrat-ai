@@ -809,9 +809,6 @@ const S = {
       <style jsx>{`.fe-icon { color: #4da6ff; font-size: 1.2rem; margin-right: 0.75rem; }`}</style>
     </div>
   ),
-      </div>
-    </div>
-  ),
 
   Stats: ({ metrics }) => (
     <div className="sec">
