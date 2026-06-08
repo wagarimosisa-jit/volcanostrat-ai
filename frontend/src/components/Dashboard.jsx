@@ -78,7 +78,21 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
       title: 'Features',
       icon: <FaFire />,
       submenu: [
-        { id: 'features-list', title: 'Platform Features', component: <S.Features /> }
+        { id: 'features-list', title: 'Platform Features', component: <S.Features /> },
+        { id: 'ai-engine', title: 'AI & Machine Learning', component: <S.AIEngine /> },
+        { id: 'visualization', title: '3D Visualization', component: <S.Visualization /> }
+      ]
+    },
+    {
+      id: 'gvas-scope',
+      title: 'GVAS Scope',
+      icon: <FaGlobe />,
+      submenu: [
+        { id: 'scope-overview', title: 'Scope Overview', component: <S.ScopeOverview /> },
+        { id: 'volcanic-aquifers', title: 'Volcanic Aquifer Systems', component: <S.VolcanicAquifers /> },
+        { id: 'hydrostratigraphy', title: 'Hydrostratigraphy', component: <S.Hydrostratigraphy /> },
+        { id: 'groundwater-resources', title: 'Groundwater Resources', component: <S.GroundwaterResources /> },
+        { id: 'geological-modeling', title: 'Geological Modeling', component: <S.GeologicalModeling /> }
       ]
     },
     {
@@ -87,7 +101,8 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
       icon: <FaChartBar />,
       submenu: [
         { id: 'stats', title: 'Project Stats', component: <S.Stats metrics={calculatedMetrics} /> },
-        { id: 'metrics', title: 'Metrics Summary', component: <S.MetricsSummary metrics={calculatedMetrics} /> }
+        { id: 'metrics', title: 'Metrics Summary', component: <S.MetricsSummary metrics={calculatedMetrics} /> },
+        { id: 'analytics', title: 'Advanced Analytics', component: <S.Analytics /> }
       ]
     },
     {
@@ -105,7 +120,9 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
       title: 'Help',
       icon: <FaQuestionCircle />,
       submenu: [
-        { id: 'help-main', title: 'Help Center', component: <S.Content activeSection="help" topProductive={topProductive} onFileUpload={onFileUpload} onExport={onExport} /> }
+        { id: 'help-main', title: 'Help Center', component: <S.Content activeSection="help" topProductive={topProductive} onFileUpload={onFileUpload} onExport={onExport} /> },
+        { id: 'tutorials', title: 'Tutorials & Guides', component: <S.Tutorials /> },
+        { id: 'documentation', title: 'Documentation', component: <S.Documentation /> }
       ]
     }
   ];
@@ -813,6 +830,86 @@ const S = {
         <div className="card1"><FaChartBar className="fe-icon" /><strong>Data Analytics</strong><p>Comprehensive analytical tools for statistical analysis, spatial pattern recognition, and multidimensional data visualization. The analytics suite includes descriptive statistics, correlation analysis, cluster analysis, and various visualization tools for exploring relationships in well log data.</p></div>
       </div>
       <style jsx>{`.fe-icon { color: #4da6ff; font-size: 1.2rem; margin-right: 0.75rem; }`}</style>
+    </div>
+  ),
+
+  AIEngine: () => (
+    <div className="sec">
+      <h3><FaFire className="sec-icon" /> AI & Machine Learning Capabilities</h3>
+      <p>The GVAS AI engine represents a breakthrough in geological data interpretation, leveraging advanced machine learning and deep learning algorithms to transform raw well log data into actionable hydrostratigraphic knowledge. Our AI system is specifically designed to handle the complexity and heterogeneity of volcanic well log data from diverse international sources, formats, and quality levels.</p>
+      <p>The AI engine automatically performs multiple critical functions: intelligent pattern recognition in complex stratigraphic sequences, automated correlation of layers across multiple wells, predictive modeling of subsurface conditions, and comprehensive hydrogeological model generation. The system learns from vast datasets of well logs, geological interpretations, and hydrostratigraphic classifications to continuously improve its accuracy and reliability. Machine learning models including convolutional neural networks for image-like log data, recurrent neural networks for sequential stratigraphic data, and transformer models for understanding complex geological relationships are employed to deliver scientifically validated results that meet international standards in hydrogeological investigation.</p>
+    </div>
+  ),
+
+  Visualization: () => (
+    <div className="sec">
+      <h3><FaRulerCombined className="sec-icon" /> 3D Visualization Tools</h3>
+      <p>GVAS provides sophisticated 3D visualization capabilities that enable hydrogeologists and geologists to explore, analyze, and interpret complex subsurface data in three dimensions. Our 3D voxel modeling system creates highly detailed, accurate representations of geological formations, aquifer systems, hydrostratigraphic units, and other subsurface features based on well log interpretations, geological knowledge bases, and AI-generated models.</p>
+      <p>The 3D visualization environment allows users to interactively explore subsurface models from any angle, slice through models at any orientation, zoom in on specific areas of interest, and visualize multiple data layers simultaneously. Features include real-time rendering of complex geological structures, dynamic cross-section generation, interactive measurement tools, and the ability to import and visualize data from multiple sources. The system supports various visualization modes including solid rendering, wireframe views, transparent modes for seeing through layers, and color-coded representations of different geological properties. Advanced visualization techniques such as volume rendering, isosurface extraction, and cutaway views provide powerful tools for understanding complex subsurface relationships.</p>
+    </div>
+  ),
+
+  ScopeOverview: () => (
+    <div className="sec">
+      <h3><FaGlobe className="sec-icon" /> GVAS Platform Scope Overview</h3>
+      <p>The Global Volcanic Aquifer Solutions (GVAS) platform is a comprehensive, AI-powered system designed specifically for addressing the unique challenges of volcanic hydrostratigraphy, aquifer modeling, and groundwater resource evaluation in complex volcanic terrains worldwide. The platform's primary scope encompasses the transformation of heterogeneous, multi-source, multi-format well log data into standardized, consistent, and scientifically validated hydrostratigraphic models that can be reliably used for detailed analysis, interpretation, visualization, and decision-making in hydrogeological investigations.</p>
+      <p>GVAS addresses the critical need for standardization in volcanic well log data analysis. Traditional approaches to well log interpretation are time-consuming, subjective, and often inconsistent across different geologists, regions, and organizations. GVAS revolutionizes this process by leveraging advanced artificial intelligence algorithms, extensive geological knowledge bases, and state-of-the-art computational methods to deliver accurate, reliable, and repeatable results. The platform is specifically designed to handle the complexity of volcanic terrains, where well logs may contain highly heterogeneous data from diverse volcanic formations, varying data quality, and different measurement standards. By providing a comprehensive solution for data standardization, interpretation, and visualization, GVAS enables hydrogeologists worldwide to efficiently build consistent subsurface models from diverse well data.</p>
+    </div>
+  ),
+
+  VolcanicAquifers: () => (
+    <div className="sec">
+      <h3><FaWater className="sec-icon" /> Volcanic Aquifer Systems</h3>
+      <p>Volcanic aquifer systems represent some of the most productive and reliable groundwater resources in volcanic terrains worldwide. These systems are characterized by unique hydrogeological properties including exceptional lateral continuity, fracture-controlled permeability, and efficient transmission characteristics. Volcanic aquifers typically occur in basaltic lava flow sequences, where individual flows can extend for tens to hundreds of kilometers, providing extensive areal coverage for groundwater storage and transmission.</p>
+      <p>The productivity of volcanic aquifer systems is primarily controlled by the development of secondary porosity through fracturing, vesicularity, and weathering processes. Basaltic lava flows commonly contain extensive fracture networks that enhance permeability, while vesicles (gas bubbles) trapped in the cooling lava can provide additional storage capacity. Weathering of the volcanic rocks further enhances porosity and permeability by altering minerals and creating clay deposits that can either increase or decrease water transmission depending on the clay type and abundance. Volcanic aquifer systems can be classified into several types including interflow zone aquifers (between individual lava flows), intraflow zone aquifers (within individual flows), and sub-basalt aquifers (below the volcanic sequence in underlying formations). Each type has distinct hydrogeological characteristics and requires specialized approaches for characterization and management.</p>
+    </div>
+  ),
+
+  Hydrostratigraphy: () => (
+    <div className="sec">
+      <h3><FaLayerGroup className="sec-icon" /> Hydrostratigraphy Principles</h3>
+      <p>Hydrostratigraphy is the branch of hydrogeology concerned with the description, classification, and interpretation of sedimentary and volcanic deposits with respect to their groundwater occurrence, movement, and quality. Unlike traditional stratigraphy which focuses primarily on the geological history and age relationships of rock units, hydrostratigraphy emphasizes the hydrological properties of geological formations and their role in groundwater systems.</p>
+      <p>The fundamental principle of hydrostratigraphy is that geological formations with similar hydrological properties can be grouped into hydrostratigraphic units, regardless of their age or lithological composition. These units are classified based on their ability to store and transmit water, with aquifers being formations that can store and transmit significant quantities of water, and aquitards being formations that restrict groundwater flow. Hydrostratigraphic analysis involves the identification and correlation of these units across a region or basin, the determination of their spatial distribution and thickness, and the characterization of their hydrological properties including porosity, permeability, transmissivity, and storage capacity. In volcanic terrains, hydrostratigraphy is particularly challenging due to the complexity of volcanic sequences, the heterogeneity of volcanic deposits, and the significant variation in hydrogeological properties both laterally and vertically.</p>
+    </div>
+  ),
+
+  GroundwaterResources: () => (
+    <div className="sec">
+      <h3><FaTint className="sec-icon" /> Groundwater Resources Evaluation</h3>
+      <p>Groundwater resources evaluation is a critical component of hydrogeological investigations, aimed at assessing the quantity, quality, and sustainability of groundwater supplies for various uses including domestic, agricultural, industrial, and municipal water supply. The evaluation process involves a comprehensive analysis of the hydrogeological system, including the characterization of aquifer properties, the determination of groundwater flow directions and velocities, the assessment of recharge mechanisms and rates, and the evaluation of water quality and its spatial and temporal variations.</p>
+      <p>GVAS provides a comprehensive framework for groundwater resources evaluation in complex volcanic terrains. The platform's advanced data processing capabilities enable the efficient analysis of large volumes of well log data to identify productive aquifer zones, assess their hydrogeological properties, and evaluate their groundwater potential. The system automatically generates hydrostratigraphic models that define the spatial distribution of aquifers and aquitards, calculates key hydrogeological parameters, and provides predictive models of groundwater flow and storage. By integrating data from multiple wells and sources, GVAS creates comprehensive groundwater resource assessments that support sustainable water management, well field optimization, and water supply planning. The platform's 3D visualization tools further enhance groundwater resources evaluation by providing interactive views of aquifer systems, allowing hydrogeologists to explore complex geological relationships and optimize groundwater development strategies.</p>
+    </div>
+  ),
+
+  GeologicalModeling: () => (
+    <div className="sec">
+      <h3><FaCog className="sec-icon" /> Geological Modeling Capabilities</h3>
+      <p>Geological modeling is the process of creating digital representations of the Earth's subsurface based on geological, geophysical, and hydrogeological data. These models serve as powerful tools for understanding complex geological relationships, predicting subsurface conditions, and supporting decision-making in various applications including natural resource exploration, environmental management, and geological hazard assessment. In the context of volcanic hydrostratigraphy, geological modeling is particularly important for characterizing complex volcanic sequences, identifying productive aquifer zones, and assessing groundwater resources.</p>
+      <p>GVAS employs advanced geological modeling techniques specifically adapted for volcanic terrains. The platform's 3D voxel modeling system creates detailed representations of geological formations based on well log data, AI interpretations, and geological knowledge bases. Each voxel (3D pixel) in the model represents a specific volume of the subsurface with associated geological and hydrogeological properties including lithology, stratigraphy, porosity, permeability, and water content. The models can be visualized and analyzed from any orientation, allowing geologists to explore complex geological structures, identify patterns and relationships, and generate cross-sections and maps for detailed interpretation. The modeling system also supports the integration of data from multiple sources including well logs, geological maps, geophysical surveys, and remote sensing, resulting in comprehensive subsurface models that provide valuable insights for hydrogeological investigations and groundwater resource evaluation.</p>
+    </div>
+  ),
+
+  Analytics: () => (
+    <div className="sec">
+      <h3><FaChartBar className="sec-icon" /> Advanced Analytics and Interpretation</h3>
+      <p>Advanced analytics is at the heart of the GVAS platform, providing powerful tools for statistical analysis, spatial pattern recognition, and multidimensional data visualization of well log data and derived hydrostratigraphic models. The analytics suite is designed to help hydrogeologists and geologists extract maximum value from their data, identify trends and relationships, and generate actionable insights for decision-making.</p>
+      <p>The GVAS analytics suite includes a comprehensive set of tools for data exploration and interpretation. Descriptive statistics provide summary measures of well log data including mean values, standard deviations, distributions, and other statistical properties that help characterize the dataset. Correlation analysis identifies relationships between different variables and parameters, revealing patterns that may not be apparent from individual data points. Cluster analysis groups similar data points together based on their properties, enabling the identification of natural groupings in the data that may correspond to different geological formations, hydrostratigraphic units, or aquifer zones. Spatial analysis tools allow for the visualization and interpretation of data in its geographic context, supporting the identification of spatial trends, patterns, and relationships. The analytics suite also includes powerful visualization tools for creating various types of plots, charts, and maps that help communicate findings and support decision-making processes.</p>
+    </div>
+  ),
+
+  Tutorials: () => (
+    <div className="sec">
+      <h3><FaInfoCircle className="sec-icon" /> Tutorials and User Guides</h3>
+      <p>GVAS provides comprehensive tutorials and user guides to help new users get started with the platform and existing users deepen their understanding of its advanced features and capabilities. Our tutorial system is designed to accommodate users with various levels of expertise, from beginners who are new to well log analysis and hydrostratigraphy to experienced professionals looking to leverage AI-powered tools for their work.</p>
+      <p>The tutorial system includes step-by-step guides that walk users through common workflows and tasks, video tutorials that demonstrate platform features and functionality, and interactive examples that allow users to practice using the platform with real-world datasets. Beginner tutorials cover fundamental concepts including data upload and formatting, basic navigation, and understanding platform outputs. Intermediate tutorials explore more advanced features including AI interpretation, 3D modeling, and export options. Advanced tutorials delve into specialized applications and workflows for complex geological scenarios. Each tutorial is designed to be hands-on and practical, with clear instructions, screenshots, and examples that users can follow along with their own data. The tutorial system also includes a comprehensive FAQ section that addresses common questions and issues, as well as a troubleshooting guide for resolving technical problems.</p>
+    </div>
+  ),
+
+  Documentation: () => (
+    <div className="sec">
+      <h3><FaFileImport className="sec-icon" /> Technical Documentation</h3>
+      <p>Comprehensive technical documentation is available for the GVAS platform, providing detailed information about its architecture, functionality, data requirements, and implementation. The documentation is designed to support developers, system administrators, and advanced users who need in-depth understanding of the platform's technical aspects, as well as researchers and students interested in the underlying algorithms and methods.</p>
+      <p>The GVAS technical documentation includes several components: system architecture documentation that describes the platform's overall structure, components, and data flow; API documentation that provides detailed information about the platform's programming interfaces, endpoints, and data formats; data specification documents that define the requirements and formats for input data; algorithm documentation that explains the mathematical and computational methods used in the AI engine and modeling systems; and installation and deployment guides that provide instructions for setting up and configuring the platform in various environments. The documentation also includes best practices and recommendations for data preparation, platform configuration, and result interpretation, as well as case studies and examples that demonstrate the platform's application to real-world hydrogeological problems. Whether you are a developer looking to extend the platform's functionality, a system administrator responsible for deployment and maintenance, or a researcher interested in the underlying methods, the GVAS technical documentation provides the information you need to effectively use and understand the platform.</p>
     </div>
   ),
 
