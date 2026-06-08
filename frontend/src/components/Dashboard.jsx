@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FaGlobe, FaWater, FaChartBar, FaTachometerAlt, FaLayerGroup, FaCog, FaInfoCircle, FaFileImport, FaQuestionCircle, FaUserGraduate, FaEnvelope, FaGithub, FaLinkedin, FaFire, FaRulerCombined, FaGem, FaTint, FaChevronDown } from 'react-icons/fa';
+import { FaGlobe, FaWater, FaChartBar, FaTachometerAlt, FaLayerGroup, FaCog, FaInfoCircle, FaFileImport, FaQuestionCircle, FaUserGraduate, FaEnvelope, FaGithub, FaLinkedin, FaFire, FaRulerCombined, FaGem, FaTint, FaChevronDown, FaSearch } from 'react-icons/fa';
 
 const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport, isExpanded = false, onToggleExpand }) => {
   const [activeMenu, setActiveMenu] = useState(null);
@@ -124,6 +124,26 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
         { id: 'tutorials', title: 'Tutorials & Guides', component: <S.Tutorials /> },
         { id: 'documentation', title: 'Documentation', component: <S.Documentation /> }
       ]
+    },
+    {
+      id: 'research',
+      title: 'Research',
+      icon: <FaSearch />,
+      submenu: [
+        { id: 'publications', title: 'Publications', component: <S.Publications /> },
+        { id: 'case-studies', title: 'Case Studies', component: <S.CaseStudies /> },
+        { id: 'methodology', title: 'Methodology', component: <S.Methodology /> }
+      ]
+    },
+    {
+      id: 'about',
+      title: 'About',
+      icon: <FaInfoCircle />,
+      submenu: [
+        { id: 'team', title: 'Our Team', component: <S.Team /> },
+        { id: 'partners', title: 'Partners & Collaborators', component: <S.Partners /> },
+        { id: 'contact', title: 'Contact Us', component: <S.Contact /> }
+      ]
     }
   ];
 
@@ -204,12 +224,13 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
         /* Modern Professional Style */
         .top-panel { 
           width: 100%; 
-          background: linear-gradient(135deg, #1976d2 0%, #2196f3 100%); 
+          background: linear-gradient(135deg, #1565c0 0%, #1976d2 100%); 
           color: #fff; 
           display: flex; 
           flex-direction: column;
-          border-bottom: 2px solid #4da6ff;
-          box-shadow: 0 4px 20px rgba(0,0,0,0.2); 
+          border-bottom: 3px solid #ff9800;
+          box-shadow: 0 4px 20px rgba(0,0,0,0.3); 
+          font-weight: 500;
         }
         .top-panel.collapsed { min-height: 70px; }
         .top-panel.expanded { min-height: auto; max-height: none; }
@@ -225,7 +246,28 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
           position: relative;
           justify-content: space-between;
         }
-        .gvas-icon { font-size: 1.5rem; color: #ff9800; margin-right: 0.5rem; }
+        .gvas-icon { font-size: 1.6rem; color: #ff9800; margin-right: 0.5rem; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        
+        /* Enhanced typography */
+        .sec h3 { 
+          color: #fff; 
+          margin: 0 0 1rem 0; 
+          font-size: 1.3rem; 
+          display: flex; 
+          align-items: center; 
+          gap: 0.75rem; 
+          border-bottom: 2px solid #4da6ff; 
+          padding-bottom: 0.75rem;
+          letter-spacing: -0.3px;
+        }
+        .sec p { 
+          color: #e0e0e0; 
+          line-height: 1.8; 
+          font-size: 0.98rem; 
+          margin-bottom: 1rem;
+          text-align: justify;
+        }
+        .sec p:last-child { margin-bottom: 0; }
         
         .toggle-side { 
           background: #4da6ff; 
@@ -279,25 +321,29 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
           display: flex;
           align-items: center;
           gap: 0.5rem;
-          padding: 0.6rem 1rem;
-          background: transparent;
-          border: 1px solid rgba(255,255,255,0.2);
-          border-radius: 0.35rem;
-          color: #ccc;
+          padding: 0.7rem 1.2rem;
+          background: rgba(255,255,255,0.08);
+          border: 2px solid rgba(255,255,255,0.35);
+          border-radius: 0.4rem;
+          color: #e0e0e0;
           cursor: pointer;
-          font-size: 0.9rem;
-          transition: all 0.2s;
+          font-size: 0.95rem;
+          transition: all 0.3s ease;
           font-weight: 500;
+          text-shadow: 0 1px 2px rgba(0,0,0,0.4);
         }
         .nav-button:hover {
-          background: rgba(255,255,255,0.1);
+          background: rgba(255,255,255,0.2);
           color: #fff;
-          border-color: rgba(255,255,255,0.4);
+          border-color: rgba(255,255,255,0.7);
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(0,0,0,0.4);
         }
         .nav-button.active {
-          background: #4da6ff;
+          background: linear-gradient(135deg, #4da6ff, #2196f3);
           color: #fff;
           border-color: #4da6ff;
+          box-shadow: 0 4px 15px rgba(77, 166, 255, 0.6);
         }
         
         .chevron {
@@ -313,14 +359,20 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
           position: absolute;
           top: 100%;
           left: 0;
-          min-width: 200px;
-          background: #0a1628;
-          border: 1px solid #4da6ff;
-          border-radius: 0.35rem;
-          box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+          min-width: 220px;
+          background: #1976d2;
+          border: 2px solid #4da6ff;
+          border-radius: 0.4rem;
+          box-shadow: 0 8px 32px rgba(0,0,0,0.5);
           z-index: 1000;
           margin-top: 0.25rem;
           padding: 0.5rem 0;
+          animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(-10px); }
+          to { opacity: 1; transform: translateY(0); }
         }
         
         .submenu-item {
@@ -328,23 +380,35 @@ const Dashboard = ({ wells, standardizedData, voxelModel, onFileUpload, onExport
           align-items: center;
           gap: 0.5rem;
           width: 100%;
-          padding: 0.6rem 1rem;
+          padding: 0.7rem 1.2rem;
           background: transparent;
           border: none;
-          color: #ccc;
+          color: #e0e0e0;
           cursor: pointer;
-          font-size: 0.85rem;
+          font-size: 0.9rem;
           transition: all 0.2s;
           text-align: left;
-          border-radius: 0.25rem;
+          border-radius: 0.3rem;
+          border-left: 3px solid transparent;
         }
         .submenu-item:hover {
-          background: rgba(255,255,255,0.05);
+          background: rgba(255,255,255,0.1);
           color: #fff;
+          border-left-color: #4da6ff;
         }
         .submenu-item.active {
-          background: #4da6ff;
+          background: linear-gradient(135deg, rgba(77, 166, 255, 0.3), rgba(33, 150, 243, 0.3));
           color: #fff;
+          border-left-color: #ff9800;
+          font-weight: 600;
+        }
+        
+        .submenu-dot {
+          width: 8px;
+          height: 8px;
+          background: #4da6ff;
+          border-radius: 50%;
+          flex-shrink: 0;
         }
         .nsubmenu-dot {
           width: 8px;
@@ -910,6 +974,54 @@ const S = {
       <h3><FaFileImport className="sec-icon" /> Technical Documentation</h3>
       <p>Comprehensive technical documentation is available for the GVAS platform, providing detailed information about its architecture, functionality, data requirements, and implementation. The documentation is designed to support developers, system administrators, and advanced users who need in-depth understanding of the platform's technical aspects, as well as researchers and students interested in the underlying algorithms and methods.</p>
       <p>The GVAS technical documentation includes several components: system architecture documentation that describes the platform's overall structure, components, and data flow; API documentation that provides detailed information about the platform's programming interfaces, endpoints, and data formats; data specification documents that define the requirements and formats for input data; algorithm documentation that explains the mathematical and computational methods used in the AI engine and modeling systems; and installation and deployment guides that provide instructions for setting up and configuring the platform in various environments. The documentation also includes best practices and recommendations for data preparation, platform configuration, and result interpretation, as well as case studies and examples that demonstrate the platform's application to real-world hydrogeological problems. Whether you are a developer looking to extend the platform's functionality, a system administrator responsible for deployment and maintenance, or a researcher interested in the underlying methods, the GVAS technical documentation provides the information you need to effectively use and understand the platform.</p>
+    </div>
+  ),
+
+  Publications: () => (
+    <div className="sec">
+      <h3><FaFire className="sec-icon" /> Research Publications</h3>
+      <p>The GVAS platform is built on a foundation of rigorous scientific research in the fields of hydrogeology, volcanic stratigraphy, and artificial intelligence. Our team has published numerous peer-reviewed papers, technical reports, and conference presentations that document the development, validation, and application of the methods and technologies incorporated into the platform. These publications cover a wide range of topics including AI-powered well log interpretation, volcanic aquifer characterization, hydrostratigraphic modeling, and groundwater resource evaluation in complex volcanic terrains.</p>
+      <p>Our research publications demonstrate the scientific validity and practical applicability of the GVAS approach. Studies have been conducted in various volcanic regions worldwide, with results published in leading hydrogeology and geology journals. The research validates the platform's ability to accurately standardize and interpret complex well log data, generate reliable hydrostratigraphic models, and provide actionable insights for groundwater resource management. Publications also document the platform's performance benchmarks, accuracy metrics, and comparisons with traditional interpretation methods, demonstrating the advantages of AI-powered approaches for volcanic hydrostratigraphy.</p>
+    </div>
+  ),
+
+  CaseStudies: () => (
+    <div className="sec">
+      <h3><FaGem className="sec-icon" /> Real-World Case Studies</h3>
+      <p>GVAS has been successfully applied to numerous real-world hydrogeological projects in volcanic terrains across the globe. Our case studies demonstrate the platform's effectiveness in addressing complex geological challenges, standardizing diverse well log datasets, and generating actionable hydrostratigraphic models for groundwater resource evaluation and management. Each case study provides a comprehensive overview of the project context, data challenges, GVAS application, results, and the value delivered to stakeholders.</p>
+      <p>Case studies include applications in various volcanic regions such as the Ethiopian Rift Valley, the Columbia River Basalt Group in the USA, Icelandic volcanic zones, and the Deccan Traps in India. These projects have involved the analysis of thousands of wells, millions of stratigraphic layers, and complex geological sequences spanning various volcanic formations and ages. The case studies demonstrate how GVAS has enabled hydrogeologists to efficiently process and interpret large volumes of data, identify productive aquifer zones, assess groundwater potential, and develop sustainable water management strategies. Results from these projects have been used to support water supply planning, well field optimization, environmental impact assessments, and policy development.</p>
+    </div>
+  ),
+
+  Methodology: () => (
+    <div className="sec">
+      <h3><FaCog className="sec-icon" /> Scientific Methodology</h3>
+      <p>The GVAS platform employs a robust scientific methodology that combines advanced artificial intelligence techniques with established hydrogeological principles. Our approach is grounded in the understanding that volcanic terrains present unique challenges for well log interpretation due to their complexity, heterogeneity, and the diversity of data sources and formats. The GVAS methodology addresses these challenges through a systematic, multi-stage process that ensures data standardization, accurate interpretation, and reliable model generation.</p>
+      <p>The GVAS methodology includes several key stages: data preprocessing and quality control, where raw well log data is cleaned, validated, and standardized; AI-powered feature extraction, where advanced machine learning algorithms identify and extract relevant geological features from the data; stratigraphic correlation and classification, where layers and formations are identified and grouped into hydrostratigraphic units; geological modeling, where 3D models of the subsurface are created based on interpreted data; and validation and quality assurance, where results are checked against known geological constraints and expert interpretations. Each stage employs state-of-the-art techniques and is supported by extensive geological knowledge bases, ensuring that the platform delivers scientifically valid and technically defensible results.</p>
+    </div>
+  ),
+
+  Team: () => (
+    <div className="sec">
+      <h3><FaUserGraduate className="sec-icon" /> Development Team</h3>
+      <p>The GVAS platform is developed and maintained by a multidisciplinary team of experts in hydrogeology, geology, artificial intelligence, and software engineering. Our team combines deep domain expertise in volcanic hydrostratigraphy with cutting-edge technical skills in machine learning, data science, and software development. This unique combination of geological and technical expertise enables us to develop innovative solutions that address the specific challenges of well log interpretation in complex volcanic terrains.</p>
+      <p>The core development team is led by Dr. Wagari Mosisa Kitessa, a recognized expert in volcanic aquifer systems and hydrogeology with extensive experience in groundwater resource evaluation and geological data analysis. The team also includes hydrogeologists specializing in volcanic terrains, AI/ML engineers with expertise in geological data analysis, software developers proficient in modern web technologies, and GIS specialists skilled in spatial data visualization and analysis. Together, we work collaboratively to continuously improve the platform, incorporating the latest scientific advances and user feedback to deliver a world-class solution for hydrogeological investigations.</p>
+    </div>
+  ),
+
+  Partners: () => (
+    <div className="sec">
+      <h3><FaGlobe className="sec-icon" /> Partners & Collaborators</h3>
+      <p>GVAS collaborates with a diverse network of partners and collaborators from academic institutions, research organizations, government agencies, and private sector companies worldwide. These partnerships are essential for advancing the platform's capabilities, validating its performance in diverse geological settings, and ensuring its relevance to real-world hydrogeological challenges. Our collaborators contribute valuable expertise, data, and feedback that help shape the platform's development roadmap and ensure it meets the needs of the global hydrogeological community.</p>
+      <p>Our academic partners include leading universities and research institutions with expertise in hydrogeology, geology, and AI applications in earth sciences. Government agency partners include water resource management organizations, geological surveys, and environmental protection agencies that provide data, case studies, and regulatory guidance. Private sector partners include consulting firms, engineering companies, and technology providers that contribute industry best practices and help ensure the platform's commercial viability. Together with our partners, we are building a comprehensive ecosystem for volcanic hydrostratigraphy that serves the global community.</p>
+    </div>
+  ),
+
+  Contact: () => (
+    <div className="sec">
+      <h3><FaEnvelope className="sec-icon" /> Contact Information</h3>
+      <p>We welcome inquiries from hydrogeologists, geologists, water resource managers, researchers, students, and anyone interested in learning more about the GVAS platform or exploring potential collaborations. Whether you have questions about the platform's capabilities, need technical support, want to discuss partnership opportunities, or are interested in contributing to the platform's development, we encourage you to reach out to our team.</p>
+      <p>For general inquiries, technical support, or partnership discussions, please contact Dr. Wagari Mosisa Kitessa at wagari.mosisa@ju.edu.et or wagarimosisa@gmail.com. For specific questions about platform features, functionality, or implementation, please use the contact form on our website or join our user community forum. We also welcome feedback, bug reports, and feature requests through our GitHub repository. Our team is committed to providing responsive support and building a strong, engaged user community around the GVAS platform.</p>
     </div>
   ),
 

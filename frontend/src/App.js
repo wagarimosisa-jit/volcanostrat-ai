@@ -356,7 +356,7 @@ function App() {
 
       <footer className="app-footer">
         <p>© 2026 GVAS - Global Volcanic Aquifer Solutions | Built for you!</p>
-        <p className="footer-version">Version 2.0.0 | Developed by: WMK</p>
+        <p className="footer-version">GVAS 1.0.0 | Developed by: WMK</p>
       </footer>
       </div>
     </div>

@@ -4,12 +4,25 @@ body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: #f0f2f5;
   color: #333;
-  background-image: linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)), url('https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Grand_Ethiopian_Renaissance_Dam_2021.jpg/1200px-Grand_Ethiopian_Renaissance_Dam_2021.jpg');
+  background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Grand_Ethiopian_Renaissance_Dam_2021.jpg/1200px-Grand_Ethiopian_Renaissance_Dam_2021.jpg');
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
   background-repeat: no-repeat;
   min-height: 100vh;
+}
+
+/* Overlay for text readability */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.95);
+  z-index: -1;
+  pointer-events: none;
 }
 
 .app {
