@@ -1,6 +1,7 @@
-from fastapi import FastAPI, UploadFile, File, HTTPException, Form
+from fastapi import FastAPI, UploadFile, File, HTTPException, Form, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, FileResponse
+from fastapi.exceptions import RequestValidationError
 import pandas as pd
 import json
 import os
@@ -12,6 +13,7 @@ import zipfile
 import tempfile
 from datetime import datetime
 from dotenv import load_dotenv
+from pydantic import ValidationError
 
 _env_root = Path(__file__).resolve().parent.parent.parent
 load_dotenv(_env_root / ".env")
@@ -52,6 +54,23 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Global exception handler for validation errors
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    """Convert Pydantic validation errors to user-friendly messages"""
+    errors = []
+    for error in exc.errors():
+        field_path = " → ".join(str(loc) for loc in error["loc"])
+        errors.append(f"{field_path}: {error['msg']}")
+    return JSONResponse(
+        status_code=422,
+        content={
+            "error": "Validation Error",
+            "message": "Invalid input data",
+            "details": errors
+        }
+    )
 
 # Load ontology
 ONTOLOGY_PATH = Path(__file__).parent / "data" / "volcanic_ontology.json"
@@ -424,16 +443,24 @@ async def upload_file(file: UploadFile = File(...)):
                     else:
                         first_interval = {'depth_start': 0, 'depth_end': 100, 'raw_lithology': 'Unknown'}
                     
-                    w = WellLog(
-                        Well_ID=well['Well_ID'],
-                        X_Coordinate=well['X_Coordinate'],
-                        Y_Coordinate=well['Y_Coordinate'],
-                        Elevation_m=well['Elevation_m'],
-                        Depth_Start_m=first_interval['depth_start'],
-                        Depth_End_m=first_interval['depth_end'],
-                        Raw_Lithology_Description=first_interval['raw_lithology']
-                    )
-                    wells.append(w)
+                    # Ensure all required fields have valid values
+                    try:
+                        w = WellLog(
+                            Well_ID=str(well.get('Well_ID', 'Unknown')),
+                            X_Coordinate=float(well.get('X_Coordinate', 0)),
+                            Y_Coordinate=float(well.get('Y_Coordinate', 0)),
+                            Elevation_m=float(well.get('Elevation_m', 0)),
+                            Depth_Start_m=float(first_interval.get('depth_start', 0)),
+                            Depth_End_m=float(first_interval.get('depth_end', 100)),
+                            Raw_Lithology_Description=str(first_interval.get('raw_lithology', 'Unknown'))
+                        )
+                        wells.append(w)
+                    except (ValueError, TypeError, ValidationError) as e:
+                        # Skip invalid well entries instead of failing
+                        continue
+                
+                if not wells:
+                    raise HTTPException(status_code=400, detail="No valid wells found in shapefile")
                 
                 well_data = WellData(wells=wells)
                 
